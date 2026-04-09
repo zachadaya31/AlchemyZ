@@ -28,8 +28,8 @@ public class Mission1 : MonoBehaviour
             case 1: 
                 string[] lines = {
                     "Okay class, for the next question...",
-                    "2nd Line",
-                    "3rd Line"
+                    "Bro who is that student, you...",
+                    "Your mother's name is cristina reynosa right?"
                 };
                 dialogueScript.loadConversation("Teacher Mikko", teacherPrefab, lines);
                 break;
