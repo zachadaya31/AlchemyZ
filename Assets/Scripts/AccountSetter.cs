@@ -12,7 +12,8 @@ public class AccountSetter : MonoBehaviour
     {
         tmpStudentID.SetText(UserSession.Instance.currentUser.studentID);
         tmpStudentSection.SetText(UserSession.Instance.currentUser.studentSection);
-        tmpStudentName.SetText(UserSession.Instance.currentUser.studentName);
+        string studentFullName = (UserSession.Instance.currentUser.studentFirstName+" "+UserSession.Instance.currentUser.studentLastName);
+        tmpStudentName.SetText(studentFullName);
     }
 
     // Update is called once per frame

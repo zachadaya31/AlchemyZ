@@ -19,7 +19,8 @@ public class StudentAccount : BaseModel
 {
     [PrimaryKey("studentID")]
     public string studentID {get; set;}
-    public string studentName {get; set;}
+    public string studentFirstName {get; set;}
+    public string studentLastName { get; set; }
     public string studentSection {get; set;}
     public string studentPassword {get; set;}
     

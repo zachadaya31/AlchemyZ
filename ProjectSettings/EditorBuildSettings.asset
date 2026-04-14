@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MissionPicker.unity
     guid: b351274252206614a9ccf037ccbb1364
   - enabled: 1
-    path: Assets/Scenes/Story.unity
+    path: Assets/Scenes/Mission1.unity
     guid: 3ea02d8f710326047bad52c8aa4b7f3f
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: e57c49afcff4b0043b2b83c102dee820, type: 2}

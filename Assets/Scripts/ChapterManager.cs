@@ -56,7 +56,7 @@ public class ChapterManager : MonoBehaviour
         }
         
         void loadScene() {
-            SceneManager.LoadScene("Story");
+            SceneManager.LoadScene("Mission1");
         }
     }
 }
