@@ -55,6 +55,8 @@ public class SupabaseManager : MonoBehaviour
 
         if (student == null)
         {
+            textWrongPassword.gameObject.SetActive(true);
+            textWrongPassword.SetText("No Account with this ID is found.");
             Debug.Log("No student is found");
         } 
         else if (student.studentPassword == inputPassword)
@@ -65,6 +67,7 @@ public class SupabaseManager : MonoBehaviour
         else
         {
             textWrongPassword.gameObject.SetActive(true);
+            textWrongPassword.SetText("Incorrect Password. Please Try Again");
             Debug.Log("Wrong password");
         }
         

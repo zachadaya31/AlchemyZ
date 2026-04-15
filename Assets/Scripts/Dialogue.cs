@@ -8,9 +8,10 @@ using System;
 public class Dialogue : MonoBehaviour
 {
     public Transform characterAnchor;
+    public GameObject backgroundAnchor;
     public TextMeshProUGUI textName;
     public TextMeshProUGUI textComponent;
-    public Renderer backgroundImage;
+    public Sprite classroomPicture;
     public string[] lines;
     public float textSpeed;
 
@@ -34,6 +35,7 @@ public class Dialogue : MonoBehaviour
         }
         GameObject newActor = Instantiate(characterPrefab, characterAnchor);
         newActor.transform.localPosition = Vector3.zero;
+        backgroundAnchor.GetComponent<SpriteRenderer>().sprite = classroomPicture;
     }
 
     void startDialogue() { 
