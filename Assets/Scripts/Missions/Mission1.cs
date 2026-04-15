@@ -6,6 +6,7 @@ public class Mission1 : MonoBehaviour
     private int currentStep;
 
     public Dialogue dialogueScript;
+    public Animator fadeAnimator;
     public GameObject teacherPrefab;
     public GameObject scientistPrefab;
 
@@ -26,6 +27,7 @@ public class Mission1 : MonoBehaviour
         switch (currentStep) {
             // ----------------------- SCENE 1
             case 1: 
+                fadeAnimator.Play("Fadeout");
                 string[] lines = {
                     "Okay class, for the next question...",
                     "Bro who is that student, you...",
