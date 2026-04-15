@@ -1,46 +1,78 @@
 //using Unity.Android.Gradle;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Mission1 : MonoBehaviour
 {
-    private int currentStep;
+    private int currentScene = 0;
+    public static Mission1 Instance;
 
-    public Dialogue dialogueScript;
+    public Dialogue dialogueLoader;
     public Animator fadeAnimator;
     public GameObject teacherPrefab;
     public GameObject scientistPrefab;
 
+    [Header("Buttons")]
+    public GameObject buttonPrefab;
+    public Transform buttonsChoicesContainer;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
-        nextStep();
+        nextScene();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public void nextScene() {
+        currentScene++;
 
-    void nextStep() {
-        currentStep++;
-        switch (currentStep) {
-            // ----------------------- SCENE 1
-            case 1: 
-                fadeAnimator.Play("Fadeout");
-                string[] lines = {
-                    "Okay class, for the next question...",
-                    "Bro who is that student, you...",
-                    "Your mother's name is cristina reynosa right?"
-                };
-                dialogueScript.loadConversation("Teacher Mikko", teacherPrefab, lines);
-                break;
+        if (currentScene == 1)
+        {
+            fadeAnimator.Play("Fadeout");
+            string[] lines = {
+                "Okay class, for the next question",
+                "What forms when you mix Hydrogen and Oxygen?",
+                "How about you?"
+            };
+            dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
+        }
+        else if (currentScene == 2) 
+        {
+            fadeAnimator.Play("Fadein50");
 
-            // ----------------------- SCENE 2
-
-            default:
-                Debug.Log("Default");
-                break;
+            string[] choices = { "Water", "Fire", "Air"};
+            for (int i = 0; i < 3; i++)
+            {
+                Debug.LogWarning("Spawning Button: " + i);
+                GameObject buttonChoices = Instantiate(buttonPrefab, buttonsChoicesContainer);
+                buttonChoices.GetComponentInChildren<TMPro.TMP_Text>().text = choices[i];
+                string currentChoice = choices[i];
+                buttonChoices.GetComponent<Button>().onClick.AddListener( () => { choiceButtonClicked(currentChoice);} );
+            }
+            
+            void choiceButtonClicked(string choice)
+            {
+                string[] lines;
+                if (choice == "Water")
+                {
+                    lines = new string[]{ "Correct!", "Ow yeah" };
+                }
+                else
+                {
+                    lines = new string[] { "Wrong answer." };
+                }
+                Destroy(buttonsChoicesContainer.gameObject);
+                fadeAnimator.Play("Fadeout50");
+                dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
+            }
+        }
+        else
+        {
+            Debug.Log("End of mission 1");
         }
     }
 }
