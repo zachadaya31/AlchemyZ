@@ -18,6 +18,8 @@ public class Mission1 : MonoBehaviour
     public GameObject buttonPrefab;
     public Transform buttonsChoicesContainer;
     public TextMeshProUGUI questionPrefab;
+    public Button backButton;
+    public Button nextButton;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -32,6 +34,7 @@ public class Mission1 : MonoBehaviour
     public void nextScene() {
         currentScene++;
 
+        // SCENE 1 -----------------------------------------------------
         if (currentScene == 1)
         {
             fadeAnimator.Play("Fadeout");
@@ -42,9 +45,15 @@ public class Mission1 : MonoBehaviour
             };
             dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
         }
+        // --------------------------------------------------------------
+
+
+        // SCENE 2 --------------------------------------------------------
         else if (currentScene == 2) 
         {
             fadeAnimator.Play("Fadein50");
+            backButton.interactable = false;
+            nextButton.interactable = false;
 
             TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
             question.text = "What forms when you mix Hydrogen and Oxygen?";
@@ -61,6 +70,8 @@ public class Mission1 : MonoBehaviour
             
             void choiceButtonClicked(string choice)
             {
+                backButton.interactable = true;
+                nextButton.interactable = true;
                 string[] lines;
                 if (choice == "Water")
                 {
@@ -75,6 +86,7 @@ public class Mission1 : MonoBehaviour
                 dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
             }
         }
+        // --------------------------------------------------------------------------------
         else
         {
             Debug.Log("End of mission 1");

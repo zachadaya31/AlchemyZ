@@ -1096,6 +1096,9 @@ MonoBehaviour:
   scientistPrefab: {fileID: 0}
   buttonPrefab: {fileID: 7263211055850241331, guid: 87d1f06ba9c4f3344be68c61634c3c5d, type: 3}
   buttonsChoicesContainer: {fileID: 1799471182}
+  questionPrefab: {fileID: 3420989169544229265, guid: 0ead6524ba16188479debfdb7173d958, type: 3}
+  backButton: {fileID: 541795513}
+  nextButton: {fileID: 393405772}
 --- !u!1 &1031063627
 GameObject:
   m_ObjectHideFlags: 0
@@ -1411,7 +1414,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 4
+  m_ChildAlignment: 1
   m_Spacing: 100
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
@@ -1436,7 +1439,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -19, y: 167}
+  m_AnchoredPosition: {x: -19, y: 638}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1845812885
