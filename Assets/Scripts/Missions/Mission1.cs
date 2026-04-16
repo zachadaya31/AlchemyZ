@@ -1,4 +1,5 @@
 //using Unity.Android.Gradle;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,7 @@ public class Mission1 : MonoBehaviour
     [Header("Buttons")]
     public GameObject buttonPrefab;
     public Transform buttonsChoicesContainer;
+    public TextMeshProUGUI questionPrefab;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -44,7 +46,10 @@ public class Mission1 : MonoBehaviour
         {
             fadeAnimator.Play("Fadein50");
 
-            string[] choices = { "Water", "Fire", "Air"};
+            TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
+            question.text = "What forms when you mix Hydrogen and Oxygen?";
+
+            string[] choices = { "Water", "Fire", "Air" };
             for (int i = 0; i < 3; i++)
             {
                 Debug.LogWarning("Spawning Button: " + i);
