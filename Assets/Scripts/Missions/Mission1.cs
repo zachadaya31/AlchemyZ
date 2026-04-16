@@ -12,6 +12,7 @@ public class Mission1 : MonoBehaviour
     public Dialogue dialogueLoader;
     public Animator fadeAnimator;
     public GameObject teacherPrefab;
+    public Animator teacherAnimations;
     public GameObject scientistPrefab;
 
     [Header("Buttons")]
@@ -20,6 +21,7 @@ public class Mission1 : MonoBehaviour
     public TextMeshProUGUI questionPrefab;
     public Button backButton;
     public Button nextButton;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -38,12 +40,16 @@ public class Mission1 : MonoBehaviour
         if (currentScene == 1)
         {
             fadeAnimator.Play("Fadeout");
+            
             string[] lines = {
                 "Okay class, for the next question",
                 "What forms when you mix Hydrogen and Oxygen?",
                 "How about you?"
             };
             dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
+            teacherAnimations = GameObject.Find("Teacher(Clone)").GetComponent<Animator>();
+            teacherAnimations.SetTrigger("Speaks");
+            teacherAnimations.SetTrigger("Breathes");
         }
         // --------------------------------------------------------------
 
