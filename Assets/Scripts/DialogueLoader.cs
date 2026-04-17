@@ -21,17 +21,18 @@ public class Dialogue : MonoBehaviour
     private string[] currentLines;
     private int index;
 
-    public void loadDialogue(string name, GameObject characterPrefab, string[] lines) { 
+    public GameObject loadDialogue(string name, GameObject characterPrefab, string[] lines) { 
         textName.text = name;
         currentLines = lines; // ARRAY TO
         index = 0; // INDEX NUNG LINES
 
         foreach (Transform child in characterAnchor) Destroy(child.gameObject);
-        Instantiate(characterPrefab, characterAnchor);
+        GameObject currentCharacter = Instantiate(characterPrefab, characterAnchor);
 
         backgroundAnchor.sprite = classroomPicture;
 
         showLine();
+        return currentCharacter;
     }
 
     public void showLine() {

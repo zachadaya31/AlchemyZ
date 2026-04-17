@@ -1062,7 +1062,7 @@ MonoBehaviour:
   dialogueLoader: {fileID: 1031063631}
   fadeAnimator: {fileID: 389465236}
   teacherPrefab: {fileID: 3603232998508573571, guid: f3ab4d3091a97a342b47b57095d9ee13, type: 3}
-  teacherAnimations: {fileID: 4727798829397262344, guid: f3ab4d3091a97a342b47b57095d9ee13, type: 3}
+  teacherAnimations: {fileID: 0}
   scientistPrefab: {fileID: 0}
   buttonPrefab: {fileID: 7263211055850241331, guid: 87d1f06ba9c4f3344be68c61634c3c5d, type: 3}
   buttonsChoicesContainer: {fileID: 1799471182}

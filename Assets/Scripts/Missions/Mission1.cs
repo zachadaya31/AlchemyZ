@@ -46,10 +46,9 @@ public class Mission1 : MonoBehaviour
                 "What forms when you mix Hydrogen and Oxygen?",
                 "How about you?"
             };
-            dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
-            teacherAnimations = GameObject.Find("Teacher(Clone)").GetComponent<Animator>();
+            GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
+            teacherAnimations = currentTeacher.GetComponent<Animator>();
             teacherAnimations.SetTrigger("Speaks");
-            teacherAnimations.SetTrigger("Breathes");
         }
         // --------------------------------------------------------------
 
@@ -87,9 +86,12 @@ public class Mission1 : MonoBehaviour
                 {
                     lines = new string[] { "Wrong answer." };
                 }
+
                 Destroy(buttonsChoicesContainer.gameObject);
                 fadeAnimator.Play("Fadeout50");
-                dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
+                GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
+                teacherAnimations = currentTeacher.GetComponent<Animator>();
+                teacherAnimations.SetTrigger("Speaks");
             }
         }
         // --------------------------------------------------------------------------------
