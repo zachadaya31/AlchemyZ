@@ -64,8 +64,6 @@ public class Dialogue : MonoBehaviour
         {
             Mission1.Instance.nextScene();
         }
-        Debug.Log("Index: "+index);
-        Debug.Log("Current Lines Length: " + currentLines.Length);
     }
     public void backLine() {
         if (textDialogue.text != currentLines[index])
