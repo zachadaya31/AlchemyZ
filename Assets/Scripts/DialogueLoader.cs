@@ -18,8 +18,13 @@ public class Dialogue : MonoBehaviour
     [Header("Backgrounds")]
     public Sprite classroomPicture;
 
+    [Header("Dialogue")]
+    public float lineSpeed;
+
     private string[] currentLines;
     private int index;
+
+    public SoundManager soundManager;
 
     public GameObject loadDialogue(string name, GameObject characterPrefab, string[] lines) { 
         textName.text = name;
@@ -44,12 +49,16 @@ public class Dialogue : MonoBehaviour
     {
         textDialogue.text = "";
         foreach (char c in lineToType) {
+            soundManager.playSoundDialogueLine();
+
             textDialogue.text = textDialogue.text + c;
-            yield return new WaitForSeconds(0.1f);
+
+            yield return new WaitForSeconds(lineSpeed);
         }
     }
 
     public void nextLine() {
+        soundManager.playSoundNextButton();
         if (textDialogue.text != currentLines[index])
         {
             StopAllCoroutines();
@@ -66,6 +75,7 @@ public class Dialogue : MonoBehaviour
         }
     }
     public void backLine() {
+        soundManager.playSoundBackButton();
         if (textDialogue.text != currentLines[index])
         {
             StopAllCoroutines();

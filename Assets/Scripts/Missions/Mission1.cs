@@ -1,4 +1,5 @@
 //using Unity.Android.Gradle;
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,11 +10,16 @@ public class Mission1 : MonoBehaviour
     private int currentScene = 0;
     public static Mission1 Instance;
 
+    public SoundManager soundManager;
+
     public Dialogue dialogueLoader;
     public Animator fadeAnimator;
     public GameObject teacherPrefab;
-    public Animator teacherAnimations;
     public GameObject scientistPrefab;
+
+    [Header("Called on Runtime")]
+    public Animator teacherAnimations;
+    
 
     [Header("Buttons")]
     public GameObject buttonPrefab;
@@ -21,6 +27,10 @@ public class Mission1 : MonoBehaviour
     public TextMeshProUGUI questionPrefab;
     public Button backButton;
     public Button nextButton;
+    public GameObject fullscreenButtonPrefab;
+
+    [Header("Canvas")]
+    public Transform canvasContainer;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -40,7 +50,7 @@ public class Mission1 : MonoBehaviour
         if (currentScene == 1)
         {
             fadeAnimator.Play("Fadeout");
-            
+
             string[] lines = {
                 "Okay class, for the last question",
                 "What forms when you mix Hydrogen and Oxygen?",
@@ -51,11 +61,14 @@ public class Mission1 : MonoBehaviour
             teacherAnimations.SetTrigger("Speaks");
         }
         // --------------------------------------------------------------
+        // --------------------------------------------------------------
+        // --------------------------------------------------------------
+        // --------------------------------------------------------------
 
 
 
         // SCENE 2 --------------------------------------------------------
-        else if (currentScene == 2) 
+        else if (currentScene == 2)
         {
             fadeAnimator.Play("Fadein50");
             backButton.interactable = false;
@@ -67,13 +80,12 @@ public class Mission1 : MonoBehaviour
             string[] choices = { "Water", "Rubber", "Iron" };
             for (int i = 0; i < 3; i++)
             {
-                Debug.Log("Spawning Button: " + i);
                 GameObject buttonChoices = Instantiate(buttonPrefab, buttonsChoicesContainer);
                 buttonChoices.GetComponentInChildren<TMPro.TMP_Text>().text = choices[i];
                 string currentChoice = choices[i];
-                buttonChoices.GetComponent<Button>().onClick.AddListener( () => { choiceButtonClicked(currentChoice);} );
+                buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
             }
-            
+
             void choiceButtonClicked(string choice)
             {
                 backButton.interactable = true;
@@ -83,20 +95,25 @@ public class Mission1 : MonoBehaviour
                 {
                     lines = new string[] {
                     "Correct!",
-                    "When you mix 2 Hydrogen molecules and 1 Hydrogen molecule...",
-                    "You get... well, Water!"
+                    "When you mix 2 Hydrogen molecules and 1 Oxygen molecule...",
+                    "You get... well, Water!",
+                    "That's it for today's class. Goodbye Class!"
                     };
                 }
                 else
                 {
                     lines = new string[] {
                     "Nice try! But unfortunately your answer is wrong!",
-                    "When you mix 2 Hydrogen molecules and 1 Hydrogen molecule...",
-                    "You get... well, Water!"
+                    "When you mix 2 Hydrogen molecules and 1 Oxygen molecule...",
+                    "You get... well, Water!",
+                    "That's it for today's class. Goodbye Class!"
                     };
                 }
 
-                Destroy(buttonsChoicesContainer.gameObject);
+                foreach (Transform child in buttonsChoicesContainer)
+                {
+                    Destroy(child.gameObject);
+                }
                 fadeAnimator.Play("Fadeout50");
                 GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
                 teacherAnimations = currentTeacher.GetComponent<Animator>();
@@ -104,6 +121,58 @@ public class Mission1 : MonoBehaviour
             }
         }
         // --------------------------------------------------------------------------------
+        // --------------------------------------------------------------
+        // --------------------------------------------------------------
+        // --------------------------------------------------------------
+
+
+        // SCENE 3-------------------------------------------------------------------------
+        else if (currentScene == 3)
+        {
+            fadeAnimator.Play("Fadein");
+            StartCoroutine(textFade());
+
+            IEnumerator textFade()
+            {
+                soundManager.playTextSound();
+                yield return new WaitForSeconds(0.5f);
+                soundManager.playTextSound();
+                yield return new WaitForSeconds(0.5f);
+                soundManager.playTextSound();
+                yield return new WaitForSeconds(0.5f);
+                soundManager.playTextSound();
+                yield return new WaitForSeconds(0.5f);
+
+                TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
+                Animator textAnimations = question.gameObject.GetComponent<Animator>();
+                question.text = "As your class ends, Professor Wally texted you to immediately come to the laboratory...";
+                textAnimations.Play("TextFadeinNew");
+
+                yield return new WaitForSeconds(3);
+
+                TextMeshProUGUI continueText = Instantiate(questionPrefab, buttonsChoicesContainer);
+                Animator textAnimations2 = continueText.gameObject.GetComponent<Animator>();
+                continueText.text = "\n\nPress the screen to continue...";
+                continueText.fontSize = 50;
+                textAnimations2.Play("TextFadeinNew");
+
+            }
+
+            GameObject fullscreenButton = Instantiate(fullscreenButtonPrefab, canvasContainer);
+            Button btnFs = fullscreenButton.GetComponent<Button>();
+            btnFs.onClick.AddListener(() => { nextScene(); });
+        }
+
+        // ---------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------
+        // --------------------------------------------------------------
+        // --------------------------------------------------------------
+        // --------------------------------------------------------------
+
+        // SCENE 4 ---------------------------------------------------------------------------
+        else if (currentScene == 4) { 
+            
+        }
         else
         {
             Debug.Log("End of mission 1");
