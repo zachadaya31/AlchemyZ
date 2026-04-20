@@ -1,6 +1,7 @@
 //using Unity.Android.Gradle;
 using System.Collections;
 using TMPro;
+using Unity.Android.Gradle;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -156,11 +157,13 @@ public class Mission1 : MonoBehaviour
                 continueText.fontSize = 50;
                 textAnimations2.Play("TextFadeinNew");
 
-            }
+                yield return new WaitForSeconds(1);
 
-            GameObject fullscreenButton = Instantiate(fullscreenButtonPrefab, canvasContainer);
-            Button btnFs = fullscreenButton.GetComponent<Button>();
-            btnFs.onClick.AddListener(() => { nextScene(); });
+                GameObject fullscreenButton = Instantiate(fullscreenButtonPrefab, canvasContainer);
+                Button btnFs = fullscreenButton.GetComponent<Button>();
+                btnFs.onClick.AddListener(() => { nextScene(); Destroy(fullscreenButton); } );
+            }
+            
         }
 
         // ---------------------------------------------------------------------------------
@@ -170,8 +173,20 @@ public class Mission1 : MonoBehaviour
         // --------------------------------------------------------------
 
         // SCENE 4 ---------------------------------------------------------------------------
-        else if (currentScene == 4) { 
-            
+        else if (currentScene == 4)
+        {
+            foreach (Transform child in buttonsChoicesContainer) {
+                Destroy(child.gameObject);
+            }
+
+            fadeAnimator.Play("Fadeout");
+
+            string[] lines = {
+                "My apprentice!",
+                "Come! I must show you something!",
+                "Reyus"
+            };
+            GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Wally", scientistPrefab, lines);
         }
         else
         {
