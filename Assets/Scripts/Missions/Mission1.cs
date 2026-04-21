@@ -45,6 +45,15 @@ public class Mission1 : MonoBehaviour
     }
 
     public void nextScene() {
+        IEnumerator waitScene()
+        {
+            nextButton.interactable = false;
+            backButton.interactable = false;
+            yield return new WaitForSeconds(1.5f);
+            nextButton.interactable = true;
+            backButton.interactable = true;
+        }
+        StartCoroutine(waitScene());
         currentScene++;
 
         // SCENE 1 -----------------------------------------------------
@@ -98,7 +107,7 @@ public class Mission1 : MonoBehaviour
                     "Correct!",
                     "When you mix 2 Hydrogen molecules and 1 Oxygen molecule...",
                     "You get... well, Water!",
-                    "That's it for today's class. Goodbye Class!"
+                    "That's all for today's class. Goodbye Everyone!"
                     };
                 }
                 else
@@ -107,7 +116,7 @@ public class Mission1 : MonoBehaviour
                     "Nice try! But unfortunately your answer is wrong!",
                     "When you mix 2 Hydrogen molecules and 1 Oxygen molecule...",
                     "You get... well, Water!",
-                    "That's it for today's class. Goodbye Class!"
+                    "That's all for today's class. Goodbye Everyone!"
                     };
                 }
 
@@ -130,6 +139,8 @@ public class Mission1 : MonoBehaviour
         // SCENE 3-------------------------------------------------------------------------
         else if (currentScene == 3)
         {
+            nextButton.enabled = false;
+            backButton.enabled = false;
             fadeAnimator.Play("Fadein");
             StartCoroutine(textFade());
 
@@ -161,7 +172,7 @@ public class Mission1 : MonoBehaviour
 
                 GameObject fullscreenButton = Instantiate(fullscreenButtonPrefab, canvasContainer);
                 Button btnFs = fullscreenButton.GetComponent<Button>();
-                btnFs.onClick.AddListener(() => { nextScene(); Destroy(fullscreenButton); } );
+                btnFs.onClick.AddListener(() => { nextScene(); Destroy(fullscreenButton); nextButton.enabled = true; backButton.enabled = true; } );
             }
             
         }
@@ -184,7 +195,8 @@ public class Mission1 : MonoBehaviour
             string[] lines = {
                 "My apprentice!",
                 "Come! I must show you something!",
-                "Reyus"
+                "I've already finished the `Prototype` !!!",
+                "Quick, look around and grab it for me!"
             };
             GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Wally", scientistPrefab, lines);
         }
