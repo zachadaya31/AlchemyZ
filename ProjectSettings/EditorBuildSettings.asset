@@ -8,18 +8,24 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Login.unity
     guid: ba05edd179f5ea3468c1ed3085de51dd
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: f80e39aaec8eb3747ab6eb23834a2fa7
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MissionPicker.unity
     guid: b351274252206614a9ccf037ccbb1364
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Mission1.unity
     guid: 3ea02d8f710326047bad52c8aa4b7f3f
+  - enabled: 1
+    path: Assets/Scenes/AR.unity
+    guid: b3a716d4caf4ebf4a97b5a8b43c60f94
+  - enabled: 0
+    path: Assets/Scenes/Account.unity
+    guid: 30f4d38f1cfd6ec4bb4b3be61961a91a
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: e57c49afcff4b0043b2b83c102dee820, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: e5d0dcaa2ad374445a71042e8200b068, type: 2}
