@@ -1,29 +1,34 @@
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
-using System.Collections.Generic;
 
-public class TapToPlace : MonoBehaviour
+public class SpawnOnFirstPlane : MonoBehaviour
 {
-    public GameObject objectToPlace;
-    ARRaycastManager raycastManager;
-    static List<ARRaycastHit> hits = new List<ARRaycastHit>();
+    public ARPlaneManager planeManager;
+    public GameObject objectPrefab;
+    public Transform anchorElementer;
 
-    void Awake()
+    private bool hasSpawned = false;
+    private void Start()
     {
-        raycastManager = GetComponent<ARRaycastManager>();
+        planeManager.requestedDetectionMode = PlaneDetectionMode.Horizontal;
     }
-
     void Update()
     {
-        if (Input.touchCount == 0) return;
-
-        Touch touch = Input.GetTouch(0);
-
-        if (raycastManager.Raycast(touch.position, hits, TrackableType.PlaneWithinPolygon))
+        if (!hasSpawned)
         {
-            Pose hitPose = hits[0].pose;
-            Instantiate(objectToPlace, hitPose.position, hitPose.rotation);
+            foreach (var plane in planeManager.trackables)
+            {
+                // First detected plane
+                hasSpawned = true;
+
+                Vector3 spawnPos = plane.transform.position;
+                Instantiate(objectPrefab, spawnPos, objectPrefab.transform.rotation);
+
+                Debug.Log("Spawned object on first detected plane (Unity 6)");
+                break;
+            }
         }
     }
+
 }
