@@ -1,7 +1,10 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    public static SoundManager Instance;
+
     [Header("BUTTON SOUNDS")]
     public AudioSource nextButtonSound;
     public AudioSource backButtonSound;
@@ -16,7 +19,15 @@ public class SoundManager : MonoBehaviour
     [Header("Text Sound")]
     public AudioSource textSound;
 
+    [Header("Elementer")]
+    public AudioClip elementerPress;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
         
@@ -50,5 +61,9 @@ public class SoundManager : MonoBehaviour
 
     public void playTextSound() {
         textSound.Play();
+    }
+
+    public void playElementerPress() {
+        AudioSource.PlayClipAtPoint(elementerPress, Vector3.zero);
     }
 }

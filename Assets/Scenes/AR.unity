@@ -297,7 +297,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 508482831}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &508482837
 Camera:
   m_ObjectHideFlags: 0
@@ -524,7 +524,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TapToPlace
   planeManager: {fileID: 1137120168}
-  objectPrefab: {fileID: 4692126221442148055, guid: 142a9bd838a53a947a3d5597ae7bf1d6, type: 3}
+  objectPrefab: {fileID: 535171678695285460, guid: 35d61489cf95cac47a73f720810d4963, type: 3}
   anchorElementer: {fileID: 0}
 --- !u!1 &1664647370
 GameObject:

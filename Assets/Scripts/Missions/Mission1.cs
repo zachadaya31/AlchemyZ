@@ -4,11 +4,12 @@ using TMPro;
 //using Unity.Android.Gradle;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Mission1 : MonoBehaviour
 {
-    private int currentScene = 0;
+    public int currentScene = 0;
     public static Mission1 Instance;
 
     public SoundManager soundManager;
@@ -32,7 +33,7 @@ public class Mission1 : MonoBehaviour
 
     [Header("Canvas")]
     public Transform canvasContainer;
-
+    public GameObject dialogueObject;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -172,9 +173,9 @@ public class Mission1 : MonoBehaviour
 
                 GameObject fullscreenButton = Instantiate(fullscreenButtonPrefab, canvasContainer);
                 Button btnFs = fullscreenButton.GetComponent<Button>();
-                btnFs.onClick.AddListener(() => { nextScene(); Destroy(fullscreenButton); nextButton.enabled = true; backButton.enabled = true; } );
+                btnFs.onClick.AddListener(() => { nextScene(); Destroy(fullscreenButton); nextButton.enabled = true; backButton.enabled = true; });
             }
-            
+
         }
 
         // ---------------------------------------------------------------------------------
@@ -200,6 +201,32 @@ public class Mission1 : MonoBehaviour
             };
             GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Wally", scientistPrefab, lines);
         }
+
+        //--------------------------
+        // SCENE 5 - Elementer AR load
+        //--------------------------
+
+        else if (currentScene == 5) {
+            dialogueObject.SetActive(false);
+            SceneManager.LoadScene("AR", LoadSceneMode.Additive);
+        }
+
+        //--------------------------
+        // SCENE 6 - Picked up Elementer
+        //--------------------------
+
+        else if (currentScene == 6) {
+            SoundManager.Instance.playElementerPress();
+            dialogueObject.SetActive(true);
+
+            fadeAnimator.Play("Fadeout");
+
+            string[] lines = {
+                "Great! that is the Elementer!"
+            };
+            GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Wally", scientistPrefab, lines);
+        }
+
         else
         {
             Debug.Log("End of mission 1");
