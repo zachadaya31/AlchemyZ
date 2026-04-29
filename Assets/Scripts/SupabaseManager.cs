@@ -14,17 +14,29 @@ using UnityEngine.UI;
 
 
 // TABLE NG SQL TO
-[Table("StudentAccount")]
-public class StudentAccount : BaseModel
+[Table("Students")]
+public class Students : BaseModel
 {
     [PrimaryKey("studentID")]
-    public string studentID {get; set;}
+    public int studentID {get; set;}
     public string studentFirstName {get; set;}
     public string studentLastName { get; set; }
-    public string studentSection {get; set;}
     public string studentPassword {get; set;}
-    
+    public int sectionID {get; set;}
+    public int createdByTeacherID{get; set;}
+    public DateTime dateCreated{get; set;}
 }
+
+[Table("Sections")]
+public class Sections : BaseModel
+{
+    [PrimaryKey("sectionID")]
+    public int sectionID{get; set;}
+    public string sectionName{get; set;}
+    public int teacherID{get;set;}
+    public DateTime sectionDateCreated{get;set;}
+}
+
 
 public class SupabaseManager : MonoBehaviour
 {
@@ -42,13 +54,25 @@ public class SupabaseManager : MonoBehaviour
 
     public void loginButton()
     {
-        attemptLogin(userInputID.text.Trim(), userInputPassword.text.Trim());
+        try
+        {
+            attemptLogin(userInputID.text.Trim(), userInputPassword.text.Trim());
+            Debug.Log(userInputID.text.Trim());
+        }
+        catch (FormatException)
+        {
+            Debug.LogError("INT DAPAT HOY");
+        }
     }
 
     public async void attemptLogin(string inputID, string inputPassword)
     {
-        var response = await supabase.From<StudentAccount>()
-        .Where(x => x.studentID == inputID)
+        //text kasi yung kinukuha ng unity sa inputID
+        //kaya convert muna into string para cutie pie langgg
+        int inputIDtoInt = int.Parse(inputID);
+
+        var response = await supabase.From<Students>()
+        .Where(x => x.studentID == inputIDtoInt)
         .Get();
 
         var student = response.Models.FirstOrDefault();

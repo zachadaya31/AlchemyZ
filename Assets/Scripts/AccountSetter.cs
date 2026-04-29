@@ -10,9 +10,11 @@ public class AccountSetter : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        tmpStudentID.SetText(UserSession.Instance.currentUser.studentID);
-        tmpStudentSection.SetText(UserSession.Instance.currentUser.studentSection);
+        tmpStudentID.SetText(UserSession.Instance.currentUser.studentID.ToString());
         string studentFullName = (UserSession.Instance.currentUser.studentFirstName+" "+UserSession.Instance.currentUser.studentLastName);
+
+        
+        tmpStudentSection.SetText(UserSession.Instance.currentUser.sectionID.ToString());
         tmpStudentName.SetText(studentFullName);
     }
 

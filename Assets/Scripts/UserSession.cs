@@ -3,7 +3,7 @@ using UnityEngine;
 public class UserSession : MonoBehaviour
 {
     public static UserSession Instance {get; set;}
-    public StudentAccount currentUser;
+    public Students currentUser;
 
     private void Awake()
     {
