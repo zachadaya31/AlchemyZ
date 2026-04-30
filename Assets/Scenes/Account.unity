@@ -406,7 +406,7 @@ GameObject:
   - component: {fileID: 315276735}
   - component: {fileID: 315276734}
   m_Layer: 0
-  m_Name: Button - Login
+  m_Name: Button - Logout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1490,50 +1490,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &1183293767
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1183293769}
-  - component: {fileID: 1183293768}
-  m_Layer: 0
-  m_Name: SessionManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1183293768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1183293767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d2e9f42329519744afbb8d987f79b1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UserSession
---- !u!4 &1183293769
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1183293767}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 641.6608, y: 1289.2222, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1187806479
 GameObject:
   m_ObjectHideFlags: 0
@@ -1808,53 +1764,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1205418575}
   m_CullTransparentMesh: 1
---- !u!1 &1247853806
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1247853807}
-  - component: {fileID: 1247853808}
-  m_Layer: 0
-  m_Name: SupabaseManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1247853807
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1247853806}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.05233, y: 1.43498, z: 1.12}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1247853808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1247853806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a33100e70ec7e0a4f9aaf9c128844da4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SupabaseManager
-  userInputID: {fileID: 0}
-  userInputPassword: {fileID: 0}
-  textWrongPassword: {fileID: 0}
 --- !u!1 &1362012188
 GameObject:
   m_ObjectHideFlags: 0
@@ -2055,9 +1964,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b97b254b8b60ae34fbe16fd9f6830763, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  tmpStudentID: {fileID: 2123155288}
-  tmpStudentSection: {fileID: 844248080}
-  tmpStudentName: {fileID: 1187806481}
+  placeholderStudentID: {fileID: 2123155288}
+  placeholderStudentSection: {fileID: 844248080}
+  placeholderStudentName: {fileID: 1187806481}
 --- !u!1 &2002531440
 GameObject:
   m_ObjectHideFlags: 0
@@ -2336,8 +2245,6 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1247853807}
-  - {fileID: 1183293769}
   - {fileID: 1652121594}
   - {fileID: 262035496}
   - {fileID: 1156717042}

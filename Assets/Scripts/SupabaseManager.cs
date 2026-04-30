@@ -1,113 +1,67 @@
 using UnityEngine;
 using Supabase;
-using Postgrest.Models;
-using System.Linq;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
-using UnityEngine.UIElements;
-using TMPro;
 using System;
 using Postgrest.Attributes;
-using Unity.VisualScripting;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using Postgrest.Models;
 
 
-// TABLE NG SQL TO
+public class SupabaseManager : MonoBehaviour
+{
+    private string url = "https://uhyxunjlxbgcagasgzde.supabase.co";
+    private string key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoeXh1bmpseGJnY2FnYXNnemRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4NDE5MjMsImV4cCI6MjA5MTQxNzkyM30.PyC8KZ1RQ4BVKTHJDy2HWQlmoXifQgbaSwxqB8m86yQ";
+
+    public Client supabase;
+    public static SupabaseManager Instance;
+    // SupabaseManager.Instance.supabase
+    // YAN EENETER SA LAHAT NG POSTRESQL STATEMENTS
+
+    async void Awake()
+    {
+        Instance = this;
+        supabase = new Client(url, key);
+        await supabase.InitializeAsync();
+        Debug.Log("Supabase connected!");
+    }
+}
+
 [Table("Students")]
 public class Students : BaseModel
 {
     [PrimaryKey("studentID")]
-    public int studentID {get; set;}
-    public string studentFirstName {get; set;}
-    public string studentLastName { get; set; }
-    public string studentPassword {get; set;}
-    public int sectionID {get; set;}
-    public int createdByTeacherID{get; set;}
-    public DateTime dateCreated{get; set;}
+    public int studentID{get;set;}
+
+    [Column("studentFirstName")]
+    public string studentFirstName{get;set;}
+
+    [Column("studentLastName")]
+    public string studentLastName{get;set;}
+
+    [Column("studentPassword")]
+    public string studentPassword{get;set;}
+
+    [Column("sectionID")]
+    public int sectionID{get;set;}
+
+    [Column("createdByTeacherID")]
+    public int createdByTeacherID{get;set;}
+
+    [Column("dateCreated")]
+    public DateTime dateCreated{get;set;}
 }
 
 [Table("Sections")]
 public class Sections : BaseModel
 {
     [PrimaryKey("sectionID")]
-    public int sectionID{get; set;}
-    public string sectionName{get; set;}
+    public int sectionID{get;set;}
+
+    [Column("sectionName")]
+    public string sectionName{get;set;}
+
+    [Column("teacherID")]
     public int teacherID{get;set;}
+
+    [Column("sectionDateCreated")]
     public DateTime sectionDateCreated{get;set;}
 }
 
-
-public class SupabaseManager : MonoBehaviour
-{
-    private string url = "https://uhyxunjlxbgcagasgzde.supabase.co";
-    private string key ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoeXh1bmpseGJnY2FnYXNnemRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4NDE5MjMsImV4cCI6MjA5MTQxNzkyM30.PyC8KZ1RQ4BVKTHJDy2HWQlmoXifQgbaSwxqB8m86yQ";
-    private Client supabase;
-    public TMP_InputField userInputID;
-    public TMP_InputField userInputPassword;
-    public TextMeshProUGUI textWrongPassword;
-
-    void Awake()
-    {
-        supabase = new Client(url, key);
-    }
-
-    public void loginButton()
-    {
-        try
-        {
-            attemptLogin(userInputID.text.Trim(), userInputPassword.text.Trim());
-            Debug.Log(userInputID.text.Trim());
-        }
-        catch (FormatException)
-        {
-            Debug.LogError("INT DAPAT HOY");
-        }
-    }
-
-    public async void attemptLogin(string inputID, string inputPassword)
-    {
-        //text kasi yung kinukuha ng unity sa inputID
-        //kaya convert muna into string para cutie pie langgg
-        int inputIDtoInt = int.Parse(inputID);
-
-        var response = await supabase.From<Students>()
-        .Where(x => x.studentID == inputIDtoInt)
-        .Get();
-
-        var student = response.Models.FirstOrDefault();
-
-        if (student == null)
-        {
-            textWrongPassword.gameObject.SetActive(true);
-            textWrongPassword.SetText("No Account with this ID is found.");
-            Debug.Log("No student is found");
-        } 
-        else if (student.studentPassword == inputPassword)
-        {
-            UserSession.Instance.currentUser = student;
-            SceneManager.LoadScene("MainMenu");
-        }
-        else
-        {
-            textWrongPassword.gameObject.SetActive(true);
-            textWrongPassword.SetText("Incorrect Password. Please Try Again");
-            Debug.Log("Wrong password");
-        }
-        
-
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-}

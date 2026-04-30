@@ -3,19 +3,16 @@ using UnityEngine;
 
 public class AccountSetter : MonoBehaviour
 {
-    public TextMeshProUGUI tmpStudentID;
-    public TextMeshProUGUI tmpStudentSection;
-    public TextMeshProUGUI tmpStudentName;
-
+    public TextMeshProUGUI placeholderStudentID;
+    public TextMeshProUGUI placeholderStudentSection;
+    public TextMeshProUGUI placeholderStudentName;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        tmpStudentID.SetText(UserSession.Instance.currentUser.studentID.ToString());
-        string studentFullName = (UserSession.Instance.currentUser.studentFirstName+" "+UserSession.Instance.currentUser.studentLastName);
-
+        placeholderStudentID.SetText(SessionManager.Instance.studentID.ToString());
+        placeholderStudentSection.SetText(SessionManager.Instance.sectionName);
+        placeholderStudentName.SetText(SessionManager.Instance.studentFirstName+" "+SessionManager.Instance.studentLastName);
         
-        tmpStudentSection.SetText(UserSession.Instance.currentUser.sectionID.ToString());
-        tmpStudentName.SetText(studentFullName);
     }
 
     // Update is called once per frame
