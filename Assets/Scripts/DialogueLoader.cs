@@ -24,8 +24,6 @@ public class Dialogue : MonoBehaviour
     private string[] currentLines;
     private int index;
 
-    public SoundManager soundManager;
-
     public GameObject loadDialogue(string name, GameObject characterPrefab, string[] lines) { 
         textName.text = name;
         currentLines = lines; // ARRAY TO
@@ -49,16 +47,20 @@ public class Dialogue : MonoBehaviour
     {
         textDialogue.text = "";
         foreach (char c in lineToType) {
-            soundManager.playSoundDialogueLine();
 
+            SoundManager.Instance.playSoundDialogueSpeak();
+            
             textDialogue.text = textDialogue.text + c;
 
             yield return new WaitForSeconds(lineSpeed);
         }
     }
 
+    // method connected to button na magsasabing nextLine na oyy
     public void nextLine() {
-        soundManager.playSoundNextButton();
+
+        SoundManager.Instance.playSoundButtonPress();
+        
         if (textDialogue.text != currentLines[index])
         {
             StopAllCoroutines();
@@ -74,8 +76,13 @@ public class Dialogue : MonoBehaviour
             Mission1.Instance.nextScene();
         }
     }
+
+    // method connected to button na magsasabing backLine na oyy
     public void backLine() {
-        soundManager.playSoundBackButton();
+
+        SoundManager.Instance.playSoundButtonPress();
+
+
         if (textDialogue.text != currentLines[index])
         {
             StopAllCoroutines();

@@ -1,33 +1,37 @@
-using Unity.VisualScripting;
 using UnityEngine;
+using System;
 
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
 
-    [Header("BUTTON SOUNDS")]
-    public AudioSource nextButtonSound;
-    public AudioSource backButtonSound;
+    [Header("Audio Source")]
+    public AudioSource audioSourceButton;
+    public AudioSource audioSourceSpeak;
 
-    [Header("DIALOGUE SOUNDS")]
-    public AudioSource dialogueLineSound;
-    public AudioClip dialogueLineClip;
-    public float minPitch = 0.9f;
-    public float maxPitch = 1.1f;
-    public float maxVolume;
+    [Header("Button Sounds")]
+    public AudioClip soundButtonPress;
 
-    [Header("Text Sound")]
-    public AudioSource textSound;
+    [Header("Dialogue Sounds")]
+    public AudioClip soundDialoueSpeak;
 
-    [Header("Elementer")]
-    public AudioClip elementerPress;
+    System.Random rdm = new System.Random();
+
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        } 
+        else
+        {
+            Destroy(gameObject);
+        } 
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-
-    private void Awake()
-    {
-        Instance = this;
-    }
     void Start()
     {
         
@@ -39,31 +43,16 @@ public class SoundManager : MonoBehaviour
         
     }
 
-    public void playSoundNextButton() 
-    { 
-        nextButtonSound.Play();
-    }
-    public void playSoundBackButton()
+    public void playSoundButtonPress()
     {
-        backButtonSound.Play();
+        audioSourceButton.PlayOneShot(soundButtonPress);
     }
 
+    public void playSoundDialogueSpeak()
+    {
+        float randomPitch = rdm.Next(3,4);
+        audioSourceSpeak.pitch = randomPitch;
 
-    public void playSoundDialogueLine() 
-    { 
-        float randomPitch = Random.Range(minPitch, maxPitch);
-        dialogueLineSound.pitch = randomPitch;
-        
-        float randomVolume = Random.Range(maxVolume-0.05f, maxVolume);
-
-        dialogueLineSound.PlayOneShot(dialogueLineClip, randomVolume);
-    }
-
-    public void playTextSound() {
-        textSound.Play();
-    }
-
-    public void playElementerPress() {
-        AudioSource.PlayClipAtPoint(elementerPress, Vector3.zero);
+        audioSourceSpeak.PlayOneShot(soundDialoueSpeak);
     }
 }

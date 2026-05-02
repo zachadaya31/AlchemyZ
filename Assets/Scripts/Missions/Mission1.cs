@@ -9,10 +9,8 @@ using UnityEngine.UI;
 
 public class Mission1 : MonoBehaviour
 {
-    public int currentScene = 0;
-    public static Mission1 Instance;
-
-    public SoundManager soundManager;
+    public int currentScene = 0; // kung pang ilang scene na ang isang mission
+    public static Mission1 Instance; // instance ng mission1 para ma access ng ibang class yung nextScene() method
 
     public Dialogue dialogueLoader;
     public Animator fadeAnimator;
@@ -23,7 +21,7 @@ public class Mission1 : MonoBehaviour
     public Animator teacherAnimations;
     
 
-    [Header("Buttons")]
+    [Header("Buttons Funcationality")]
     public GameObject buttonPrefab;
     public Transform buttonsChoicesContainer;
     public TextMeshProUGUI questionPrefab;
@@ -54,12 +52,12 @@ public class Mission1 : MonoBehaviour
             nextButton.interactable = true;
             backButton.interactable = true;
         }
-        StartCoroutine(waitScene());
         currentScene++;
 
         // SCENE 1 -----------------------------------------------------
         if (currentScene == 1)
         {
+            StartCoroutine(waitScene());
             fadeAnimator.Play("Fadeout");
 
             string[] lines = {
@@ -72,9 +70,7 @@ public class Mission1 : MonoBehaviour
             teacherAnimations.SetTrigger("Speaks");
         }
         // --------------------------------------------------------------
-        // --------------------------------------------------------------
-        // --------------------------------------------------------------
-        // --------------------------------------------------------------
+
 
 
 
@@ -132,9 +128,8 @@ public class Mission1 : MonoBehaviour
             }
         }
         // --------------------------------------------------------------------------------
-        // --------------------------------------------------------------
-        // --------------------------------------------------------------
-        // --------------------------------------------------------------
+
+
 
 
         // SCENE 3-------------------------------------------------------------------------
@@ -147,15 +142,6 @@ public class Mission1 : MonoBehaviour
 
             IEnumerator textFade()
             {
-                soundManager.playTextSound();
-                yield return new WaitForSeconds(0.5f);
-                soundManager.playTextSound();
-                yield return new WaitForSeconds(0.5f);
-                soundManager.playTextSound();
-                yield return new WaitForSeconds(0.5f);
-                soundManager.playTextSound();
-                yield return new WaitForSeconds(0.5f);
-
                 TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
                 Animator textAnimations = question.gameObject.GetComponent<Animator>();
                 question.text = "As your class ends, Professor Wally texted you to immediately come to the laboratory...";
@@ -179,10 +165,9 @@ public class Mission1 : MonoBehaviour
         }
 
         // ---------------------------------------------------------------------------------
-        // --------------------------------------------------------------------------------
-        // --------------------------------------------------------------
-        // --------------------------------------------------------------
-        // --------------------------------------------------------------
+
+
+
 
         // SCENE 4 ---------------------------------------------------------------------------
         else if (currentScene == 4)
@@ -216,7 +201,6 @@ public class Mission1 : MonoBehaviour
         //--------------------------
 
         else if (currentScene == 6) {
-            SoundManager.Instance.playElementerPress();
             dialogueObject.SetActive(true);
 
             fadeAnimator.Play("Fadeout");
