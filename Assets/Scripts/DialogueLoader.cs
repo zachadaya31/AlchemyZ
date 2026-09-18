@@ -15,16 +15,13 @@ public class Dialogue : MonoBehaviour
     public TextMeshProUGUI textName;
     public TextMeshProUGUI textDialogue;
 
-    [Header("Backgrounds")]
-    public Sprite classroomPicture;
-
     [Header("Dialogue")]
     public float lineSpeed;
 
     private string[] currentLines;
     private int index;
 
-    public GameObject loadDialogue(string name, GameObject characterPrefab, string[] lines) { 
+    public GameObject loadDialogue(string name, GameObject characterPrefab, string[] lines, Sprite backgroundPicture) { 
         textName.text = name;
         currentLines = lines; // ARRAY TO
         index = 0; // INDEX NUNG LINES
@@ -32,7 +29,7 @@ public class Dialogue : MonoBehaviour
         foreach (Transform child in characterAnchor) Destroy(child.gameObject);
         GameObject currentCharacter = Instantiate(characterPrefab, characterAnchor);
 
-        backgroundAnchor.sprite = classroomPicture;
+        backgroundAnchor.sprite = backgroundPicture;
 
         showLine();
         return currentCharacter;

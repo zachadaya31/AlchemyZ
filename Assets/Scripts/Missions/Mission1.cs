@@ -33,6 +33,10 @@ public class Mission1 : MonoBehaviour
     public Transform canvasContainer;
     public GameObject dialogueObject;
 
+    [Header("Backgrounds")]
+    public Sprite classroomPicture;
+    public Sprite laboratoryPicture;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
@@ -62,11 +66,10 @@ public class Mission1 : MonoBehaviour
 
             string[] lines = {
                 "Okay class, for the last question",
-                "In the perodic table...",
-                "What element is represented by the symbol H?",
+                "What do you get when you combine 2 Hydrogen atoms and 1 Oxygen atom?",
                 "How about you, [StudentName]?"
             };
-            GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
+            GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines, classroomPicture);
             teacherAnimations = currentTeacher.GetComponent<Animator>();
             teacherAnimations.SetTrigger("Speaks");
         }
@@ -83,9 +86,9 @@ public class Mission1 : MonoBehaviour
             nextButton.interactable = false;
 
             TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
-            question.text = "What element is represented by the symbol H?";
+            question.text = "What do you get when you combine 2 Hydrogen atoms and 1 Oxygen atom?";
 
-            string[] choices = { "Hydrogen", "Heartonium", "Helium" };
+            string[] choices = { "Water", "Iron", "Rubber" };
             for (int i = 0; i < 3; i++)
             {
                 GameObject buttonChoices = Instantiate(buttonPrefab, buttonsChoicesContainer);
@@ -99,11 +102,12 @@ public class Mission1 : MonoBehaviour
                 backButton.interactable = true;
                 nextButton.interactable = true;
                 string[] lines;
-                if (choice == "Hydrogen")
+                if (choice == "Water")
                 {
                     lines = new string[] {
                     "Correct!",
-                    "The element represented by H is Hydrogen!",
+                    "When 2 Hydrogen atoms and 1 Oxygen atom is combined...",
+                    "You get... well, Water!",
                     "That's all for today's class. Goodbye Everyone!"
                     };
                 }
@@ -111,7 +115,8 @@ public class Mission1 : MonoBehaviour
                 {
                     lines = new string[] {
                     "Nice try! But unfortunately your answer is wrong!",
-                    "The element represented by H is Hydrogen!",
+                    "When 2 Hydrogen atoms and 1 Oxygen atom is combined...",
+                    "You get... well, Water!",
                     "That's all for today's class. Goodbye Everyone!"
                     };
                 }
@@ -121,7 +126,7 @@ public class Mission1 : MonoBehaviour
                     Destroy(child.gameObject);
                 }
                 fadeAnimator.Play("Fadeout50");
-                GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
+                GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines, classroomPicture);
                 teacherAnimations = currentTeacher.GetComponent<Animator>();
                 teacherAnimations.SetTrigger("Speaks");
             }
@@ -183,7 +188,7 @@ public class Mission1 : MonoBehaviour
                 "I've already finished the `Prototype` !!!",
                 "Quick, look around and grab it for me!"
             };
-            GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Wally", scientistPrefab, lines);
+            GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Zach", scientistPrefab, lines, laboratoryPicture);
         }
 
         //--------------------------
@@ -205,9 +210,11 @@ public class Mission1 : MonoBehaviour
             fadeAnimator.Play("Fadeout");
 
             string[] lines = {
-                "Great! that is the Elementer!"
+                "Great! that device is called the Elementer!",
+                "It can spawn elements from the Periodic Table with just a press of a button!",
+                "Try it out! Try spawning one Oxygen Element",
             };
-            GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Wally", scientistPrefab, lines);
+            GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Zach", scientistPrefab, lines, laboratoryPicture);
         }
 
         else

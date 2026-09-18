@@ -1317,6 +1317,8 @@ MonoBehaviour:
   fullscreenButtonPrefab: {fileID: 1990758246230978160, guid: 83318ea93086d8d498f587ad4f5c0ddc, type: 3}
   canvasContainer: {fileID: 1464648957}
   dialogueObject: {fileID: 2138352724}
+  classroomPicture: {fileID: 21300000, guid: 233a85eda24cbe241aa9e2e86c1e2a9d, type: 3}
+  laboratoryPicture: {fileID: 21300000, guid: 6fc714cfef76f8a49a80d50b81b488fa, type: 3}
 --- !u!1 &1031063627
 GameObject:
   m_ObjectHideFlags: 0
@@ -1413,7 +1415,6 @@ MonoBehaviour:
   backgroundAnchor: {fileID: 89086995}
   textName: {fileID: 2027816021}
   textDialogue: {fileID: 2028335704}
-  classroomPicture: {fileID: 21300000, guid: 233a85eda24cbe241aa9e2e86c1e2a9d, type: 3}
   lineSpeed: 0.06
 --- !u!1 &1464648953
 GameObject:

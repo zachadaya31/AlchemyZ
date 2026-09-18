@@ -187,7 +187,7 @@ MonoBehaviour:
   <trackablesChanged>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
-  m_PlanePrefab: {fileID: 3651090649603205018, guid: 5ee46929ee8026a488ca39c2baa6a1ab, type: 3}
+  m_PlanePrefab: {fileID: 2598386006770357251, guid: 33fc8a59ba146cb459b38bf0ff801adc, type: 3}
   m_DetectionMode: 1
 --- !u!114 &347084169
 MonoBehaviour:
@@ -217,8 +217,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83a435731a99b49478ba5c58c415c74b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnElementer
-  raycastManager: {fileID: 347084169}
-  objectToSpawn: {fileID: 118868814316360807, guid: e3a5e55594168654bad357decb56aae3, type: 3}
+  planeManager: {fileID: 347084168}
+  elementer: {fileID: 4692126221442148055, guid: 142a9bd838a53a947a3d5597ae7bf1d6, type: 3}
 --- !u!1 &1310853980
 GameObject:
   m_ObjectHideFlags: 0

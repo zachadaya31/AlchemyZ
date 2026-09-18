@@ -1,32 +1,26 @@
-using NUnit.Framework;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
-using UnityEngine.XR.ARSubsystems;
 
 public class SpawnElementer : MonoBehaviour
 {
+    public ARPlaneManager planeManager;
+    public GameObject elementer;
 
-    public ARRaycastManager raycastManager;
-    private List<ARRaycastHit> hits = new List<ARRaycastHit>();
-    public GameObject objectToSpawn;
+    private bool hasSpawned = false;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame) {
-            Vector2 touchPosition = Mouse.current.position.ReadValue();
-            Debug.Log("Pressed at: "+touchPosition); 
+        if (hasSpawned) return;
 
-            raycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon);
-            Instantiate(objectToSpawn, hits[0].pose.position, hits[0].pose.rotation);
+        if (planeManager.trackables.count > 0)
+        {
+            foreach (var plane in planeManager.trackables)
+            {
+                Instantiate(elementer, plane.transform.position, Quaternion.Euler(0f, 0f, -90f));
+                elementer.transform.LookAt(Camera.main.transform);
+                hasSpawned = true;
+                break;
+            }
         }
     }
 }
