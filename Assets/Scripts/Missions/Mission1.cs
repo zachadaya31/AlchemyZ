@@ -62,7 +62,8 @@ public class Mission1 : MonoBehaviour
 
             string[] lines = {
                 "Okay class, for the last question",
-                "What forms when you mix Hydrogen and Oxygen?",
+                "In the perodic table...",
+                "What element is represented by the symbol H?",
                 "How about you, [StudentName]?"
             };
             GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines);
@@ -82,9 +83,9 @@ public class Mission1 : MonoBehaviour
             nextButton.interactable = false;
 
             TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
-            question.text = "What forms when you mix Hydrogen and Oxygen?";
+            question.text = "What element is represented by the symbol H?";
 
-            string[] choices = { "Water", "Rubber", "Iron" };
+            string[] choices = { "Hydrogen", "Heartonium", "Helium" };
             for (int i = 0; i < 3; i++)
             {
                 GameObject buttonChoices = Instantiate(buttonPrefab, buttonsChoicesContainer);
@@ -98,12 +99,11 @@ public class Mission1 : MonoBehaviour
                 backButton.interactable = true;
                 nextButton.interactable = true;
                 string[] lines;
-                if (choice == "Water")
+                if (choice == "Hydrogen")
                 {
                     lines = new string[] {
                     "Correct!",
-                    "When you mix 2 Hydrogen molecules and 1 Oxygen molecule...",
-                    "You get... well, Water!",
+                    "The element represented by H is Hydrogen!",
                     "That's all for today's class. Goodbye Everyone!"
                     };
                 }
@@ -111,8 +111,7 @@ public class Mission1 : MonoBehaviour
                 {
                     lines = new string[] {
                     "Nice try! But unfortunately your answer is wrong!",
-                    "When you mix 2 Hydrogen molecules and 1 Oxygen molecule...",
-                    "You get... well, Water!",
+                    "The element represented by H is Hydrogen!",
                     "That's all for today's class. Goodbye Everyone!"
                     };
                 }
@@ -193,12 +192,12 @@ public class Mission1 : MonoBehaviour
 
         else if (currentScene == 5) {
             dialogueObject.SetActive(false);
-            SceneManager.LoadScene("AR", LoadSceneMode.Additive);
+            SceneManager.LoadScene("AR_Test", LoadSceneMode.Additive);
         }
 
         //--------------------------
         // SCENE 6 - Picked up Elementer
-        //--------------------------
+        //--------------------------    
 
         else if (currentScene == 6) {
             dialogueObject.SetActive(true);
