@@ -65,7 +65,7 @@ public class Mission1 : MonoBehaviour
             fadeAnimator.Play("Fadeout");
 
             string[] lines = {
-                "Okay class, for the last question",
+                "Okay class... For the last question",
                 "What do you get when you combine 2 Hydrogen atoms and 1 Oxygen atom?",
                 "How about you, [StudentName]?"
             };

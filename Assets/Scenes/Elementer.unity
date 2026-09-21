@@ -413,7 +413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df2d98be2bc12ba46867d5c4d14f2ae5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElementSpawner
-  raycastManager: {fileID: 0}
+  raycastManager: {fileID: 133645894}
   valorantEffect: {fileID: 0}
   elementLibrary: {fileID: 0}
 --- !u!114 &133645894
@@ -431,7 +431,7 @@ MonoBehaviour:
   <trackablesChanged>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
-  m_RaycastPrefab: {fileID: 0}
+  m_RaycastPrefab: {fileID: 133645889}
 --- !u!1 &144286225
 GameObject:
   m_ObjectHideFlags: 0
