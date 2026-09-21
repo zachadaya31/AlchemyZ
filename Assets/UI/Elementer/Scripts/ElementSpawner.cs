@@ -1,24 +1,61 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
 public class ElementSpawner : MonoBehaviour
 {
-    
     public ARRaycastManager raycastManager;
 
     [Header("Element Library")]
     public GameObject valorantEffect;
     public GameObject elementLibrary;
 
+    [Header("Spawn Settings")]
+    public float elementScale = 1f;
+
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
 
-    public void spawnElement() {
-        GameObject elementToSpawn = Resources.Load<GameObject>("Elements/" + ElementSelecter.elementSelected + "Prefab");
-        Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+    // tracks every element currently spawned
+    private List<GameObject> spawnedElements = new List<GameObject>();
 
-        if (raycastManager.Raycast(screenCenter, hits, TrackableType.PlaneWithinPolygon))
+    void Update()
+    {
+#if UNITY_EDITOR
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("Click detected");
+
+            bool overUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+            Debug.Log("Over UI: " + overUI);
+
+            if (overUI)
+                return;
+
+            spawnElement(Input.mousePosition);
+        }
+#else
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+                    return;
+
+                spawnElement(touch.position);
+            }
+        }
+#endif
+    }
+
+    public void spawnElement(Vector2 touchPosition)
+    {
+        GameObject elementToSpawn = Resources.Load<GameObject>("Elements/" + ElementSelecter.elementSelected + "Prefab");
+
+        if (raycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
         {
             Pose hitPose = hits[0].pose;
 
@@ -26,26 +63,31 @@ public class ElementSpawner : MonoBehaviour
             directionToCamera.y = 0f;
             Quaternion faceCameraRotation = Quaternion.LookRotation(directionToCamera);
 
-            Instantiate(elementToSpawn, hitPose.position, faceCameraRotation);
+            GameObject spawned = Instantiate(elementToSpawn, hitPose.position, faceCameraRotation);
+            spawned.transform.localScale = Vector3.one * elementScale;
+
+            spawnedElements.Add(spawned);
         }
-        else {
+        else
+        {
             Debug.Log("No plane spotted");
         }
     }
 
-    public void openElementLibrary() { 
-        valorantEffect.SetActive(true);
-        elementLibrary.SetActive(true);
-    }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void ClearAllElements()
     {
-        
+        foreach (GameObject element in spawnedElements)
+        {
+            if (element != null)
+                Destroy(element);
+        }
+
+        spawnedElements.Clear();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void openElementLibrary()
     {
-        
+        valorantEffect.SetActive(true);
+        elementLibrary.SetActive(true);
     }
 }

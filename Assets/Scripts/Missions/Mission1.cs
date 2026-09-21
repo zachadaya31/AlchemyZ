@@ -148,7 +148,7 @@ public class Mission1 : MonoBehaviour
             {
                 TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
                 Animator textAnimations = question.gameObject.GetComponent<Animator>();
-                question.text = "As your class ends, Professor Wally texted you to immediately come to the laboratory...";
+                question.text = "As your class ends, Professor Zach texted you to immediately come to the laboratory...";
                 textAnimations.Play("TextFadeinNew");
 
                 yield return new WaitForSeconds(3);
@@ -210,7 +210,7 @@ public class Mission1 : MonoBehaviour
             fadeAnimator.Play("Fadeout");
 
             string[] lines = {
-                "Great! that device is called the Elementer!",
+                "Great! this device is called the Elementer!",
                 "It can spawn elements from the Periodic Table with just a press of a button!",
                 "Try it out! Try spawning one Oxygen Element",
             };

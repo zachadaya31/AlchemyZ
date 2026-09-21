@@ -10,12 +10,24 @@ public class ElementerFloat : MonoBehaviour
 
     void Start()
     {
-        startPos = transform.localPosition;
+        float groundOffset = GetHeightOffset();
+        startPos = transform.localPosition + Vector3.up * groundOffset;
+    }
+
+    float GetHeightOffset()
+    {
+        Renderer rend = GetComponentInChildren<Renderer>();
+        if (rend == null) return 0f;
+
+        // distance from pivot to the bottom of the mesh
+        float bottomToPivot = transform.position.y - rend.bounds.min.y;
+        return bottomToPivot;
     }
 
     void Update()
     {
-        float newY = startPos.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
+        float offset = (Mathf.Sin(Time.time * floatSpeed) + 1f) / 2f * floatHeight;
+        float newY = startPos.y + offset;
         transform.localPosition = new Vector3(startPos.x, newY, startPos.z);
 
         transform.Rotate(Vector3.right, rotateSpeed * Time.deltaTime);

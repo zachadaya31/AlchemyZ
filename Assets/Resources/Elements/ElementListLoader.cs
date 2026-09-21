@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; // Needed for TextMeshPro text
+using TMPro;
 
 public class ElementListLoader : MonoBehaviour
 {
@@ -11,8 +11,6 @@ public class ElementListLoader : MonoBehaviour
     public Transform contentParent;
 
     [Header("2. The List of Element Names")]
-    // You can type all element names directly in the Unity Inspector, 
-    // or keep these default ones here!
     public string[] elementNames = new string[]
     {
         "1\nHydrogen", "2\nHelium", "3\nLithium", "4\nBeryllium", "5\nBoron",
@@ -48,20 +46,18 @@ public class ElementListLoader : MonoBehaviour
 
     void GenerateElementButtons()
     {
-        // Loop through every name in the elementNames array
         foreach (string name in elementNames)
         {
-            // 1. Spawn a button inside the Content transform
+
             GameObject newButton = Instantiate(buttonPrefab, contentParent);
 
-            // 2. Find the TextMeshPro component inside the button and set the text
+
             TMP_Text buttonText = newButton.GetComponentInChildren<TMP_Text>();
             if (buttonText != null)
             {
                 buttonText.text = name;
             }
 
-            // 3. Name the GameObject in the Hierarchy for clarity
             newButton.name = "Button_" + name;
         }
     }
