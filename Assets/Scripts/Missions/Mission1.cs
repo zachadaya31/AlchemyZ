@@ -32,6 +32,11 @@ public class Mission1 : MonoBehaviour
     [Header("Canvas")]
     public Transform canvasContainer;
     public GameObject dialogueObject;
+    public GameObject dialogueBox;
+
+    [Header("Video")]
+    public GameObject videoPlayerObject;
+    public UnityEngine.Video.VideoPlayer videoPlayer;
 
     [Header("Backgrounds")]
     public Sprite classroomPicture;
@@ -84,6 +89,7 @@ public class Mission1 : MonoBehaviour
             fadeAnimator.Play("Fadein50");
             backButton.interactable = false;
             nextButton.interactable = false;
+            dialogueBox.SetActive(false);
 
             TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
             question.text = "What do you get when you combine 2 Hydrogen atoms and 1 Oxygen atom?";
@@ -125,6 +131,7 @@ public class Mission1 : MonoBehaviour
                 {
                     Destroy(child.gameObject);
                 }
+                dialogueBox.SetActive(true);
                 fadeAnimator.Play("Fadeout50");
                 GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines, classroomPicture);
                 teacherAnimations = currentTeacher.GetComponent<Animator>();
@@ -210,16 +217,97 @@ public class Mission1 : MonoBehaviour
             fadeAnimator.Play("Fadeout");
 
             string[] lines = {
-                "Great! this device is called the Elementer!",
-                "It can spawn elements from the Periodic Table with just a press of a button!",
-                "Try it out! Try spawning one Oxygen Element",
+                "Ah there it is!",
+                "Allow me to introduce to you... the Elementer!",
+                "This little machine can can combine elements to create anything!",
+                "Water, Medicine, anything you can think of!",
+                "But first, you must learn its basics.,,",
+                "Tell me apprentice, which symbol in the Periodic Table represents Hydrogen?"
             };
             GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Zach", scientistPrefab, lines, laboratoryPicture);
+        }
+
+        else if (currentScene == 7)
+        {
+            fadeAnimator.Play("Fadein50");
+            backButton.interactable = false;
+            nextButton.interactable = false;
+            dialogueBox.SetActive(false);
+
+            TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
+            question.text = "Which symbol in the Periodic Table represents Hydrogen?";
+
+            string[] choices = { "Hd", "H", "Hy" };
+            for (int i = 0; i < 3; i++)
+            {
+                GameObject buttonChoices = Instantiate(buttonPrefab, buttonsChoicesContainer);
+                buttonChoices.GetComponentInChildren<TMPro.TMP_Text>().text = choices[i];
+                string currentChoice = choices[i];
+                buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
+            }
+
+            void choiceButtonClicked(string choice)
+            {
+                backButton.interactable = true;
+                nextButton.interactable = true;
+                string[] lines;
+                if (choice == "H")
+                {
+                    lines = new string[] {
+                        "Correct!",
+                        "The symbol that represents Hydrogen is H!",
+                        "Now, watch closely as the Elementer spawns a Hydrogen element",
+                    };
+                }
+                else
+                {
+                    lines = new string[] {
+                        "Nope, your answer is wrong!",
+                        "The symbol that represents Hydrogen is H!",
+                        "Now, watch closely as the Elementer spawns a Hydrogen element"
+                    };
+                }
+
+                foreach (Transform child in buttonsChoicesContainer)
+                {
+                    Destroy(child.gameObject);
+                }
+                dialogueBox.SetActive(true);
+                fadeAnimator.Play("Fadeout50");
+                GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Zach", scientistPrefab, lines, laboratoryPicture);
+                teacherAnimations = currentTeacher.GetComponent<Animator>();
+                teacherAnimations.SetTrigger("Speaks");
+            }
+        }
+
+        //--------------------------
+        // SCENE 8 - Element spawn video
+        //--------------------------
+
+        else if (currentScene == 8)
+        {
+            dialogueObject.SetActive(false);
+            backButton.interactable = false;
+            nextButton.interactable = false;
+
+            videoPlayerObject.SetActive(true);
+            videoPlayer.Play();
+            videoPlayer.loopPointReached += OnVideoFinished;
         }
 
         else
         {
             Debug.Log("End of mission 1");
         }
+    }
+
+    void OnVideoFinished(UnityEngine.Video.VideoPlayer vp)
+    {
+        videoPlayer.loopPointReached -= OnVideoFinished;
+        videoPlayerObject.SetActive(false);
+        dialogueObject.SetActive(true);
+        backButton.interactable = true;
+        nextButton.interactable = true;
+        nextScene();
     }
 }

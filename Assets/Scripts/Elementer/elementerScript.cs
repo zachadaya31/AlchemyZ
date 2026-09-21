@@ -3,13 +3,13 @@ using UnityEngine.SceneManagement;
 
 public class elementerScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private bool hasBeenClicked = false;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -17,8 +17,10 @@ public class elementerScript : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (hasBeenClicked) return;
+        hasBeenClicked = true;
+
         SceneLoader.cleanScenes("Mission1");
         Mission1.Instance.nextScene();
-
     }
 }

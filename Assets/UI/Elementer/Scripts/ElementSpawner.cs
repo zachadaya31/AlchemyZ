@@ -67,6 +67,9 @@ public class ElementSpawner : MonoBehaviour
             spawned.transform.localScale = Vector3.one * elementScale;
 
             spawnedElements.Add(spawned);
+
+            // NEW: tell the panel to add a row
+            ElementListUI.Instance.AddRow(ElementSelecter.elementSelected);
         }
         else
         {
@@ -83,6 +86,9 @@ public class ElementSpawner : MonoBehaviour
         }
 
         spawnedElements.Clear();
+
+        // NEW: wipe the panel too
+        ElementListUI.Instance.ClearAll();
     }
 
     public void openElementLibrary()
