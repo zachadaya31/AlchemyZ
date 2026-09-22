@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6404775043660087404}
   - component: {fileID: 5720761925639903797}
+  - component: {fileID: 9188716523046980301}
   m_Layer: 0
   m_Name: HeliumPrefab
   m_TagString: Untagged
@@ -48,6 +49,27 @@ MonoBehaviour:
   bobHeight: 0.15
   bobSpeed: 1.5
   groundOffset: 0.15
+--- !u!135 &9188716523046980301
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2572228101673202867}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &7922510104787327103
 PrefabInstance:
   m_ObjectHideFlags: 0

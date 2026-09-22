@@ -5,7 +5,7 @@ using TMPro;
 public class ElementSelecter : MonoBehaviour
 {
     public Button buttonElement;
-    public static string elementSelected = "";
+    public static string elementSelected = "Hydrogen";
 
     public GameObject valorantEffect;
     public GameObject contentParent;

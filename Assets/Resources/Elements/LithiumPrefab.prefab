@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4262304319937107314}
   - component: {fileID: -1970630729879845400}
+  - component: {fileID: -5550314521356406526}
   m_Layer: 0
   m_Name: LithiumPrefab
   m_TagString: Untagged
@@ -48,6 +49,27 @@ MonoBehaviour:
   bobHeight: 0.15
   bobSpeed: 1.5
   groundOffset: 0.15
+--- !u!135 &-5550314521356406526
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5412912488929220987}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &222680861777071423
 PrefabInstance:
   m_ObjectHideFlags: 0
