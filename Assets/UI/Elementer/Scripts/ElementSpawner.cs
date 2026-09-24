@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
@@ -25,46 +26,50 @@ public class ElementSpawner : MonoBehaviour
 
     void Update()
     {
-    #if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0))
+#if UNITY_EDITOR
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
+            Vector2 screenPos = Mouse.current.position.ReadValue();
+
             bool overUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
             if (overUI) return;
 
-            GameObject touchedElement = GetElementUnderPosition(Input.mousePosition);
+            GameObject touchedElement = GetElementUnderPosition(screenPos);
 
             if (touchedElement != null)
                 StartHold(touchedElement);
             else
-                spawnElement(Input.mousePosition);
+                spawnElement(screenPos);
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Mouse.current != null && Mouse.current.leftButton.wasReleasedThisFrame)
             CancelHold();
 
-    #else
-        if (Input.touchCount > 0)
+#else
+        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
         {
-            Touch touch = Input.GetTouch(0);
+            var touch = Touchscreen.current.primaryTouch;
 
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
-                return;
-
-            if (touch.phase == TouchPhase.Began)
+            if (touch.press.wasPressedThisFrame)
             {
-                GameObject touchedElement = GetElementUnderPosition(touch.position);
+                Vector2 screenPos = touch.position.ReadValue();
+
+                if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(0))
+                    return;
+
+                GameObject touchedElement = GetElementUnderPosition(screenPos);
 
                 if (touchedElement != null)
                     StartHold(touchedElement);
                 else
-                    spawnElement(touch.position);
+                    spawnElement(screenPos);
             }
-            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            else if (touch.press.wasReleasedThisFrame)
             {
                 CancelHold();
             }
         }
-    #endif
+#endif
     }
 
     // checks if the given screen position is on top of an already-spawned element
@@ -116,12 +121,12 @@ public class ElementSpawner : MonoBehaviour
 
         holdCoroutine = null;
     }
-        
+
 
 
     public void spawnElement(Vector2 touchPosition)
     {
-        
+
         GameObject elementToSpawn = Resources.Load<GameObject>("Elements/" + ElementSelecter.elementSelected + "Prefab");
 
         if (raycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
@@ -141,14 +146,14 @@ public class ElementSpawner : MonoBehaviour
             // NEW: tell the panel to add a row
             ElementListUI.Instance.AddRow(ElementSelecter.elementSelected);
 
-            
+
         }
         else
         {
             Debug.Log("No plane spotted");
         }
     }
-    
+
 
     public void ClearAllElements()
     {
@@ -169,7 +174,7 @@ public class ElementSpawner : MonoBehaviour
         valorantEffect.SetActive(true);
         elementLibrary.SetActive(true);
     }
-    
+
     public List<GameObject> GetSpawnedElements()
     {
         return spawnedElements;

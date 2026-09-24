@@ -2,7 +2,6 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Supabase.Gotrue;
 using TMPro;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

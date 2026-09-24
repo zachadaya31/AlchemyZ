@@ -1942,7 +1942,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   elementSpawner: {fileID: 6416918239802352244}
-  waterPrefab: {fileID: 919132149155446097, guid: 062b1a08a7322e1438e7b52eca5a78ac, type: 3}
+  waterPrefab: {fileID: 5907619279545587866, guid: b2ce228688b9cc4458834e626a7e84a4, type: 3}
 --- !u!1 &1228383581
 GameObject:
   m_ObjectHideFlags: 0

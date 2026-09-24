@@ -1,6 +1,7 @@
 //using Unity.Android.Gradle;
 using System.Collections;
 using TMPro;
+
 //using Unity.Android.Gradle;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -16,6 +17,8 @@ public class Mission1 : MonoBehaviour
     public Animator fadeAnimator;
     public GameObject teacherPrefab;
     public GameObject scientistPrefab;
+    public GameObject emptyPrefab;
+    public GameObject elementerPrefab;
 
     [Header("Called on Runtime")]
     public Animator teacherAnimations;
@@ -33,19 +36,25 @@ public class Mission1 : MonoBehaviour
     public Transform canvasContainer;
     public GameObject dialogueObject;
     public GameObject dialogueBox;
+    public GameObject backgroundAnchor;
 
     [Header("Video")]
     public GameObject videoPlayerObject;
+    public GameObject videoPlayerObject2;
     public UnityEngine.Video.VideoPlayer videoPlayer;
+    public UnityEngine.Video.VideoPlayer videoPlayer2;
+    
 
     [Header("Backgrounds")]
     public Sprite classroomPicture;
     public Sprite laboratoryPicture;
+    public Sprite forestBackground;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
         Instance = this;
+        videoPlayerObject.SetActive(false);
     }
     void Start()
     {
@@ -295,6 +304,67 @@ public class Mission1 : MonoBehaviour
             videoPlayer.loopPointReached += OnVideoFinished;
         }
 
+        //--------------------------
+        // SCENE 9 - NASA FOREST NA YUNG STUDENT
+        //--------------------------
+        else if (currentScene == 9)
+        {
+                
+                videoPlayerObject.SetActive(false);
+                foreach (Transform child in buttonsChoicesContainer) {
+                    Destroy(child.gameObject);
+                }
+
+                fadeAnimator.Play("Fadeout");
+
+                string[] lines = {
+                    "Where am I?",
+                    "...",
+                    "I think i'm gonna pass out...",
+                    "I need some water..."
+                };
+                GameObject currentTeacher = dialogueLoader.loadDialogue("[Student Name]", emptyPrefab, lines, forestBackground);
+                backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
+                
+        }
+
+        else if (currentScene == 10)
+        {
+            dialogueObject.SetActive(false);
+            backButton.interactable = false;
+            nextButton.interactable = false;
+
+            videoPlayerObject2.SetActive(true);
+            videoPlayer2.Play();
+            videoPlayer2.loopPointReached += OnVideoFinished;
+        }
+
+        else if (currentScene == 11)
+        {
+                
+                videoPlayerObject.SetActive(false);
+                foreach (Transform child in buttonsChoicesContainer) {
+                    Destroy(child.gameObject);
+                }
+
+                fadeAnimator.Play("Fadeout");
+
+                string[] lines = {
+                    "...",
+                    "Is this the Elementer..?",
+                    "I'll try to make some water to drink.",
+                    "Let's give this a shot"
+                };
+                GameObject currentTeacher = dialogueLoader.loadDialogue("[Student Name]", elementerPrefab, lines, forestBackground);
+                backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
+                
+        }
+
+        else if (currentScene == 12) {
+            dialogueObject.SetActive(false);
+            SceneManager.LoadScene("Elementer", LoadSceneMode.Additive);
+        }
+
         else
         {
             Debug.Log("End of mission 1");
@@ -303,8 +373,9 @@ public class Mission1 : MonoBehaviour
 
     void OnVideoFinished(UnityEngine.Video.VideoPlayer vp)
     {
-        videoPlayer.loopPointReached -= OnVideoFinished;
+        vp.loopPointReached -= OnVideoFinished;
         videoPlayerObject.SetActive(false);
+        videoPlayerObject2.SetActive(false);
         dialogueObject.SetActive(true);
         backButton.interactable = true;
         nextButton.interactable = true;
