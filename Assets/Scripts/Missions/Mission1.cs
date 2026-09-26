@@ -12,6 +12,7 @@ public class Mission1 : MonoBehaviour
 {
     public int currentScene = 0; // kung pang ilang scene na ang isang mission
     public static Mission1 Instance; // instance ng mission1 para ma access ng ibang class yung nextScene() method
+    public bool missionCombinationComplete = false;
 
     public Dialogue dialogueLoader;
     public Animator fadeAnimator;
@@ -22,6 +23,8 @@ public class Mission1 : MonoBehaviour
 
     [Header("Called on Runtime")]
     public Animator teacherAnimations;
+    public GameObject missionCamera;
+    public GameObject missionEventSystem;
     
 
     [Header("Buttons Funcationality")]
@@ -49,6 +52,10 @@ public class Mission1 : MonoBehaviour
     public Sprite classroomPicture;
     public Sprite laboratoryPicture;
     public Sprite forestBackground;
+
+    [Header("Instructions")]
+    public GameObject instructionsBox;
+    public TextMeshProUGUI instructionsText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -213,14 +220,18 @@ public class Mission1 : MonoBehaviour
 
         else if (currentScene == 5) {
             dialogueObject.SetActive(false);
-            SceneManager.LoadScene("AR_Test", LoadSceneMode.Additive);
+            //SceneManager.LoadScene("AR_Test", LoadSceneMode.Additive);
+            StartCoroutine(LoadARScene("AR_Test"));
+            missionCamera.SetActive(true);
         }
+        
 
         //--------------------------
         // SCENE 6 - Picked up Elementer
         //--------------------------    
 
         else if (currentScene == 6) {
+            missionCamera.SetActive(true);
             dialogueObject.SetActive(true);
 
             fadeAnimator.Play("Fadeout");
@@ -334,6 +345,7 @@ public class Mission1 : MonoBehaviour
             backButton.interactable = false;
             nextButton.interactable = false;
 
+
             videoPlayerObject2.SetActive(true);
             videoPlayer2.Play();
             videoPlayer2.loopPointReached += OnVideoFinished;
@@ -360,15 +372,67 @@ public class Mission1 : MonoBehaviour
                 
         }
 
+
+        //AR ELEMENTER SCENE
         else if (currentScene == 12) {
+            instructionsBox.SetActive(true);
+            instructionsText.SetText("Create Water");
+
             dialogueObject.SetActive(false);
             SceneManager.LoadScene("Elementer", LoadSceneMode.Additive);
+            //FindAnyObjectByType<ARBackgroundToggle>().SetBackgroundVisible(false);
+            missionCamera.SetActive(false);
+            missionEventSystem.SetActive(false);
+
+        }
+
+        // OUTRO SCNEEEEEEEEEE
+
+        else if (currentScene == 13)
+        {   
+            instructionsBox.SetActive(false);
+            instructionsBox.SetActive(false);
+            nextButton.enabled = false;
+            backButton.enabled = false;
+
+            missionCamera.SetActive(true);
+            missionEventSystem.SetActive(true);
+
+            fadeAnimator.Play("Fadein");
+            StartCoroutine(textFade());
+
+            IEnumerator textFade()
+            {
+                TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
+                Animator textAnimations = question.gameObject.GetComponent<Animator>();
+                question.text = "Chapter 1: The Alchemist's Apprentice\nCreate Water | Complete";
+                textAnimations.Play("TextFadeinNew");
+
+                yield return new WaitForSeconds(3);
+
+                TextMeshProUGUI continueText = Instantiate(questionPrefab, buttonsChoicesContainer);
+                Animator textAnimations2 = continueText.gameObject.GetComponent<Animator>();
+                continueText.text = "\n\nPress the screen to go back to the main menu...";
+                continueText.fontSize = 50;
+                textAnimations2.Play("TextFadeinNew");
+
+                yield return new WaitForSeconds(1);
+
+                GameObject fullscreenButton = Instantiate(fullscreenButtonPrefab, canvasContainer);
+                Button btnFs = fullscreenButton.GetComponent<Button>();
+                btnFs.onClick.AddListener(() => { nextScene(); Destroy(fullscreenButton); nextButton.enabled = true; backButton.enabled = true; });
+            }
+
         }
 
         else
         {
             Debug.Log("End of mission 1");
+            SceneManager.LoadScene("MainMenu");
+
         }
+
+        
     }
 
     void OnVideoFinished(UnityEngine.Video.VideoPlayer vp)
@@ -380,5 +444,45 @@ public class Mission1 : MonoBehaviour
         backButton.interactable = true;
         nextButton.interactable = true;
         nextScene();
+    }
+
+    private IEnumerator LoadARScene(string AR_SCENE_NAME)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(AR_SCENE_NAME, LoadSceneMode.Additive);
+        
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        yield return new WaitForEndOfFrame();
+
+        HideSimulatedEnvironment();
+    }
+
+    public static void HideSimulatedEnvironment()
+    {
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            
+            if (scene.name == "AR_Test")
+            {
+                foreach (GameObject root in scene.GetRootGameObjects())
+                {
+                    if (root.name.StartsWith("Simulated Environment Scene"))
+                    {
+                        // Instead of moving the root (which XR Simulation overrides),
+                        // move all its children up together!
+                        foreach (Transform child in root.transform)
+                        {
+                            child.position += new Vector3(0, 5f, 0);
+                        }
+                        
+                        Debug.Log("Successfully shifted simulated environment contents up!");
+                    }
+                }
+            }
+        }
     }
 }

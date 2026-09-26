@@ -53,8 +53,9 @@ public class ElementSpawner : MonoBehaviour
             if (touch.press.wasPressedThisFrame)
             {
                 Vector2 screenPos = touch.position.ReadValue();
+                int touchId = touch.touchId.ReadValue();
 
-                if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(0))
+                if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touchId))
                     return;
 
                 GameObject touchedElement = GetElementUnderPosition(screenPos);
@@ -64,22 +65,21 @@ public class ElementSpawner : MonoBehaviour
                 else
                     spawnElement(screenPos);
             }
-            else if (touch.press.wasReleasedThisFrame)
-            {
-                CancelHold();
-            }
         }
 #endif
     }
 
-    // checks if the given screen position is on top of an already-spawned element
     private GameObject GetElementUnderPosition(Vector2 screenPos)
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (spawnedElements.Contains(hit.collider.gameObject))
-                return hit.collider.gameObject;
+            // walk up in case the collider is on a child object
+            foreach (GameObject element in spawnedElements)
+            {
+                if (hit.collider.transform == element.transform || hit.collider.transform.IsChildOf(element.transform))
+                    return element;
+            }
         }
         return null;
     }

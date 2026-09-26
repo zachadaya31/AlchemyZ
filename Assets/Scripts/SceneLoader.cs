@@ -25,16 +25,15 @@ public class SceneLoader : MonoBehaviour
         Debug.Log("Application CLosed");
     }
 
+    private static readonly string[] scenesToClean = { "AR_Test", "Elementer" };
+
     public static void cleanScenes(string mainScene)
     {
-        for (int i = SceneManager.sceneCount - 1; i >= 0; i--)
+        foreach (string sceneName in scenesToClean)
         {
-            Scene scene = SceneManager.GetSceneAt(i);
-
-            if (scene.name != mainScene)
-            {
+            Scene scene = SceneManager.GetSceneByName(sceneName);
+            if (scene.IsValid() && scene.isLoaded)
                 SceneManager.UnloadSceneAsync(scene);
-            }
         }
     }
 }

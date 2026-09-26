@@ -9,7 +9,6 @@ public class elementerScript : MonoBehaviour
     {
         
     }
-
     void Update()
     {
         
