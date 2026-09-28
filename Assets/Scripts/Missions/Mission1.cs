@@ -1,9 +1,11 @@
 //using Unity.Android.Gradle;
+using System;
 using System.Collections;
 using TMPro;
 
 //using Unity.Android.Gradle;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -68,7 +70,7 @@ public class Mission1 : MonoBehaviour
         nextScene();
     }
 
-    public void nextScene() {
+    public async void nextScene() {
         IEnumerator waitScene()
         {
             nextButton.interactable = false;
@@ -102,15 +104,23 @@ public class Mission1 : MonoBehaviour
         // SCENE 2 --------------------------------------------------------
         else if (currentScene == 2)
         {
+
             fadeAnimator.Play("Fadein50");
             backButton.interactable = false;
             nextButton.interactable = false;
             dialogueBox.SetActive(false);
 
             TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
-            question.text = "What do you get when you combine 2 Hydrogen atoms and 1 Oxygen atom?";
+            String questionText = question.text = "What do you get when you combine 2 Hydrogen atoms and 1 Oxygen atom?";
+
+            var recordAnswer = await SupabaseManager.Instance.supabase
+            .From<Chapter_Answers_Record>()
+            .Where(x => x.studentID == SessionManager.Instance.studentID)
+            .Where(x => x.Question == questionText)
+            .Get();
 
             string[] choices = { "Water", "Iron", "Rubber" };
+            string correctChoice = "Water";
             for (int i = 0; i < 3; i++)
             {
                 GameObject buttonChoices = Instantiate(buttonPrefab, buttonsChoicesContainer);
@@ -119,8 +129,31 @@ public class Mission1 : MonoBehaviour
                 buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
             }
 
-            void choiceButtonClicked(string choice)
+            async void choiceButtonClicked(string choice)
             {
+                if (recordAnswer.Models.Count > 0)
+                {
+                    Debug.Log("student already answered");
+                }
+                else
+                {
+                    Debug.Log("no student answer. recording answer");
+                    int earnedScore = (choice == correctChoice) ? 1 : 0;
+                    var newRecord = new Chapter_Answers_Record
+                    {
+                        chapterID = 1,
+                        MCQ_PCQ = "MCQ 1",
+                        
+                        studentID = SessionManager.Instance.studentID,
+                        Question = questionText,
+                        Answer = choice,
+                        Score = earnedScore
+                    };
+                    await SupabaseManager.Instance.supabase
+                        .From<Chapter_Answers_Record>()
+                        .Insert(newRecord);
+                }
+
                 backButton.interactable = true;
                 nextButton.interactable = true;
                 string[] lines;
@@ -254,10 +287,18 @@ public class Mission1 : MonoBehaviour
             nextButton.interactable = false;
             dialogueBox.SetActive(false);
 
+            
             TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
-            question.text = "Which symbol in the Periodic Table represents Hydrogen?";
+            string questionText = question.text = "Which symbol in the Periodic Table represents Hydrogen?";
+
+            var recordAnswer = await SupabaseManager.Instance.supabase
+            .From<Chapter_Answers_Record>()
+            .Where(x => x.studentID == SessionManager.Instance.studentID)
+            .Where(x => x.Question == questionText)
+            .Get();
 
             string[] choices = { "Hd", "H", "Hy" };
+            string correctChoice = "H";
             for (int i = 0; i < 3; i++)
             {
                 GameObject buttonChoices = Instantiate(buttonPrefab, buttonsChoicesContainer);
@@ -266,8 +307,32 @@ public class Mission1 : MonoBehaviour
                 buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
             }
 
-            void choiceButtonClicked(string choice)
+            async void choiceButtonClicked(string choice)
             {
+   
+                if (recordAnswer.Models.Count > 0)
+                {
+                    Debug.Log("student already answered");
+                }
+                else
+                {
+                    Debug.Log("no student answer. recording answer");
+                    int earnedScore = (choice == correctChoice) ? 1 : 0;
+                    var newRecord = new Chapter_Answers_Record
+                    {
+                        chapterID = 1,
+                        MCQ_PCQ = "MCQ 1",
+                        
+                        studentID = SessionManager.Instance.studentID,
+                        Question = questionText,
+                        Answer = choice,
+                        Score = earnedScore
+                    };
+                    await SupabaseManager.Instance.supabase
+                        .From<Chapter_Answers_Record>()
+                        .Insert(newRecord);
+                }
+
                 backButton.interactable = true;
                 nextButton.interactable = true;
                 string[] lines;
@@ -383,6 +448,7 @@ public class Mission1 : MonoBehaviour
             //FindAnyObjectByType<ARBackgroundToggle>().SetBackgroundVisible(false);
             missionCamera.SetActive(false);
             missionEventSystem.SetActive(false);
+            Mission1.Instance.instructionsText.SetText("Tap to grab the water.");
 
         }
 

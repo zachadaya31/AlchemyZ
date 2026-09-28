@@ -358,19 +358,24 @@ MonoBehaviour:
   chapterEntryPrefab: {fileID: 6706569218972053729, guid: 79efae8d2c8bf5c40951cce6c87795bd, type: 3}
   content: {fileID: 1311205528}
   allChapters:
-  - chapterTitle: The Alchemist's Apprentice
-    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
-    isLocked: 0
-  - chapterTitle: Miss ko na ex ko
+  - chapterNumber: 0
+    chapterTitle: The Alchemist's Apprentice
     chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
     isLocked: 1
-  - chapterTitle: Bessy Villapando
+  - chapterNumber: 0
+    chapterTitle: Miss ko na ex ko
     chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
     isLocked: 1
-  - chapterTitle: Jinky Svero
+  - chapterNumber: 0
+    chapterTitle: Bessy Villapando
     chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
     isLocked: 1
-  - chapterTitle: M.C.R.
+  - chapterNumber: 0
+    chapterTitle: Jinky Svero
+    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
+    isLocked: 1
+  - chapterNumber: 0
+    chapterTitle: M.C.R.
     chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
     isLocked: 1
 --- !u!4 &982557985

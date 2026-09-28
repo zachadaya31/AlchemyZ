@@ -64,8 +64,12 @@ public class MixManager : MonoBehaviour
     private void OnResultTapped(GameObject result)
     {
         Debug.Log("Result tapped: " + result.name);
-        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("Elementer");
-        Mission1.Instance.nextScene();
+
+        if (Mission1.Instance != null)
+        {
+            UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("Elementer");
+            Mission1.Instance.nextScene();
+        }
     }
 
     public void OnMixPressed()
@@ -78,11 +82,14 @@ public class MixManager : MonoBehaviour
             counts.ContainsKey("Oxygen") && counts["Oxygen"] == 1;
 
         if (isWater)
-        {
+    {
+        Debug.Log("Mix success: Water formed!");
+
+        if (Mission1.Instance != null)
             Mission1.Instance.instructionsText.SetText("Tap to grab the water.");
-            Debug.Log("Mix success: Water formed!");
-            SpawnResult(waterPrefab);
-        }
+
+        SpawnResult(waterPrefab);
+    }
         else
         {
             Debug.Log("Mix failed: no matching recipe.");

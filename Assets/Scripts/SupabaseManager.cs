@@ -47,6 +47,9 @@ public class Students : BaseModel
 
     [Column("dateCreated")]
     public DateTime dateCreated{get;set;}
+
+    [Column("studentChapterProgress")]
+    public int studentChapterProgress{get;set;}
 }
 
 [Table("Sections")]
@@ -65,3 +68,27 @@ public class Sections : BaseModel
     public DateTime sectionDateCreated{get;set;}
 }
 
+[Table("Chapter_Answers_Record")]
+public class Chapter_Answers_Record : BaseModel
+{
+    [PrimaryKey("id")]
+    public int sectionID{get;set;}
+
+    [Column("chapterID")]
+    public int chapterID{get;set;}
+
+    [Column("MCQ_PCQ")]
+    public string MCQ_PCQ{get;set;}
+
+    [Column("studentID")]
+    public int studentID{get;set;}
+
+    [Column("Question")]
+    public string Question{get;set;}
+
+    [Column("Answer")]
+    public string Answer{get;set;}
+
+    [Column("Score")]
+    public int Score{get;set;}
+}
