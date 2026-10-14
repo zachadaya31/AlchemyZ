@@ -448,7 +448,7 @@ public class Mission1 : MonoBehaviour
             //FindAnyObjectByType<ARBackgroundToggle>().SetBackgroundVisible(false);
             missionCamera.SetActive(false);
             missionEventSystem.SetActive(false);
-            Mission1.Instance.instructionsText.SetText("Tap to grab the water.");
+            
 
         }
 
