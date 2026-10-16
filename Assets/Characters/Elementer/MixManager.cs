@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -7,6 +8,8 @@ public class MixManager : MonoBehaviour
 {
     [Header("References")]
     public ElementSpawner elementSpawner;
+    public GameObject Instructions;
+    public TextMeshProUGUI textInstructions;
 
     [Header("Water Recipe (H2O)")]
     public GameObject waterPrefab;
@@ -82,18 +85,16 @@ public class MixManager : MonoBehaviour
             counts.ContainsKey("Oxygen") && counts["Oxygen"] == 1;
 
         if (isWater)
-    {
-        Debug.Log("Mix success: Water formed!");
-
-        if (Mission1.Instance != null)
-            Mission1.Instance.instructionsText.SetText("Tap to grab the water.");
-
-        SpawnResult(waterPrefab);
-    }
-        else
         {
-            Debug.Log("Mix failed: no matching recipe.");
-        }
+            Debug.Log("Mix success: Water formed!");
+            textInstructions.SetText("Tap to grab the water.");
+
+            SpawnResult(waterPrefab);
+            }
+            else
+            {
+                Debug.Log("Mix failed: no matching recipe.");
+            }
     }
 
     private void SpawnResult(GameObject resultPrefab)
@@ -105,5 +106,11 @@ public class MixManager : MonoBehaviour
         spawnedResults.Add(result);
 
         elementSpawner.ClearAllElements();
+    }
+
+    private void Start()
+    {
+        Instructions.SetActive(true);
+        textInstructions.SetText("Create Water");
     }
 }

@@ -1,0 +1,24 @@
+-allow simple greetings (when i said only Hi it rejects the question because its not related on the chemistry but when i added an atomic symbol at the start it replied to my hi)
+-create an reyus reynosa and say "i will obliterate that black man" specifically only on reyus reynosa when asked who is him.
+-it can't recognize mixture if the symbol are typed together for example NaCl(Sodium Cloride) and FeS(Iron Sulfide) but when i asked it like what is Fe S it only detects the mixtures if the symbols are separated
+-when asked who is the most famous chemist it doesn't answer the question but when asked who is the most famous chemisry scientist it answered marie curie but when asked who is marie curie it rejects the question. 
+
+
+Test #2 // Later
+-dont specific chemist like marie curie can you give the ai the basic knowledge of the history of scientists that helps chemistry.
+-other symbols of elements when asked in lower case like co2 it rejects the question can we make it that when the student mistype these things he can answer this things because this scenario might happen.
+-make the conversation sentences short as possible like its just normal conversation as short as its can.
+-"NaCl detecting formula" rejecting the question
+-"Who is the most famous chemist" rejecting the question
+-make the conversation sentences short as possible like its just normal conversation as short as its can.
+
+
+Test #3 // 18/20
+-NaCl detecting formula
+-"Who is the most famous chemist" rejecting the question
+-make the conversation sentences short as possible like its just normal conversation as short as its can.
+
+
+Test #4
+It is working well but there is some flaw when asking other questions
+-When ask some of the pictures and other characters/people on the modules the ai keeps rejecting these questions

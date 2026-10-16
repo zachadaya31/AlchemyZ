@@ -440,8 +440,6 @@ public class Mission1 : MonoBehaviour
 
         //AR ELEMENTER SCENE
         else if (currentScene == 12) {
-            instructionsBox.SetActive(true);
-            instructionsText.SetText("Create Water");
 
             dialogueObject.SetActive(false);
             SceneManager.LoadScene("Elementer", LoadSceneMode.Additive);
