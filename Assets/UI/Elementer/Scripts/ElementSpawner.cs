@@ -8,6 +8,7 @@ using UnityEngine.XR.ARSubsystems;
 public class ElementSpawner : MonoBehaviour
 {
     public ARRaycastManager raycastManager;
+    public MixManager mixManager;
 
     [Header("Element Library")]
     public GameObject valorantEffect;
@@ -34,6 +35,7 @@ public class ElementSpawner : MonoBehaviour
             bool overUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
             if (overUI) return;
 
+            if (mixManager != null && mixManager.IsOverResult(screenPos)) return;
             GameObject touchedElement = GetElementUnderPosition(screenPos);
 
             if (touchedElement != null)
@@ -57,6 +59,8 @@ public class ElementSpawner : MonoBehaviour
 
                 if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touchId))
                     return;
+    
+                if (mixManager != null && mixManager.IsOverResult(screenPos)) return;
 
                 GameObject touchedElement = GetElementUnderPosition(screenPos);
 

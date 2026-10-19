@@ -22,11 +22,6 @@ public class MixRecipe : ScriptableObject
 
     [Header("Result")]
     public GameObject resultPrefab;
-    [TextArea] public string successMessage = "Tap to grab the result.";
-
-    [Header("Mission")]
-    [Tooltip("If true, tapping the result finishes the Elementer scene (current behaviour).")]
-    public bool completesMission = true;
 
     /// <summary>Required amounts per element (case-insensitive, duplicates summed).</summary>
     public Dictionary<string, int> GetRequired()

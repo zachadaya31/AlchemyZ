@@ -1,24 +1,35 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class MixManager : MonoBehaviour
 {
     [Header("References")]
     public ElementSpawner elementSpawner;
-    public GameObject Instructions;
-    public TextMeshProUGUI textInstructions;
 
     [Header("Recipes")]
-    [Tooltip("Drag all MixRecipe assets here (or use the context menu 'Load All Recipes From Folder').")]
+    [Tooltip("Drag all MixRecipe assets here (or use the context menu 'Load All Recipes In Project').")]
     public List<MixRecipe> recipes = new List<MixRecipe>();
 
-    [Header("Text")]
-    public string startInstruction = "Create Water";
-    public string failInstruction = "That doesn't make anything. Try another mix.";
+    [Header("Instructions and Warning GameObject")]
+    public GameObject instructions;
+    public TextMeshProUGUI instructionsText;
+    public GameObject warning;
+
+    [Header("Instructions Text")]
+    public string instructionsBefore;
+    public string instructionsAfter;
+
+
+    // MissionDirector can subscribe to these
+    public event Action<MixRecipe> OnMixSucceeded;
+    public event Action OnMixFailed;
+    public event Action<MixRecipe, GameObject> OnResultTapped;
 
     // tracks spawned results so we can detect taps on them
     private class SpawnedResult
@@ -27,12 +38,6 @@ public class MixManager : MonoBehaviour
         public MixRecipe recipe;
     }
     private readonly List<SpawnedResult> spawnedResults = new List<SpawnedResult>();
-
-    private void Start()
-    {
-        Instructions.SetActive(true);
-        textInstructions.SetText(startInstruction);
-    }
 
     void Update()
     {
@@ -64,7 +69,21 @@ public class MixManager : MonoBehaviour
         }
 #endif
     }
-
+    public bool IsOverResult(Vector2 screenPos)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+        foreach (RaycastHit hit in Physics.RaycastAll(ray))
+        {
+            foreach (SpawnedResult result in spawnedResults)
+            {
+                if (result.obj == null) continue;
+                Transform t = result.obj.transform;
+                if (hit.collider.transform == t || hit.collider.transform.IsChildOf(t))
+                    return true;
+            }
+        }
+        return false;
+    }
     private void CheckResultTap(Vector2 screenPos)
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
@@ -77,21 +96,12 @@ public class MixManager : MonoBehaviour
                 Transform t = result.obj.transform;
                 if (hit.collider.transform == t || hit.collider.transform.IsChildOf(t))
                 {
-                    OnResultTapped(result);
+                    Debug.Log("Result tapped: " + result.obj.name);
+                    Mission1.Instance.nextScene();
+                    OnResultTapped?.Invoke(result.recipe, result.obj);
                     return;
                 }
             }
-        }
-    }
-
-    private void OnResultTapped(SpawnedResult result)
-    {
-        Debug.Log("Result tapped: " + result.obj.name);
-
-        if (result.recipe.completesMission && Mission1.Instance != null)
-        {
-            UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("Elementer");
-            Mission1.Instance.nextScene();
         }
     }
 
@@ -109,14 +119,24 @@ public class MixManager : MonoBehaviour
 
         if (match != null)
         {
+            instructionsText.SetText("Tap to grab the result.");
+
+            if (warning != null)
+            {
+                warning.SetActive(false);
+            } else
+            {
+                
+            }
             Debug.Log($"Mix success: {match.resultName} formed!");
-            textInstructions.SetText(match.successMessage);
             SpawnResult(match);
+            OnMixSucceeded?.Invoke(match);
         }
         else
         {
+            warning.SetActive(true);
             Debug.Log("Mix failed: no matching recipe.");
-            textInstructions.SetText(failInstruction);
+            OnMixFailed?.Invoke();
         }
     }
 
@@ -180,4 +200,10 @@ public class MixManager : MonoBehaviour
         return ra.Count > 0 && a.Matches(b.GetRequired());
     }
 #endif
+
+    void Start()
+        {
+            instructions.SetActive(true);
+            instructionsText.SetText(instructionsBefore);
+        }
 }

@@ -46,8 +46,10 @@ public class Mission1 : MonoBehaviour
     [Header("Video")]
     public GameObject videoPlayerObject;
     public GameObject videoPlayerObject2;
+    public GameObject videoPlayerObject3;
     public UnityEngine.Video.VideoPlayer videoPlayer;
     public UnityEngine.Video.VideoPlayer videoPlayer2;
+    public UnityEngine.Video.VideoPlayer videoPlayer3;
     
 
     [Header("Backgrounds")]
@@ -64,6 +66,8 @@ public class Mission1 : MonoBehaviour
     {
         Instance = this;
         videoPlayerObject.SetActive(false);
+        videoPlayerObject2.SetActive(false);
+        videoPlayerObject3.SetActive(false);
     }
     void Start()
     {
@@ -446,7 +450,6 @@ public class Mission1 : MonoBehaviour
             //FindAnyObjectByType<ARBackgroundToggle>().SetBackgroundVisible(false);
             missionCamera.SetActive(false);
             missionEventSystem.SetActive(false);
-            
 
         }
 
@@ -454,8 +457,7 @@ public class Mission1 : MonoBehaviour
 
         else if (currentScene == 13)
         {   
-            instructionsBox.SetActive(false);
-            instructionsBox.SetActive(false);
+            SceneManager.UnloadSceneAsync("Elementer");
             nextButton.enabled = false;
             backButton.enabled = false;
 
@@ -487,6 +489,23 @@ public class Mission1 : MonoBehaviour
                 btnFs.onClick.AddListener(() => { nextScene(); Destroy(fullscreenButton); nextButton.enabled = true; backButton.enabled = true; });
             }
 
+        }
+        else if (currentScene == 14)
+        {
+            foreach (Transform child in buttonsChoicesContainer) {
+                Destroy(child.gameObject);
+            }
+            fadeAnimator.Play("Fadeout");
+
+            dialogueObject.SetActive(false);
+            backButton.interactable = false;
+            nextButton.interactable = false;
+
+            videoPlayerObject3.SetActive(true);
+            videoPlayer3.isLooping = false;
+            videoPlayer3.prepareCompleted += (vp) => vp.Play();
+            videoPlayer3.loopPointReached += OnVideoFinished;
+            videoPlayer3.Prepare();
         }
 
         else
