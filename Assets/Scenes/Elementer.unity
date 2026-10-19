@@ -2559,7 +2559,10 @@ MonoBehaviour:
   elementSpawner: {fileID: 6416918239802352244}
   Instructions: {fileID: 1706153612}
   textInstructions: {fileID: 1037707206}
-  waterPrefab: {fileID: 5907619279545587866, guid: b2ce228688b9cc4458834e626a7e84a4, type: 3}
+  recipes:
+  - {fileID: 11400000, guid: ae8db97e12ec00148b66786e6765da26, type: 2}
+  startInstruction: Create Water
+  failInstruction: That doesn't make anything. Try another mix.
 --- !u!1 &1114732545
 GameObject:
   m_ObjectHideFlags: 0

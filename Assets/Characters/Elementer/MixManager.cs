@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -11,11 +12,27 @@ public class MixManager : MonoBehaviour
     public GameObject Instructions;
     public TextMeshProUGUI textInstructions;
 
-    [Header("Water Recipe (H2O)")]
-    public GameObject waterPrefab;
+    [Header("Recipes")]
+    [Tooltip("Drag all MixRecipe assets here (or use the context menu 'Load All Recipes From Folder').")]
+    public List<MixRecipe> recipes = new List<MixRecipe>();
+
+    [Header("Text")]
+    public string startInstruction = "Create Water";
+    public string failInstruction = "That doesn't make anything. Try another mix.";
 
     // tracks spawned results so we can detect taps on them
-    private List<GameObject> spawnedResults = new List<GameObject>();
+    private class SpawnedResult
+    {
+        public GameObject obj;
+        public MixRecipe recipe;
+    }
+    private readonly List<SpawnedResult> spawnedResults = new List<SpawnedResult>();
+
+    private void Start()
+    {
+        Instructions.SetActive(true);
+        textInstructions.SetText(startInstruction);
+    }
 
     void Update()
     {
@@ -53,9 +70,12 @@ public class MixManager : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            foreach (GameObject result in spawnedResults)
+            foreach (SpawnedResult result in spawnedResults)
             {
-                if (hit.collider.transform == result.transform || hit.collider.transform.IsChildOf(result.transform))
+                if (result.obj == null) continue;
+
+                Transform t = result.obj.transform;
+                if (hit.collider.transform == t || hit.collider.transform.IsChildOf(t))
                 {
                     OnResultTapped(result);
                     return;
@@ -64,11 +84,11 @@ public class MixManager : MonoBehaviour
         }
     }
 
-    private void OnResultTapped(GameObject result)
+    private void OnResultTapped(SpawnedResult result)
     {
-        Debug.Log("Result tapped: " + result.name);
+        Debug.Log("Result tapped: " + result.obj.name);
 
-        if (Mission1.Instance != null)
+        if (result.recipe.completesMission && Mission1.Instance != null)
         {
             UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("Elementer");
             Mission1.Instance.nextScene();
@@ -77,40 +97,87 @@ public class MixManager : MonoBehaviour
 
     public void OnMixPressed()
     {
-        Dictionary<string, int> counts = ElementListUI.Instance.GetCounts();
-
-        bool isWater =
-            counts.Count == 2 &&
-            counts.ContainsKey("Hydrogen") && counts["Hydrogen"] == 2 &&
-            counts.ContainsKey("Oxygen") && counts["Oxygen"] == 1;
-
-        if (isWater)
+        // Normalise names so "hydrogen" and "Hydrogen" both work
+        Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        foreach (var kv in ElementListUI.Instance.GetCounts())
         {
-            Debug.Log("Mix success: Water formed!");
-            textInstructions.SetText("Tap to grab the water.");
+            if (kv.Value <= 0) continue;
+            counts[kv.Key.Trim()] = kv.Value;
+        }
 
-            SpawnResult(waterPrefab);
-            }
-            else
-            {
-                Debug.Log("Mix failed: no matching recipe.");
-            }
+        MixRecipe match = FindRecipe(counts);
+
+        if (match != null)
+        {
+            Debug.Log($"Mix success: {match.resultName} formed!");
+            textInstructions.SetText(match.successMessage);
+            SpawnResult(match);
+        }
+        else
+        {
+            Debug.Log("Mix failed: no matching recipe.");
+            textInstructions.SetText(failInstruction);
+        }
     }
 
-    private void SpawnResult(GameObject resultPrefab)
+    private MixRecipe FindRecipe(Dictionary<string, int> counts)
     {
+        foreach (MixRecipe recipe in recipes)
+        {
+            if (recipe != null && recipe.Matches(counts))
+                return recipe;
+        }
+        return null;
+    }
+
+    private void SpawnResult(MixRecipe recipe)
+    {
+        if (recipe.resultPrefab == null)
+        {
+            Debug.LogError($"Recipe '{recipe.name}' has no result prefab!", recipe);
+            return;
+        }
+
         List<GameObject> spawned = elementSpawner.GetSpawnedElements();
         Vector3 spawnPos = spawned.Count > 0 ? spawned[0].transform.position : Vector3.zero;
 
-        GameObject result = Instantiate(resultPrefab, spawnPos, Quaternion.identity);
-        spawnedResults.Add(result);
+        GameObject obj = Instantiate(recipe.resultPrefab, spawnPos, Quaternion.identity);
+        spawnedResults.Add(new SpawnedResult { obj = obj, recipe = recipe });
 
         elementSpawner.ClearAllElements();
     }
 
-    private void Start()
+#if UNITY_EDITOR
+    // Handy: right-click the MixManager component > "Load All Recipes In Project"
+    [ContextMenu("Load All Recipes In Project")]
+    private void LoadAllRecipes()
     {
-        Instructions.SetActive(true);
-        textInstructions.SetText("Create Water");
+        recipes.Clear();
+        foreach (string guid in UnityEditor.AssetDatabase.FindAssets("t:MixRecipe"))
+        {
+            string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+            recipes.Add(UnityEditor.AssetDatabase.LoadAssetAtPath<MixRecipe>(path));
+        }
+        UnityEditor.EditorUtility.SetDirty(this);
+        Debug.Log($"Loaded {recipes.Count} recipes.");
     }
+
+    // Warns about two recipes with identical ingredients
+    private void OnValidate()
+    {
+        for (int i = 0; i < recipes.Count; i++)
+        for (int j = i + 1; j < recipes.Count; j++)
+        {
+            if (recipes[i] == null || recipes[j] == null) continue;
+            if (SameIngredients(recipes[i], recipes[j]))
+                Debug.LogWarning($"Duplicate recipes: '{recipes[i].name}' and '{recipes[j].name}' have the same ingredients.", this);
+        }
+    }
+
+    private static bool SameIngredients(MixRecipe a, MixRecipe b)
+    {
+        var ra = a.GetRequired();
+        return ra.Count > 0 && a.Matches(b.GetRequired());
+    }
+#endif
 }
