@@ -2705,7 +2705,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   chat: {fileID: 1233067022}
-  url: http://192.168.1.43:5000/chat
+  url: https://alchemyz-api-visn.onrender.com/chat
 --- !u!1 &1280847722
 GameObject:
   m_ObjectHideFlags: 0

@@ -943,33 +943,32 @@ def check_topic(question):
     return False
 
 
-# ============================================================
+#============================================================
 # GEMINI CLIENT
 # ============================================================
 
 client = genai.Client()
 
+chats = {}
+last_was_chem = {}
 
-chat = client.chats.create(
-    model="gemini-3.5-flash-lite",
-    config={
-        "system_instruction":
-            ALCHEMYZ_INSTRUCTIONS
-    }
-)
+
+def get_chat(user_id):
+    if user_id not in chats:
+        chats[user_id] = client.chats.create(
+            model="gemini-3.5-flash-lite",
+            config={"system_instruction": ALCHEMYZ_INSTRUCTIONS}
+        )
+    return chats[user_id]
+
 
 # PARA MAPATAKBO SA FLASK
 from flask import Flask, request, jsonify
-from google.genai import types
 
 app = Flask(__name__)
 
-previous_question_was_chemistry = False
 
-
-def get_reply(question):
-    global previous_question_was_chemistry
-
+def get_reply(question, user_id):
     if not question.strip():
         return "Please enter a question."
 
@@ -982,125 +981,53 @@ def get_reply(question):
     if is_greeting(question):
         return "Uhh... hello! I'm an AI built by Prof. Zach, ask me something about chemistry."
 
-    # STEP 1: normal chemistry filter
+    # STEP 1: chemistry filter
     chemistry_question = check_topic(question)
 
-    # STEP 2: module-based filter
-    if not chemistry_question:
-        try:
-            module_is_relevant, _ = module_supports_question(question)
-            if module_is_relevant:
-                chemistry_question = True
-        except Exception as e:
-            print("[Module search warning]", e)
-
-    # STEP 3: follow-up questions
+    # STEP 2: follow-up questions
     if (not chemistry_question
-            and previous_question_was_chemistry
+            and last_was_chem.get(user_id, False)
             and is_follow_up(question)):
         chemistry_question = True
 
-    # STEP 4: reject non-chemistry
+    # STEP 3: reject non-chemistry
     if not chemistry_question:
-        previous_question_was_chemistry = False
+        last_was_chem[user_id] = False
         return ("Let's explore chemistry together! I'm here to help you with chemistry. "
                 "Try asking me about an element, a compound, a chemical reaction, "
                 "or something from your chemistry lessons!")
 
-    previous_question_was_chemistry = True
+    last_was_chem[user_id] = True
 
-    # retrieve module content
-    try:
-        module_context, module_results = build_module_context(question, top_k=4)
-    except Exception as e:
-        print("[Module search warning]", e)
-        module_context = ""
-        module_results = []
+    gemini_message = f"""
+You are Prof Zach. Reply in 1-2 short sentences, never more than 2, in character, and follow your rules.
 
-    # build the Gemini message (same two prompts as before)
-    if module_context:
-        gemini_message = f"""
-You are Prof Zach. Reply in 1-2 short sentences, in character, and follow your rules.
-
-The student is asking a chemistry question.
-
-Use the following AlchemyZ chemistry module excerpts as your PRIMARY reference.
-
-MODULE CONTENT
-{module_context}
-
-STUDENT QUESTION
-{question}
-
-INSTRUCTIONS
-1. Answer using the supplied module content whenever possible.
-2. Prefer the terminology and explanations used by the supplied module.
-3. Explain in simple language appropriate for a student.
-4. Do not claim that information came from the module if it was not supplied.
-5. Do not invent information from the module.
-6. If the module does not contain enough information, you may use general chemistry knowledge.
-7. Keep the answer reasonably concise.
-8. Do not copy large portions of the module.
-9. Do not provide dangerous chemistry procedures or instructions.
-"""
-    else:
-        gemini_message = f"""
-You are a friendly conversational chemistry guide. Keep your answer simple and brief: usually 1-3 short sentences. Answer only what the student asked. Avoid headings and long lists unless requested.
-
-The student is asking a chemistry question.
-
-No sufficiently relevant section from the supplied AlchemyZ chemistry modules was found.
-Answer using your general chemistry knowledge.
-Do not claim that the modules contain information that was not retrieved.
+The student is asking a chemistry question. Answer using your general chemistry knowledge.
 Do not provide dangerous chemistry procedures or instructions.
 
 STUDENT QUESTION
 {question}
 """
 
-    # send to Gemini (with module images, same as before)
     try:
-        message_parts = [gemini_message]
-        attached_images = set()
-        for result in module_results:
-            for image_path in result.get("images", []):
-                if image_path in attached_images:
-                    continue
-                attached_images.add(image_path)
-                try:
-                    with open(image_path, "rb") as f:
-                        image_bytes = f.read()
-                    suffix = image_path.lower().rsplit(".", 1)[-1]
-                    mime = "image/jpeg" if suffix in ("jpg", "jpeg") else "image/png"
-                    message_parts.append(types.Part.from_bytes(data=image_bytes, mime_type=mime))
-                except Exception as image_error:
-                    print("[Image warning]", image_error)
-
-        if attached_images:
-            message_parts.append(
-                "The attached images come from the retrieved module slides/pages. "
-                "Use them together with the source text to answer the student's question. "
-                "Describe visible chemistry diagrams or illustrations simply. Do not guess identities "
-                "of people from appearance alone; use slide captions or module text as evidence."
-            )
-
-        response = chat.send_message(message_parts)
+        response = get_chat(user_id).send_message(gemini_message)
         return response.text
-
     except Exception as e:
         print("[Error]", e)
         return "Sorry, I encountered an error while processing your question."
 
+@app.route("/", methods=["GET"])
+def home():
+    return "ok"
 
 @app.route("/chat", methods=["POST"])
 def chat_route():
     data = request.get_json()
     question = data.get("message", "")
-    reply = get_reply(question)
+    user_id = data.get("user_id", "default")
+    reply = get_reply(question, user_id)
     return jsonify({"reply": reply})
 
 
 if __name__ == "__main__":
-    from module_search import load_module_chunks
-    load_module_chunks()   # reads all PDFs/PPTX once, at startup
     app.run(host="0.0.0.0", port=5000)
