@@ -1303,7 +1303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 661b77a82b34f5849b25c4e95673774c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Mission1
-  currentScene: 0
+  currentScene: 1
   missionCombinationComplete: 0
   dialogueLoader: {fileID: 1031063631}
   fadeAnimator: {fileID: 389465236}
@@ -1333,6 +1333,7 @@ MonoBehaviour:
   classroomPicture: {fileID: 21300000, guid: 233a85eda24cbe241aa9e2e86c1e2a9d, type: 3}
   laboratoryPicture: {fileID: 21300000, guid: 6fc714cfef76f8a49a80d50b81b488fa, type: 3}
   forestBackground: {fileID: 21300000, guid: 082b69d04ac135f48a330ece539c372f, type: 3}
+  forestNightBackground: {fileID: 21300000, guid: 065fe103cc5b2894d96cfecc1a049dce, type: 3}
   instructionsBox: {fileID: 0}
   instructionsText: {fileID: 0}
 --- !u!1 &911941090

@@ -56,6 +56,7 @@ public class Mission1 : MonoBehaviour
     public Sprite classroomPicture;
     public Sprite laboratoryPicture;
     public Sprite forestBackground;
+    public Sprite forestNightBackground;
 
     [Header("Instructions")]
     public GameObject instructionsBox;
@@ -453,11 +454,38 @@ public class Mission1 : MonoBehaviour
 
         }
 
+        else if (currentScene == 13)
+        {      
+            missionCamera.SetActive(true);
+            missionEventSystem.SetActive(true);
+
+            SceneManager.UnloadSceneAsync("Elementer");
+
+            dialogueObject.SetActive(true);
+            videoPlayerObject.SetActive(false);
+            foreach (Transform child in buttonsChoicesContainer)
+            {
+                Destroy(child.gameObject);
+            }
+
+            fadeAnimator.Play("Fadeout");
+
+            string[] lines = {
+                    "It worked!",
+                    "I just made water using the Elementer!!!",
+                    "Ok... I have a lot of questions as of now but I think it's best if I hit the hay for tonight.",
+                };
+            GameObject currentTeacher = dialogueLoader.loadDialogue("[Student Name]", elementerPrefab, lines, forestBackground);
+            backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
+
+        }
+
         // OUTRO SCNEEEEEEEEEE
 
-        else if (currentScene == 13)
-        {   
-            SceneManager.UnloadSceneAsync("Elementer");
+        else if (currentScene == 14)
+        {
+            //SceneManager.UnloadSceneAsync("Elementer");
+            dialogueObject.SetActive(false);
             nextButton.enabled = false;
             backButton.enabled = false;
 
@@ -490,7 +518,30 @@ public class Mission1 : MonoBehaviour
             }
 
         }
-        else if (currentScene == 14)
+
+
+        else if (currentScene == 15)
+        {
+            dialogueObject.SetActive(true);
+            videoPlayerObject.SetActive(false);
+            foreach (Transform child in buttonsChoicesContainer)
+            {
+                Destroy(child.gameObject);
+            }
+
+            fadeAnimator.Play("Fadeout");
+
+            string[] lines = {
+                    "..?",
+                    "Huh?",
+                };
+            GameObject currentTeacher = dialogueLoader.loadDialogue("[Student Name]", emptyPrefab, lines, forestNightBackground);
+            backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
+
+        }
+
+
+        else if (currentScene == 16)
         {
             foreach (Transform child in buttonsChoicesContainer) {
                 Destroy(child.gameObject);
@@ -507,6 +558,7 @@ public class Mission1 : MonoBehaviour
             videoPlayer3.loopPointReached += OnVideoFinished;
             videoPlayer3.Prepare();
         }
+
 
         else
         {
