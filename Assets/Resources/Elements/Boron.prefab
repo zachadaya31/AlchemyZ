@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 4c8b83ee7b446514182aa799c70f0f2c, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4c8b83ee7b446514182aa799c70f0f2c, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4c8b83ee7b446514182aa799c70f0f2c, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4c8b83ee7b446514182aa799c70f0f2c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -73,9 +73,6 @@ PrefabInstance:
       addedObject: {fileID: 3937690018686302111}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4c8b83ee7b446514182aa799c70f0f2c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8966384365235222353}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4c8b83ee7b446514182aa799c70f0f2c, type: 3}
-      insertIndex: -1
       addedObject: {fileID: -5511653377671385558}
   m_SourcePrefab: {fileID: 100100000, guid: 4c8b83ee7b446514182aa799c70f0f2c, type: 3}
 --- !u!1 &4301397490450833585 stripped
@@ -98,18 +95,6 @@ MonoBehaviour:
   bobHeight: 0.15
   bobSpeed: 1.5
   groundOffset: 0.15
---- !u!114 &8966384365235222353
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4301397490450833585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14aca871d512e3e49a2984909db87c08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NametagFaceFront
 --- !u!114 &-5511653377671385558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,4 +107,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec5bf8148ada7bc41826cb66defcbcb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElementScale
-  sizeMultiplier: 0.3
+  sizeMultiplier: 0.2

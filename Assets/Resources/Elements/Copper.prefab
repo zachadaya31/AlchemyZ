@@ -62,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 73122c34df366a54eb23a697ff8134db, type: 3}
       propertyPath: m_Name
-      value: Cooper
+      value: Copper
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -107,4 +107,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec5bf8148ada7bc41826cb66defcbcb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElementScale
-  sizeMultiplier: 0.3
+  sizeMultiplier: 0.35
