@@ -65,7 +65,8 @@ PrefabInstance:
       value: Phosphorus
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: -8700617353114198275, guid: f946a5be5f93d714eb792a793d549ab7, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f946a5be5f93d714eb792a793d549ab7, type: 3}
