@@ -506,6 +506,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 144286225}
   m_CullTransparentMesh: 1
+--- !u!1 &216132886
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 216132887}
+  m_Layer: 0
+  m_Name: Prefabs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &216132887
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 216132886}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 178.315, y: 229.2082, z: 57.83689}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &253819063
 GameObject:
   m_ObjectHideFlags: 0
@@ -2433,6 +2464,7 @@ MonoBehaviour:
   elementSpawner: {fileID: 6416918239802352244}
   recipes:
   - {fileID: 11400000, guid: bf992bc28157b0642ab2227249b68e1e, type: 2}
+  - {fileID: 11400000, guid: 5b891e8da337eeb43b3f49e1293fc761, type: 2}
   instructions: {fileID: 600089305}
   instructionsText: {fileID: 1446369963}
   warning: {fileID: 1079250608}
@@ -5099,7 +5131,7 @@ PrefabInstance:
       objectReference: {fileID: 1112979728}
     - target: {fileID: 996908749684844751, guid: a5b73b41bc8dbca4980a5fc1552c2efc, type: 3}
       propertyPath: elementScale
-      value: 0.7
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 996908749684844751, guid: a5b73b41bc8dbca4980a5fc1552c2efc, type: 3}
       propertyPath: elementLibrary
@@ -5198,3 +5230,4 @@ SceneRoots:
   - {fileID: 133645892}
   - {fileID: 273616538}
   - {fileID: 2127487843}
+  - {fileID: 216132887}

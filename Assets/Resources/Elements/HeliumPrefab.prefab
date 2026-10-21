@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6404775043660087404}
   - component: {fileID: 5720761925639903797}
   - component: {fileID: -5554245125707091236}
+  - component: {fileID: 2917043073919669802}
   m_Layer: 0
   m_Name: HeliumPrefab
   m_TagString: Untagged
@@ -28,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 704.5164, y: 0, z: -12644.685}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5129940469729719884}
@@ -70,6 +71,19 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.2
   m_Center: {x: -0.05, y: 0.06, z: 0.16}
+--- !u!114 &2917043073919669802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2572228101673202867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec5bf8148ada7bc41826cb66defcbcb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ElementScale
+  sizeMultiplier: 0.3
 --- !u!1001 &7922510104787327103
 PrefabInstance:
   m_ObjectHideFlags: 0

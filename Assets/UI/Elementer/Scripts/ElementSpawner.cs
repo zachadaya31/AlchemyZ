@@ -130,8 +130,7 @@ public class ElementSpawner : MonoBehaviour
 
     public void spawnElement(Vector2 touchPosition)
     {
-
-        GameObject elementToSpawn = Resources.Load<GameObject>("Elements/" + ElementSelecter.elementSelected + "Prefab");
+        GameObject elementToSpawn = Resources.Load<GameObject>("Elements/" + ElementSelecter.elementSelected);
 
         if (raycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
         {
@@ -142,15 +141,23 @@ public class ElementSpawner : MonoBehaviour
             Quaternion faceCameraRotation = Quaternion.LookRotation(directionToCamera);
 
             GameObject spawned = Instantiate(elementToSpawn, hitPose.position, faceCameraRotation);
-            spawned.transform.localScale = Vector3.one * elementScale;
+
+            // NEW: Check if the prefab has a custom scale modifier, default to 1.0f if missing
+            float multiplier = 1.0f;
+            ElementScale scaleConfig = spawned.GetComponent<ElementScale>();
+            if (scaleConfig != null)
+            {
+                multiplier = scaleConfig.sizeMultiplier;
+            }
+
+            // Apply base scale multiplied by the specific prefab's factor
+            spawned.transform.localScale = Vector3.one * elementScale * multiplier;
 
             spawnedElements.Add(spawned);
             elementNames[spawned] = ElementSelecter.elementSelected;
 
-            // NEW: tell the panel to add a row
+            // tell the panel to add a row
             ElementListUI.Instance.AddRow(ElementSelecter.elementSelected);
-
-
         }
         else
         {
