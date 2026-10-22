@@ -5,7 +5,7 @@ using TMPro;
 
 //using Unity.Android.Gradle;
 using Unity.VisualScripting;
-using UnityEditor.Rendering;
+//using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -459,7 +459,7 @@ public class Mission1 : MonoBehaviour
             missionCamera.SetActive(true);
             missionEventSystem.SetActive(true);
 
-            SceneManager.UnloadSceneAsync("Elementer");
+            _ = SceneManager.UnloadSceneAsync("Elementer");
 
             dialogueObject.SetActive(true);
             videoPlayerObject.SetActive(false);
