@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6722085885383957590, guid: 96db3d61d8bc56845bbb54b98fb68c44, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 96db3d61d8bc56845bbb54b98fb68c44, type: 3}
       propertyPath: m_Name
       value: Thorium
@@ -74,6 +78,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 96db3d61d8bc56845bbb54b98fb68c44, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4538672927022417971}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 96db3d61d8bc56845bbb54b98fb68c44, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4027884439256763374}
   m_SourcePrefab: {fileID: 100100000, guid: 96db3d61d8bc56845bbb54b98fb68c44, type: 3}
 --- !u!1 &1150514556224955294 stripped
 GameObject:
@@ -108,3 +115,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElementScale
   sizeMultiplier: 0.3
+--- !u!65 &4027884439256763374
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150514556224955294}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.0885468, y: 1.6308593, z: 2.074585}
+  m_Center: {x: -0.02819061, y: 0.000406901, z: -0.04170735}

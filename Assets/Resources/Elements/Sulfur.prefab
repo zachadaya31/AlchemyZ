@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6722085885383957590, guid: ef586f55dbe6a8944baefa5bbada08de, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ef586f55dbe6a8944baefa5bbada08de, type: 3}
       propertyPath: m_Name
       value: Sulfur
@@ -78,6 +82,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ef586f55dbe6a8944baefa5bbada08de, type: 3}
       insertIndex: -1
       addedObject: {fileID: -9072072287973074425}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ef586f55dbe6a8944baefa5bbada08de, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7551665307186563290}
   m_SourcePrefab: {fileID: 100100000, guid: ef586f55dbe6a8944baefa5bbada08de, type: 3}
 --- !u!1 &7115956041142339540 stripped
 GameObject:
@@ -112,3 +119,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElementScale
   sizeMultiplier: 0.3
+--- !u!65 &7551665307186563290
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7115956041142339540}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.6962687, y: 1.7711384, z: 1.5983073}
+  m_Center: {x: -0.2715047, y: 0.04185994, z: 0.11779784}
