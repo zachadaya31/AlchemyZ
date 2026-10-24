@@ -29,6 +29,7 @@ public class ElementButtonPressed : MonoBehaviour
             // Set the static global variable
             ElementSelecter.elementSelected = cleanName;
             Debug.Log("Element selected wallahi: " + ElementSelecter.elementSelected);
+            ElementSelecter.instance.updateElementButtonName(ElementSelecter.elementSelected.ToString());
         }
 
         // 2. Find and close Valorant Effect in the scene

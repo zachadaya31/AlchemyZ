@@ -22,6 +22,7 @@ public class Mission1 : MonoBehaviour
     public GameObject scientistPrefab;
     public GameObject emptyPrefab;
     public GameObject elementerPrefab;
+    public GameObject elementerAIPrefab;
 
     [Header("Called on Runtime")]
     public Animator teacherAnimations;
@@ -42,6 +43,7 @@ public class Mission1 : MonoBehaviour
     public GameObject dialogueObject;
     public GameObject dialogueBox;
     public GameObject backgroundAnchor;
+    public GameObject characterAnchor;
 
     [Header("Video")]
     public GameObject videoPlayerObject;
@@ -62,6 +64,9 @@ public class Mission1 : MonoBehaviour
     public GameObject instructionsBox;
     public TextMeshProUGUI instructionsText;
 
+    [Header("Student Info")]    
+    public string studentFirstName;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
@@ -72,6 +77,7 @@ public class Mission1 : MonoBehaviour
     }
     void Start()
     {
+        studentFirstName = SessionManager.Instance.studentFirstName;
         nextScene();
     }
 
@@ -95,7 +101,7 @@ public class Mission1 : MonoBehaviour
             string[] lines = {
                 "Okay class... For the last question",
                 "What do you get when you combine 2 Hydrogen atoms and 1 Oxygen atom?",
-                "How about you, [StudentName]?"
+                "How about you, "+ studentFirstName + "?"
             };
             GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines, classroomPicture);
             teacherAnimations = currentTeacher.GetComponent<Animator>();
@@ -404,7 +410,7 @@ public class Mission1 : MonoBehaviour
                     "I think i'm gonna pass out...",
                     "I need some water..."
                 };
-                GameObject currentTeacher = dialogueLoader.loadDialogue("[Student Name]", emptyPrefab, lines, forestBackground);
+                GameObject currentTeacher = dialogueLoader.loadDialogue(studentFirstName, emptyPrefab, lines, forestBackground);
                 backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
                 
         }
@@ -437,7 +443,7 @@ public class Mission1 : MonoBehaviour
                     "I'll try to make some water to drink.",
                     "Let's give this a shot"
                 };
-                GameObject currentTeacher = dialogueLoader.loadDialogue("[Student Name]", elementerPrefab, lines, forestBackground);
+                GameObject currentTeacher = dialogueLoader.loadDialogue(studentFirstName, elementerPrefab, lines, forestBackground);
                 backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
                 
         }
@@ -475,7 +481,7 @@ public class Mission1 : MonoBehaviour
                     "I just made water using the Elementer!!!",
                     "Ok... I have a lot of questions as of now but I think it's best if I hit the hay for tonight.",
                 };
-            GameObject currentTeacher = dialogueLoader.loadDialogue("[Student Name]", elementerPrefab, lines, forestBackground);
+            GameObject currentTeacher = dialogueLoader.loadDialogue(studentFirstName, elementerPrefab, lines, forestBackground);
             backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
 
         }
@@ -535,12 +541,12 @@ public class Mission1 : MonoBehaviour
                     "..?",
                     "Huh?",
                 };
-            GameObject currentTeacher = dialogueLoader.loadDialogue("[Student Name]", emptyPrefab, lines, forestNightBackground);
+            GameObject currentTeacher = dialogueLoader.loadDialogue(studentFirstName, emptyPrefab, lines, forestNightBackground);
             backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
 
         }
 
-
+        // forst night scene
         else if (currentScene == 16)
         {
             foreach (Transform child in buttonsChoicesContainer) {
@@ -559,6 +565,99 @@ public class Mission1 : MonoBehaviour
             videoPlayer3.Prepare();
         }
 
+        else if (currentScene == 17)
+        {
+            dialogueObject.SetActive(true);
+            videoPlayerObject.SetActive(false);
+            foreach (Transform child in buttonsChoicesContainer)
+            {
+                Destroy(child.gameObject);
+            }
+
+            fadeAnimator.Play("Fadeout");
+
+            string[] lines = {
+                "Professor Zach?!",
+                "Is that you?!",
+            };
+
+            GameObject currentTeacher = dialogueLoader.loadDialogue(studentFirstName, emptyPrefab, lines, forestNightBackground);
+            
+            backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
+        }
+
+        else if (currentScene == 18)
+        {
+            dialogueObject.SetActive(true);
+            videoPlayerObject.SetActive(false);
+            foreach (Transform child in buttonsChoicesContainer)
+            {
+                Destroy(child.gameObject);
+            }
+
+            fadeAnimator.Play("Fadeout");
+
+            string[] lines = {
+                studentFirstName + ", my apprentice!",
+                "I'm not exactly Professor Zach...",
+                "I'm an AI built into the elementer by Prof. Zach!!!",
+                "It seems that the Elementer overloaded and it accidentally opened up an interdimensional portal!",
+                "Based on my calculations, you and Professor Zach was put into different dimensions.",
+            };
+
+            GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Zach AI", elementerAIPrefab, lines, forestNightBackground);
+            
+            backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
+        }
+
+        else if (currentScene == 19)
+        {
+            dialogueObject.SetActive(true);
+            videoPlayerObject.SetActive(false);
+            foreach (Transform child in buttonsChoicesContainer)
+            {
+                Destroy(child.gameObject);
+            }
+
+            fadeAnimator.Play("Fadeout");
+
+            string[] lines =
+            {
+                "WHAT?!",
+                "Another dimension?! Interdimensional portals?!",
+                "I don't get any of this...!"
+            };
+
+            GameObject currentTeacher = dialogueLoader.loadDialogue(studentFirstName, emptyPrefab, lines, forestNightBackground);
+            
+            backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
+        }
+
+        else if (currentScene == 20)
+        {
+            dialogueObject.SetActive(true);
+            videoPlayerObject.SetActive(false);
+            foreach (Transform child in buttonsChoicesContainer)
+            {
+                Destroy(child.gameObject);
+            }
+
+            fadeAnimator.Play("Fadeout");
+
+            string[] lines =
+            {
+                "I know this is a lot to uncover and this might overwhelm you.",
+                "This is why Professor Zach built an AI like me!",
+                "Don't worry I'll get us out of this",
+                "But first, because of the overloading, my database seems to be miscalibrated...",
+                "I need you to answer these questions just to refresh the Elementer's Information Databse",
+                "Let's start."
+            };
+
+            GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Zach AI", elementerAIPrefab, lines, forestNightBackground);
+            
+            backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
+        }
 
         else
         {
@@ -570,16 +669,19 @@ public class Mission1 : MonoBehaviour
         
     }
 
-    void OnVideoFinished(UnityEngine.Video.VideoPlayer vp)
-    {
-        vp.loopPointReached -= OnVideoFinished;
-        videoPlayerObject.SetActive(false);
-        videoPlayerObject2.SetActive(false);
-        dialogueObject.SetActive(true);
-        backButton.interactable = true;
-        nextButton.interactable = true;
-        nextScene();
-    }
+void OnVideoFinished(UnityEngine.Video.VideoPlayer vp)
+{
+    vp.loopPointReached -= OnVideoFinished;
+    
+    videoPlayerObject.SetActive(false);
+    videoPlayerObject2.SetActive(false);
+    videoPlayerObject3.SetActive(false);
+    
+    dialogueObject.SetActive(true);
+    backButton.interactable = true;
+    nextButton.interactable = true;
+    nextScene();
+}
 
     private IEnumerator LoadARScene(string AR_SCENE_NAME)
     {

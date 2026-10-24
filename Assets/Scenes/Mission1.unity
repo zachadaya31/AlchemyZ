@@ -119,6 +119,60 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &61710914
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 61710915}
+  - component: {fileID: 61710916}
+  m_Layer: 0
+  m_Name: CharacterAnchor (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &61710915
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 61710914}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.07690025, y: 0.2509124, z: 0.023307296, w: 0.96466887}
+  m_LocalPosition: {x: -1.85, y: -0.48, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2138352725}
+  m_LocalEulerAnglesHint: {x: 7.855, y: 29.492, z: 4.839}
+--- !u!95 &61710916
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 61710914}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4d48a02e824f1ba40b162c4989a3b86a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &89086993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,7 +1357,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 661b77a82b34f5849b25c4e95673774c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Mission1
-  currentScene: 1
+  currentScene: 0
   missionCombinationComplete: 0
   dialogueLoader: {fileID: 1031063631}
   fadeAnimator: {fileID: 389465236}
@@ -1311,6 +1365,7 @@ MonoBehaviour:
   scientistPrefab: {fileID: 6845112136261519840, guid: e0a50000952ff134b9150ba6ca2b740b, type: 3}
   emptyPrefab: {fileID: 123877734723939744, guid: 01e7be53f3b669646a1170c04ac57157, type: 3}
   elementerPrefab: {fileID: 4692126221442148055, guid: 288f7a4a832666c4a97737be5cad0dc6, type: 3}
+  elementerAIPrefab: {fileID: 3529771385897817091, guid: db7430485cd65fa46a45cfae2a67ce0c, type: 3}
   teacherAnimations: {fileID: 0}
   missionCamera: {fileID: 262222335}
   missionEventSystem: {fileID: 1721485245}
@@ -1324,6 +1379,7 @@ MonoBehaviour:
   dialogueObject: {fileID: 2138352724}
   dialogueBox: {fileID: 1031063627}
   backgroundAnchor: {fileID: 89086993}
+  characterAnchor: {fileID: 1111681682983031584}
   videoPlayerObject: {fileID: 1177652487}
   videoPlayerObject2: {fileID: 1025357201}
   videoPlayerObject3: {fileID: 911941090}
@@ -1336,6 +1392,7 @@ MonoBehaviour:
   forestNightBackground: {fileID: 21300000, guid: 065fe103cc5b2894d96cfecc1a049dce, type: 3}
   instructionsBox: {fileID: 0}
   instructionsText: {fileID: 0}
+  studentFirstName: 
 --- !u!1 &911941090
 GameObject:
   m_ObjectHideFlags: 0
@@ -2488,6 +2545,7 @@ Transform:
   - {fileID: 593824600}
   - {fileID: 89086994}
   - {fileID: 7201763377184120934}
+  - {fileID: 61710915}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1111681682983031584
@@ -2499,7 +2557,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7201763377184120934}
-  - component: {fileID: 4892540142526737315}
   m_Layer: 0
   m_Name: CharacterAnchor
   m_TagString: Untagged
@@ -2507,28 +2564,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &4892540142526737315
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1111681682983031584}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4d48a02e824f1ba40b162c4989a3b86a, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &7201763377184120934
 Transform:
   m_ObjectHideFlags: 0

@@ -103,6 +103,7 @@ public class ElementNametagTap : MonoBehaviour
         if (bgRect != null) bgRect.sizeDelta = expandedSize;
 
         expanded = true;
+        TutorialManager.Tapped();   // para sa tutorial
     }
 
     void Collapse()

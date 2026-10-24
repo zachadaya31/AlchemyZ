@@ -135,6 +135,11 @@ public class MixManager : MonoBehaviour
         else
         {
             warning.SetActive(true);
+            var flasher = warning.GetComponent<FlashingText>();
+            if (flasher != null)
+            {
+                flasher.TriggerFlash();
+            }
             Debug.Log("Mix failed: no matching recipe.");
             OnMixFailed?.Invoke();
         }
