@@ -4,6 +4,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using Unity.XR.CoreUtils;
+using UnityEngine.SceneManagement;
 
 public class ElementSpawner : MonoBehaviour
 {
@@ -18,6 +20,19 @@ public class ElementSpawner : MonoBehaviour
     public float elementScale = 1f;
 
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
+
+    private Camera arCam;
+
+    private Camera GetCam()
+    {
+        if (arCam == null)
+        {
+            XROrigin origin = FindAnyObjectByType<XROrigin>();
+            if (origin != null && origin.Camera != null) arCam = origin.Camera;
+            else arCam = Camera.main;
+        }
+        return arCam;
+    }
 
     // tracks every element currently spawned
     private List<GameObject> spawnedElements = new List<GameObject>();
@@ -75,7 +90,7 @@ public class ElementSpawner : MonoBehaviour
 
     private GameObject GetElementUnderPosition(Vector2 screenPos)
     {
-        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+        Ray ray = GetCam().ScreenPointToRay(screenPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             // walk up in case the collider is on a child object
@@ -136,11 +151,13 @@ public class ElementSpawner : MonoBehaviour
         {
             Pose hitPose = hits[0].pose;
 
-            Vector3 directionToCamera = Camera.main.transform.position - hitPose.position;
+            Vector3 directionToCamera = GetCam().transform.position - hitPose.position;
             directionToCamera.y = 0f;
             Quaternion faceCameraRotation = Quaternion.LookRotation(directionToCamera);
 
             GameObject spawned = Instantiate(elementToSpawn, hitPose.position, faceCameraRotation);
+            SceneManager.MoveGameObjectToScene(spawned, gameObject.scene); // NEW
+            
 
             // NEW: Check if the prefab has a custom scale modifier, default to 1.0f if missing
             float multiplier = 1.0f;

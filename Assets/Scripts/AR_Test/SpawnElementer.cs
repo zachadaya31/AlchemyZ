@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.XR.ARFoundation;
 
 public class SpawnElementer : MonoBehaviour
@@ -16,7 +17,8 @@ public class SpawnElementer : MonoBehaviour
         {
             foreach (var plane in planeManager.trackables)
             {
-                Instantiate(elementer, plane.transform.position, Quaternion.Euler(0f, 0f, -90f));
+                GameObject spawned = Instantiate(elementer, plane.transform.position, Quaternion.Euler(0f, 0f, -90f));
+                SceneManager.MoveGameObjectToScene(spawned, gameObject.scene); // NEW
                 elementer.transform.LookAt(Camera.main.transform);
                 hasSpawned = true;
                 break;

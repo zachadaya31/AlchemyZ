@@ -5,7 +5,7 @@ public class SessionManager : MonoBehaviour
 {
     public static SessionManager Instance;
 
-    public int studentID;
+    public string studentID;
     public string studentFirstName;
     public string studentLastName;
     public int sectionID;

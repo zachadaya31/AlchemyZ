@@ -1,21 +1,22 @@
 using UnityEngine;
+using Unity.XR.CoreUtils;
 
 public class NametagFaceFront : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    Camera arCam;
 
     void LateUpdate()
     {
-        transform.rotation = Camera.main.transform.rotation;
+        if (arCam == null)
+        {
+            XROrigin origin = FindAnyObjectByType<XROrigin>();
+            if (origin != null && origin.Camera != null) arCam = origin.Camera;
+            else arCam = Camera.main;
+        }
+
+        if (arCam != null)
+        {
+            transform.rotation = arCam.transform.rotation;
+        }
     }
 }

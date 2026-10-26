@@ -13,16 +13,16 @@ public class LoginManager : MonoBehaviour
 
     public void loginButtonClicked()
     {
-        int tempID = int.Parse(inputID.text.Trim());
+        string tempID = inputID.text.Trim();
         string tempPassword = inputPassword.text.Trim();
 
         login(tempID, tempPassword);
     }
 
-    public async void login(int tempID, string tempPassword)
+    public async void login(string tempID, string tempPassword)
     {
 
-        int studentID = tempID; 
+        string studentID = tempID;
         string studentPassword = tempPassword;
 
         var responseStudent = await SupabaseManager.Instance.supabase

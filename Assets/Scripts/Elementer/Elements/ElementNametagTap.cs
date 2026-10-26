@@ -68,11 +68,15 @@ public class ElementNametagTap : MonoBehaviour
 
     bool HitThisElement(Vector2 screenPos)
     {
-        Camera cam = Camera.main;
-        if (cam == null) return false;
-        Ray ray = cam.ScreenPointToRay(screenPos);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
-            return hit.transform == transform || hit.transform.IsChildOf(transform);
+        foreach (Camera cam in Camera.allCameras)
+        {
+            Ray ray = cam.ScreenPointToRay(screenPos);
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+            {
+                if (hit.transform == transform || hit.transform.IsChildOf(transform))
+                    return true;
+            }
+        }
         return false;
     }
 

@@ -15,12 +15,15 @@ public class TutorialManager : MonoBehaviour
     public Button profZachButton;        // Button - Prof Zach
     public Button mixButton;             // Button - Mix
 
-    [Header("Optional: scene to load after Mix")]
-    public string nextSceneName = "";
+    [Header("Optional: auto-found if left empty")]
+    public ElementSpawner spawner;       // ButtonPressManager has this
 
     int step = 0;
     int baseline = 0;
     bool clearPressed, zachPressed, mixPressed, tapped, chatSeen;
+
+    // counts from the frame BEFORE Mix was pressed (Mix removes the elements)
+    int lastH, lastO, lastTotal;
 
     void Awake()
     {
@@ -29,10 +32,12 @@ public class TutorialManager : MonoBehaviour
 
     void Start()
     {
+        if (spawner == null) spawner = FindAnyObjectByType<ElementSpawner>();
+
         clearButton.onClick.AddListener(() => clearPressed = true);
         profZachButton.onClick.AddListener(() => zachPressed = true);
         mixButton.onClick.AddListener(() => mixPressed = true);
-        ShowStep(0);    
+        ShowStep(0);
     }
 
     // ElementNametagTap calls this when an element is tapped
@@ -44,6 +49,19 @@ public class TutorialManager : MonoBehaviour
     int ElementCount()
     {
         return FindObjectsByType<ElementNametagTap>().Length;
+    }
+
+    // counts spawned elements by name, e.g. "Hydrogen"
+    int CountElement(string elementName)
+    {
+        int count = 0;
+        foreach (GameObject go in spawner.GetSpawnedElements())
+        {
+            if (go == null) continue;
+            string cleanName = go.name.Replace("(Clone)", "").Trim();
+            if (cleanName.ToLower() == elementName.ToLower()) count++;
+        }
+        return count;
     }
 
     void ShowStep(int n)
@@ -66,17 +84,57 @@ public class TutorialManager : MonoBehaviour
             case 5: instructionText.text = "Place a few more elements, then press Clear to remove everything at once."; break;
             case 6: instructionText.text = "Need help? Press Prof Zach to chat with the AI."; break;
             case 7: instructionText.text = "Ask Prof Zach anything, then close the chat when you're done."; break;
-            case 8: instructionText.text = "Last step! Press Mix to see what happens."; break;
+            case 8: instructionText.text = "Now let's create Water! Place 2 Hydrogen and 1 Oxygen, then press Mix."; break;
             case 9:
                 instructionText.text = "Uh oh... something is wrong with the Elementer!";
-                if (nextSceneName != "") Invoke("LoadNext", 3f);
+                Invoke("Finish", 0.5f);
                 break;
         }
     }
 
-    void LoadNext()
+    void CheckWater()
     {
-        SceneManager.LoadScene(nextSceneName);
+        // use the snapshot, because MixManager already removed the elements by now
+        int h = lastH;
+        int o = lastO;
+        int total = lastTotal;
+        Debug.Log("Tutorial check: Hydrogen=" + h + " Oxygen=" + o + " Total=" + total);
+
+        // correct: exactly 2 Hydrogen, 1 Oxygen and nothing else
+        if (h == 2 && o == 1 && total == 3)
+        {
+            ShowStep(9);
+            return;
+        }
+
+        string msg = "";
+        if (h < 2) msg += "You're missing " + (2 - h) + " more Hydrogen! ";
+        if (o < 1) msg += "You're missing " + (1 - o) + " more Oxygen! ";
+        if (h > 2 || o > 1) msg += "Too many! Remember, water only needs 2 Hydrogen atoms and 1 Oxygen atom. ";
+        if (total > h + o) msg += "Remove the other elements too. ";
+
+        instructionText.text = msg;
+    }
+
+    void TakeSnapshot()
+    {
+        lastH = CountElement("Hydrogen");
+        lastO = CountElement("Oxygen");
+        lastTotal = spawner.GetSpawnedElements().Count;
+    }
+
+    // goes to the next Mission1 scene and removes the tutorial scene
+    void Finish()
+    {
+        if (Mission1.Instance != null)
+        {
+            Mission1.Instance.nextScene();
+            SceneManager.UnloadSceneAsync(gameObject.scene);
+        }
+        else
+        {
+            Debug.Log("Tutorial done. No Mission1 found, so staying in this scene.");
+        }
     }
 
     void Update()
@@ -94,7 +152,17 @@ public class TutorialManager : MonoBehaviour
                 if (chatbox.activeInHierarchy) chatSeen = true;
                 if (chatSeen && !chatbox.activeInHierarchy) ShowStep(8);
                 break;
-            case 8: if (mixPressed) ShowStep(9); break;
+            case 8:
+                if (!mixPressed)
+                {
+                    TakeSnapshot();
+                }
+                else
+                {
+                    mixPressed = false;
+                    CheckWater();
+                }
+                break;
         }
     }
 }

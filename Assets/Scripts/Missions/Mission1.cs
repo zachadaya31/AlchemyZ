@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Threading.Tasks;
 
 public class Mission1 : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class Mission1 : MonoBehaviour
 
     [Header("Buttons Funcationality")]
     public GameObject buttonPrefab;
+    public GameObject elementerPTQButtonPrefab;
     public Transform buttonsChoicesContainer;
     public TextMeshProUGUI questionPrefab;
     public Button backButton;
@@ -105,7 +107,10 @@ public class Mission1 : MonoBehaviour
             };
             GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines, classroomPicture);
             teacherAnimations = currentTeacher.GetComponent<Animator>();
-            teacherAnimations.SetTrigger("Speaks");
+            if (teacherAnimations != null)
+            {
+                teacherAnimations.SetTrigger("Speaks");
+            }
         }
         // --------------------------------------------------------------
 
@@ -163,6 +168,8 @@ public class Mission1 : MonoBehaviour
                     await SupabaseManager.Instance.supabase
                         .From<Chapter_Answers_Record>()
                         .Insert(newRecord);
+
+                    await AddScore(newRecord.MCQ_PCQ, earnedScore); 
                 }
 
                 backButton.interactable = true;
@@ -195,7 +202,10 @@ public class Mission1 : MonoBehaviour
                 fadeAnimator.Play("Fadeout50");
                 GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines, classroomPicture);
                 teacherAnimations = currentTeacher.GetComponent<Animator>();
-                teacherAnimations.SetTrigger("Speaks");
+                if (teacherAnimations != null)
+                {
+                    teacherAnimations.SetTrigger("Speaks");
+                }
             }
         }
         // --------------------------------------------------------------------------------
@@ -320,7 +330,7 @@ public class Mission1 : MonoBehaviour
 
             async void choiceButtonClicked(string choice)
             {
-   
+                // sa database to ichecheck yung record answer tables or yung history ng answers ng students
                 if (recordAnswer.Models.Count > 0)
                 {
                     Debug.Log("student already answered");
@@ -332,7 +342,7 @@ public class Mission1 : MonoBehaviour
                     var newRecord = new Chapter_Answers_Record
                     {
                         chapterID = 1,
-                        MCQ_PCQ = "MCQ 1",
+                        MCQ_PCQ = "MCQ 2",
                         
                         studentID = SessionManager.Instance.studentID,
                         Question = questionText,
@@ -342,6 +352,8 @@ public class Mission1 : MonoBehaviour
                     await SupabaseManager.Instance.supabase
                         .From<Chapter_Answers_Record>()
                         .Insert(newRecord);
+
+                        await AddScore(newRecord.MCQ_PCQ, earnedScore); 
                 }
 
                 backButton.interactable = true;
@@ -352,7 +364,7 @@ public class Mission1 : MonoBehaviour
                     lines = new string[] {
                         "Correct!",
                         "The symbol that represents Hydrogen is H!",
-                        "Now, watch closely as the Elementer spawns a Hydrogen element",
+                        "Now, "+studentFirstName + ", my apprentice. Try out the Elementer!",
                     };
                 }
                 else
@@ -360,7 +372,7 @@ public class Mission1 : MonoBehaviour
                     lines = new string[] {
                         "Nope, your answer is wrong!",
                         "The symbol that represents Hydrogen is H!",
-                        "Now, watch closely as the Elementer spawns a Hydrogen element"
+                        "Now, "+studentFirstName + ", my apprentice. Try out the Elementer!",
                     };
                 }
 
@@ -372,15 +384,29 @@ public class Mission1 : MonoBehaviour
                 fadeAnimator.Play("Fadeout50");
                 GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Zach", scientistPrefab, lines, laboratoryPicture);
                 teacherAnimations = currentTeacher.GetComponent<Animator>();
-                teacherAnimations.SetTrigger("Speaks");
+                if (teacherAnimations != null)
+                {
+                    teacherAnimations.SetTrigger("Speaks");
+                }
             }
         }
 
         //--------------------------
-        // SCENE 8 - Element spawn video
+        // SCENE 8 - Elementer AR Tutorial Scene
         //--------------------------
 
-        else if (currentScene == 8)
+        else if (currentScene == 8) {
+            fadeAnimator.Play("Fadeout");
+            dialogueObject.SetActive(false);
+            StartCoroutine(LoadARScene("Elementer_Tutorial"));
+            missionCamera.SetActive(true);
+        }
+
+        //--------------------------
+        // SCENE 8 - Elementer overloads and opens portal video || gawa ni clarence toh
+        //--------------------------
+
+        else if (currentScene == 9)
         {
             dialogueObject.SetActive(false);
             backButton.interactable = false;
@@ -394,7 +420,7 @@ public class Mission1 : MonoBehaviour
         //--------------------------
         // SCENE 9 - NASA FOREST NA YUNG STUDENT
         //--------------------------
-        else if (currentScene == 9)
+        else if (currentScene == 10)
         {
                 
                 videoPlayerObject.SetActive(false);
@@ -415,7 +441,7 @@ public class Mission1 : MonoBehaviour
                 
         }
 
-        else if (currentScene == 10)
+        else if (currentScene == 11)
         {
             dialogueObject.SetActive(false);
             backButton.interactable = false;
@@ -427,7 +453,7 @@ public class Mission1 : MonoBehaviour
             videoPlayer2.loopPointReached += OnVideoFinished;
         }
 
-        else if (currentScene == 11)
+        else if (currentScene == 12)
         {
                 
                 videoPlayerObject.SetActive(false);
@@ -441,16 +467,107 @@ public class Mission1 : MonoBehaviour
                     "...",
                     "Is this the Elementer..?",
                     "I'll try to make some water to drink.",
-                    "Let's give this a shot"
+                    "Ok before that, do I remember how to make water?",
+                    "H2O... meaning there are how many Hydrogens in it?"
                 };
                 GameObject currentTeacher = dialogueLoader.loadDialogue(studentFirstName, elementerPrefab, lines, forestBackground);
                 backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
                 
         }
 
+        else if (currentScene == 13)
+        {
+            fadeAnimator.Play("Fadein50");
+            backButton.interactable = false;
+            nextButton.interactable = false;
+            dialogueBox.SetActive(false);
+
+            
+            TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
+            string questionText = question.text = "How many Hydrogen atoms are required to create water?";
+
+            var recordAnswer = await SupabaseManager.Instance.supabase
+            .From<Chapter_Answers_Record>()
+            .Where(x => x.studentID == SessionManager.Instance.studentID)
+            .Where(x => x.Question == questionText)
+            .Get();
+
+            string[] choices = { "1", "2", "3" };
+            string correctChoice = "2";
+            for (int i = 0; i < 3; i++)
+            {
+                GameObject buttonChoices = Instantiate(buttonPrefab, buttonsChoicesContainer);
+                buttonChoices.GetComponentInChildren<TMPro.TMP_Text>().text = choices[i];
+                string currentChoice = choices[i];
+                buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
+            }
+
+            async void choiceButtonClicked(string choice)
+            {
+                // sa database to ichecheck yung record answer tables or yung history ng answers ng students
+                if (recordAnswer.Models.Count > 0)
+                {
+                    Debug.Log("student already answered");
+                }
+                else
+                {
+                    Debug.Log("no student answer. recording answer");
+                    int earnedScore = (choice == correctChoice) ? 1 : 0;
+                    var newRecord = new Chapter_Answers_Record
+                    {
+                        chapterID = 1,
+                        MCQ_PCQ = "MCQ 3",
+                        
+                        studentID = SessionManager.Instance.studentID,
+                        Question = questionText,
+                        Answer = choice,
+                        Score = earnedScore
+                    };
+                    await SupabaseManager.Instance.supabase
+                        .From<Chapter_Answers_Record>()
+                        .Insert(newRecord);
+
+                        await AddScore(newRecord.MCQ_PCQ, earnedScore); 
+                }
+
+                backButton.interactable = true;
+                nextButton.interactable = true;
+                string[] lines;
+                if (choice == "2")
+                {
+                    lines = new string[] {
+                        "I think this is it.",
+                        "2 Hydrogen atoms are needed in the formula H2O.",
+                        "Alright, let's give this a shot. Let's try creating water.",
+                    };
+                }
+                else
+                {
+                    lines = new string[] {
+                        "Hmmm, I think 2 Hydrogen atoms are needed since the formula states H2 inside H2O",
+                        "Yeah, I think that's quite right. 2 Hydrogen atoms.",
+                        "Alright, let's give this a shot. Let's try creating water.",
+                    };
+                }
+
+                foreach (Transform child in buttonsChoicesContainer)
+                {
+                    Destroy(child.gameObject);
+                }
+                dialogueBox.SetActive(true);
+                fadeAnimator.Play("Fadeout50");
+                GameObject currentTeacher = dialogueLoader.loadDialogue(studentFirstName, emptyPrefab, lines, forestBackground);
+                teacherAnimations = currentTeacher.GetComponent<Animator>();
+                if (teacherAnimations != null)
+                {
+                    teacherAnimations.SetTrigger("Speaks");
+                }
+            }
+        }
+
 
         //AR ELEMENTER SCENE
-        else if (currentScene == 12) {
+        else if (currentScene == 14) {
 
             dialogueObject.SetActive(false);
             SceneManager.LoadScene("Elementer", LoadSceneMode.Additive);
@@ -460,7 +577,7 @@ public class Mission1 : MonoBehaviour
 
         }
 
-        else if (currentScene == 13)
+        else if (currentScene == 15)
         {      
             missionCamera.SetActive(true);
             missionEventSystem.SetActive(true);
@@ -488,7 +605,7 @@ public class Mission1 : MonoBehaviour
 
         // OUTRO SCNEEEEEEEEEE
 
-        else if (currentScene == 14)
+        else if (currentScene == 16)
         {
             //SceneManager.UnloadSceneAsync("Elementer");
             dialogueObject.SetActive(false);
@@ -505,14 +622,14 @@ public class Mission1 : MonoBehaviour
             {
                 TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
                 Animator textAnimations = question.gameObject.GetComponent<Animator>();
-                question.text = "Chapter 1: The Alchemist's Apprentice\nCreate Water | Complete";
+                question.text = "Hours pass as you went asleep...";
                 textAnimations.Play("TextFadeinNew");
 
                 yield return new WaitForSeconds(3);
 
                 TextMeshProUGUI continueText = Instantiate(questionPrefab, buttonsChoicesContainer);
                 Animator textAnimations2 = continueText.gameObject.GetComponent<Animator>();
-                continueText.text = "\n\nPress the screen to go back to the main menu...";
+                continueText.text = "\n\nPress the screen to continue...";
                 continueText.fontSize = 50;
                 textAnimations2.Play("TextFadeinNew");
 
@@ -526,7 +643,7 @@ public class Mission1 : MonoBehaviour
         }
 
 
-        else if (currentScene == 15)
+        else if (currentScene == 17)
         {
             dialogueObject.SetActive(true);
             videoPlayerObject.SetActive(false);
@@ -547,7 +664,7 @@ public class Mission1 : MonoBehaviour
         }
 
         // forst night scene
-        else if (currentScene == 16)
+        else if (currentScene == 18)
         {
             foreach (Transform child in buttonsChoicesContainer) {
                 Destroy(child.gameObject);
@@ -565,7 +682,7 @@ public class Mission1 : MonoBehaviour
             videoPlayer3.Prepare();
         }
 
-        else if (currentScene == 17)
+        else if (currentScene == 19)
         {
             dialogueObject.SetActive(true);
             videoPlayerObject.SetActive(false);
@@ -586,7 +703,7 @@ public class Mission1 : MonoBehaviour
             backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
         }
 
-        else if (currentScene == 18)
+        else if (currentScene == 20)
         {
             dialogueObject.SetActive(true);
             videoPlayerObject.SetActive(false);
@@ -600,17 +717,17 @@ public class Mission1 : MonoBehaviour
             string[] lines = {
                 studentFirstName + ", my apprentice!",
                 "I'm not exactly Professor Zach...",
-                "I'm an AI built into the elementer by Prof. Zach!!!",
+                "I'm an AI named Clarence built into the Elementer by Prof. Zach!!!",
                 "It seems that the Elementer overloaded and it accidentally opened up an interdimensional portal!",
                 "Based on my calculations, you and Professor Zach was put into different dimensions.",
             };
 
-            GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Zach AI", elementerAIPrefab, lines, forestNightBackground);
+            GameObject currentTeacher = dialogueLoader.loadDialogue("Clarence AI", elementerAIPrefab, lines, forestNightBackground);
             
             backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
         }
 
-        else if (currentScene == 19)
+        else if (currentScene == 21)
         {
             dialogueObject.SetActive(true);
             videoPlayerObject.SetActive(false);
@@ -624,8 +741,8 @@ public class Mission1 : MonoBehaviour
             string[] lines =
             {
                 "WHAT?!",
-                "Another dimension?! Interdimensional portals?!",
-                "I don't get any of this...!"
+                "Another dimension?!",
+                "What do you mean?!"
             };
 
             GameObject currentTeacher = dialogueLoader.loadDialogue(studentFirstName, emptyPrefab, lines, forestNightBackground);
@@ -633,7 +750,7 @@ public class Mission1 : MonoBehaviour
             backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
         }
 
-        else if (currentScene == 20)
+        else if (currentScene == 22)
         {
             dialogueObject.SetActive(true);
             videoPlayerObject.SetActive(false);
@@ -647,16 +764,102 @@ public class Mission1 : MonoBehaviour
             string[] lines =
             {
                 "I know this is a lot to uncover and this might overwhelm you.",
-                "This is why Professor Zach built an AI like me!",
-                "Don't worry I'll get us out of this",
+                "This is eactly why Professor Zach built an AI like me!",
+                "Don't worry I'll get us out of this.",
                 "But first, because of the overloading, my database seems to be miscalibrated...",
                 "I need you to answer these questions just to refresh the Elementer's Information Databse",
                 "Let's start."
             };
 
-            GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Zach AI", elementerAIPrefab, lines, forestNightBackground);
+            GameObject currentTeacher = dialogueLoader.loadDialogue("Clarence AI", elementerAIPrefab, lines, forestNightBackground);
             
             backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
+        }
+        //MGA PTQ
+        else if (currentScene == 23)
+        {
+            ShowPTQ("PTQ 1",
+                "Which two elements combine to form water?",
+                new string[] { "Hydrogen and Carbon", "Hydrogen and Oxygen", "Oxygen and Nitrogen" },
+                "Hydrogen and Oxygen",
+                "Water is made from Hydrogen and Oxygen!");
+        }
+        else if (currentScene == 24)
+        {
+            ShowPTQ("PTQ 2",
+                "What do you get when 2 Hydrogen atoms bond with 1 Oxygen atom?",
+                new string[] { "Salt", "Water", "Air" },
+                "Water",
+                "2 Hydrogen atoms and 1 Oxygen atom make Water!");
+        }
+        else if (currentScene == 25)
+        {
+            ShowPTQ("PTQ 3",
+                "What is the chemical symbol for Oxygen?",
+                new string[] { "Ox", "Og", "O" },
+                "O",
+                "The symbol that represents Oxygen is O!");
+        }
+        else if (currentScene == 26)
+        {
+            ShowPTQ("PTQ 4",
+                "Which element does the symbol \"H\" stand for on the Periodic Table?",
+                new string[] { "Helium", "Hydrogen", "Hafnium" },
+                "Hydrogen",
+                "The symbol H stands for Hydrogen!");
+        }
+        else if (currentScene == 27)
+        {
+            ShowPTQ("PTQ 5",
+                "In the formula H2O, what does the small \"2\" tell you?",
+                new string[] { "There are 2 Oxygen atoms", "There are 2 Hydrogen atoms", "There are 2 water molecules" },
+                "There are 2 Hydrogen atoms",
+                "The small 2 after H means there are 2 Hydrogen atoms in one water molecule!");
+        }
+        else if (currentScene == 28)
+        {
+            ShowPTQ("PTQ 6",
+                "How many Oxygen atoms are needed to make one water molecule?",
+                new string[] { "2", "3", "1" },
+                "1",
+                "H2O has no number after the O, which means there is only 1 Oxygen atom!");
+        }
+
+        else if (currentScene == 29)
+        {
+            //SceneManager.UnloadSceneAsync("Elementer");
+            dialogueObject.SetActive(false);
+            nextButton.enabled = false;
+            backButton.enabled = false;
+
+            missionCamera.SetActive(true);
+            missionEventSystem.SetActive(true);
+
+            fadeAnimator.Play("Fadein");
+            StartCoroutine(textFade());
+
+            IEnumerator textFade()
+            {
+                TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
+                Animator textAnimations = question.gameObject.GetComponent<Animator>();
+                    question.text = "Chapter 1\nThe Alchemist's Apprentice\nComplete";
+                    textAnimations.Play("TextFadeinNew");
+
+                    yield return new WaitForSeconds(3);
+
+                    TextMeshProUGUI continueText = Instantiate(questionPrefab, buttonsChoicesContainer);
+                Animator textAnimations2 = continueText.gameObject.GetComponent<Animator>();
+                continueText.text = "\n\nPress the screen to go back to the main menu...";
+                continueText.fontSize = 50;
+                textAnimations2.Play("TextFadeinNew");
+
+                yield return new WaitForSeconds(1);
+
+                GameObject fullscreenButton = Instantiate(fullscreenButtonPrefab, canvasContainer);
+                Button btnFs = fullscreenButton.GetComponent<Button>();
+                btnFs.onClick.AddListener(() => { nextScene(); Destroy(fullscreenButton); nextButton.enabled = true; backButton.enabled = true; });
+            }
+
         }
 
         else
@@ -720,6 +923,123 @@ void OnVideoFinished(UnityEngine.Video.VideoPlayer vp)
                     }
                 }
             }
+        }
+    }
+
+    async void ShowPTQ(string label, string questionText, string[] choices, string correctChoice, string explanation)
+    {
+        fadeAnimator.Play("Fadein50");
+        backButton.interactable = false;
+        nextButton.interactable = false;
+        dialogueBox.SetActive(false);
+
+        TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
+        question.text = questionText;
+
+        var recordAnswer = await SupabaseManager.Instance.supabase
+            .From<Chapter_Answers_Record>()
+            .Where(x => x.studentID == SessionManager.Instance.studentID)
+            .Where(x => x.Question == questionText)
+            .Get();
+
+        for (int i = 0; i < choices.Length; i++)
+        {
+            GameObject buttonChoices = Instantiate(elementerPTQButtonPrefab, buttonsChoicesContainer);
+            buttonChoices.GetComponentInChildren<TMPro.TMP_Text>().text = choices[i];
+            string currentChoice = choices[i];
+            buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
+        }
+
+        async void choiceButtonClicked(string choice)
+        {
+            if (recordAnswer.Models.Count > 0)
+            {
+                Debug.Log("student already answered");
+            }
+            else
+            {
+                Debug.Log("no student answer. recording answer");
+                int earnedScore = (choice == correctChoice) ? 1 : 0;
+                var newRecord = new Chapter_Answers_Record
+                {
+                    chapterID = 1,
+                    MCQ_PCQ = label,
+                    studentID = SessionManager.Instance.studentID,
+                    Question = questionText,
+                    Answer = choice,
+                    Score = earnedScore
+                };
+                await SupabaseManager.Instance.supabase
+                    .From<Chapter_Answers_Record>()
+                    .Insert(newRecord);
+
+                await AddScore(newRecord.MCQ_PCQ, earnedScore);  
+            }
+
+            backButton.interactable = true;
+            nextButton.interactable = true;
+
+            // "PTQ 3" -> 3
+            int number = int.Parse(label.Replace("PTQ ", ""));
+            int percent = Mathf.RoundToInt(number * 100f / 6f);
+
+            string firstLine = (choice == correctChoice) ? "Correct!" : "Nice try! But unfortunately your answer is wrong!";
+            string statusLine = (number == 6) ? "6/6 questions answered. Recalibration complete!" : number + "/6 questions answered.";
+
+            string[] lines = new string[]
+            {
+                firstLine,
+                explanation,
+                "Elementer recalibration: " + percent + "%",
+                statusLine
+            };
+
+            foreach (Transform child in buttonsChoicesContainer)
+            {
+                Destroy(child.gameObject);
+            }
+            dialogueBox.SetActive(true);
+            fadeAnimator.Play("Fadeout50");
+            GameObject currentTeacher = dialogueLoader.loadDialogue("Clarence AI", elementerAIPrefab, lines, forestNightBackground);
+            teacherAnimations = currentTeacher.GetComponent<Animator>();
+            if (teacherAnimations != null)
+            {
+                teacherAnimations.SetTrigger("Speaks");
+            }
+        }
+    }
+    async Task AddScore(string label, int earnedScore)
+    {
+        var result = await SupabaseManager.Instance.supabase
+            .From<Student_Chapter_Scores>()
+            .Where(x => x.studentID == SessionManager.Instance.studentID)
+            .Where(x => x.chapterID == 1)
+            .Get();
+
+        bool isMCQ = label.StartsWith("MCQ");
+
+        if (result.Models.Count == 0)
+        {
+            var newRow = new Student_Chapter_Scores
+            {
+                studentID = SessionManager.Instance.studentID,
+                chapterID = 1,
+                MCQ_Score = isMCQ ? earnedScore : (int?)null,
+                PTQ_Score = isMCQ ? (int?)null : earnedScore
+            };
+            await SupabaseManager.Instance.supabase
+                .From<Student_Chapter_Scores>()
+                .Insert(newRow);
+        }
+        else
+        {
+            var row = result.Models[0];
+            if (isMCQ) row.MCQ_Score = (row.MCQ_Score ?? 0) + earnedScore;
+            else row.PTQ_Score = (row.PTQ_Score ?? 0) + earnedScore;
+
+            await SupabaseManager.Instance.supabase
+                .From<Student_Chapter_Scores>()
+                .Update(row);
         }
     }
 }

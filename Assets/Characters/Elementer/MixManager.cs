@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+using Unity.XR.CoreUtils;
 
 public class MixManager : MonoBehaviour
 {
@@ -38,6 +40,19 @@ public class MixManager : MonoBehaviour
         public MixRecipe recipe;
     }
     private readonly List<SpawnedResult> spawnedResults = new List<SpawnedResult>();
+
+        private Camera arCam;
+
+    private Camera GetCam()
+    {
+        if (arCam == null)
+        {
+            XROrigin origin = FindAnyObjectByType<XROrigin>();
+            if (origin != null && origin.Camera != null) arCam = origin.Camera;
+            else arCam = Camera.main;
+        }
+        return arCam;
+    }
 
     void Update()
     {
@@ -97,7 +112,7 @@ public class MixManager : MonoBehaviour
                 if (hit.collider.transform == t || hit.collider.transform.IsChildOf(t))
                 {
                     Debug.Log("Result tapped: " + result.obj.name);
-                    Mission1.Instance.nextScene();
+                    if (TutorialManager.instance == null) Mission1.Instance.nextScene();
                     OnResultTapped?.Invoke(result.recipe, result.obj);
                     return;
                 }
@@ -167,6 +182,7 @@ public class MixManager : MonoBehaviour
         Vector3 spawnPos = spawned.Count > 0 ? spawned[0].transform.position : Vector3.zero;
 
         GameObject obj = Instantiate(recipe.resultPrefab, spawnPos, Quaternion.identity);
+        SceneManager.MoveGameObjectToScene(obj, gameObject.scene); // NEW
         spawnedResults.Add(new SpawnedResult { obj = obj, recipe = recipe });
 
         elementSpawner.ClearAllElements();

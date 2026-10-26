@@ -1370,6 +1370,7 @@ MonoBehaviour:
   missionCamera: {fileID: 262222335}
   missionEventSystem: {fileID: 1721485245}
   buttonPrefab: {fileID: 7263211055850241331, guid: 87d1f06ba9c4f3344be68c61634c3c5d, type: 3}
+  elementerPTQButtonPrefab: {fileID: 0}
   buttonsChoicesContainer: {fileID: 1799471182}
   questionPrefab: {fileID: 3420989169544229265, guid: 0ead6524ba16188479debfdb7173d958, type: 3}
   backButton: {fileID: 541795513}
@@ -1895,7 +1896,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_UseReflectionProbes: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
