@@ -1269,9 +1269,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Settings
-
-'
+  m_text: Quiz
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 80f358568d9d8ed44832881a63a32f56, type: 2}
   m_sharedMaterial: {fileID: -8098525534193170519, guid: 80f358568d9d8ed44832881a63a32f56, type: 2}

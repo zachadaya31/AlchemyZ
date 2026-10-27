@@ -775,57 +775,35 @@ public class Mission1 : MonoBehaviour
             
             backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
         }
-        //MGA PTQ
+        
+        
+        // MGA PTQ
         else if (currentScene == 23)
         {
             ShowPTQ("PTQ 1",
-                "Which two elements combine to form water?",
-                new string[] { "Hydrogen and Carbon", "Hydrogen and Oxygen", "Oxygen and Nitrogen" },
-                "Hydrogen and Oxygen",
-                "Water is made from Hydrogen and Oxygen!");
+                "Which combination of atoms makes one molecule of water?",
+                new string[] { "1 Hydrogen and 2 Oxygen", "2 Hydrogen and 1 Oxygen", "2 Hydrogen and 2 Oxygen" },
+                "2 Hydrogen and 1 Oxygen",
+                "Water is made from 2 Hydrogen atoms and 1 Oxygen atom!");
         }
         else if (currentScene == 24)
         {
             ShowPTQ("PTQ 2",
-                "What do you get when 2 Hydrogen atoms bond with 1 Oxygen atom?",
-                new string[] { "Salt", "Water", "Air" },
-                "Water",
-                "2 Hydrogen atoms and 1 Oxygen atom make Water!");
+                "Which element does the symbol \"H\" stand for on the Periodic Table?",
+                new string[] { "Helium", "Hafnium", "Hydrogen" },
+                "Hydrogen",
+                "The symbol H stands for Hydrogen!");
         }
         else if (currentScene == 25)
         {
             ShowPTQ("PTQ 3",
-                "What is the chemical symbol for Oxygen?",
-                new string[] { "Ox", "Og", "O" },
-                "O",
-                "The symbol that represents Oxygen is O!");
-        }
-        else if (currentScene == 26)
-        {
-            ShowPTQ("PTQ 4",
-                "Which element does the symbol \"H\" stand for on the Periodic Table?",
-                new string[] { "Helium", "Hydrogen", "Hafnium" },
-                "Hydrogen",
-                "The symbol H stands for Hydrogen!");
-        }
-        else if (currentScene == 27)
-        {
-            ShowPTQ("PTQ 5",
                 "In the formula H2O, what does the small \"2\" tell you?",
                 new string[] { "There are 2 Oxygen atoms", "There are 2 Hydrogen atoms", "There are 2 water molecules" },
                 "There are 2 Hydrogen atoms",
-                "The small 2 after H means there are 2 Hydrogen atoms in one water molecule!");
-        }
-        else if (currentScene == 28)
-        {
-            ShowPTQ("PTQ 6",
-                "How many Oxygen atoms are needed to make one water molecule?",
-                new string[] { "2", "3", "1" },
-                "1",
-                "H2O has no number after the O, which means there is only 1 Oxygen atom!");
+                "The small 2 after the H means there are 2 Hydrogen atoms in one water molecule!");
         }
 
-        else if (currentScene == 29)
+        else if (currentScene == 26)
         {
             //SceneManager.UnloadSceneAsync("Elementer");
             dialogueObject.SetActive(false);
@@ -981,10 +959,10 @@ void OnVideoFinished(UnityEngine.Video.VideoPlayer vp)
 
             // "PTQ 3" -> 3
             int number = int.Parse(label.Replace("PTQ ", ""));
-            int percent = Mathf.RoundToInt(number * 100f / 6f);
+            int percent = Mathf.RoundToInt(number * 100f / 3f);
 
             string firstLine = (choice == correctChoice) ? "Correct!" : "Nice try! But unfortunately your answer is wrong!";
-            string statusLine = (number == 6) ? "6/6 questions answered. Recalibration complete!" : number + "/6 questions answered.";
+            string statusLine = (number == 3) ? "3/3 questions answered. Recalibration complete!" : number + "/3 questions answered.";
 
             string[] lines = new string[]
             {
