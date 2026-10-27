@@ -37,7 +37,7 @@ public class ElementSpawner : MonoBehaviour
     // tracks every element currently spawned
     private List<GameObject> spawnedElements = new List<GameObject>();
 
-    // NEW: maps each spawned GameObject to its element name
+    // maps each spawned GameObject to its element name
     private Dictionary<GameObject, string> elementNames = new Dictionary<GameObject, string>();
 
     void Update()
@@ -50,20 +50,13 @@ public class ElementSpawner : MonoBehaviour
             bool overUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
             if (overUI) return;
 
-            if (mixManager != null && mixManager.IsOverResult(screenPos)) return;
-            GameObject touchedElement = GetElementUnderPosition(screenPos);
-
-            if (touchedElement != null)
-                StartHold(touchedElement);
-            else
-                spawnElement(screenPos);
+            HandlePress(screenPos);
         }
 
         if (Mouse.current != null && Mouse.current.leftButton.wasReleasedThisFrame)
             CancelHold();
-
 #else
-        if (Touchscreen.current != null && Touchscreen.current.touches.Count > 0)
+        if (Touchscreen.current != null)
         {
             var touch = Touchscreen.current.primaryTouch;
 
@@ -74,18 +67,33 @@ public class ElementSpawner : MonoBehaviour
 
                 if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touchId))
                     return;
-    
-                if (mixManager != null && mixManager.IsOverResult(screenPos)) return;
 
-                GameObject touchedElement = GetElementUnderPosition(screenPos);
-
-                if (touchedElement != null)
-                    StartHold(touchedElement);
-                else
-                    spawnElement(screenPos);
+                HandlePress(screenPos);
             }
+
+            if (touch.press.wasReleasedThisFrame)
+                CancelHold();
         }
 #endif
+    }
+
+    // one place for what happens when the screen is pressed
+    private void HandlePress(Vector2 screenPos)
+    {
+        // pressing a mixture result: start the hold-to-delete on it (no spawning)
+        GameObject result = mixManager != null ? mixManager.GetResultUnderPosition(screenPos) : null;
+        if (result != null)
+        {
+            StartHold(result);
+            return;
+        }
+
+        GameObject touchedElement = GetElementUnderPosition(screenPos);
+
+        if (touchedElement != null)
+            StartHold(touchedElement);
+        else
+            spawnElement(screenPos);
     }
 
     private GameObject GetElementUnderPosition(Vector2 screenPos)
@@ -104,13 +112,14 @@ public class ElementSpawner : MonoBehaviour
     }
 
     [Header("Delete Settings")]
-    public float holdDuration = 1f; // how long to hold before element deletes
+    public float holdDuration = 1f; // how long to hold before it deletes
 
     private Coroutine holdCoroutine;
 
-    private void StartHold(GameObject element)
+    private void StartHold(GameObject target)
     {
-        holdCoroutine = StartCoroutine(HoldToDelete(element));
+        CancelHold();
+        holdCoroutine = StartCoroutine(HoldToDelete(target));
     }
 
     private void CancelHold()
@@ -122,26 +131,30 @@ public class ElementSpawner : MonoBehaviour
         }
     }
 
-    private System.Collections.IEnumerator HoldToDelete(GameObject element)
+    // works for both elements and mixture results
+    private System.Collections.IEnumerator HoldToDelete(GameObject target)
     {
         yield return new WaitForSeconds(holdDuration);
 
-        if (element != null)
+        if (target != null)
         {
-            if (elementNames.TryGetValue(element, out string name))
+            // if it is an element, remove its row from the list panel
+            if (elementNames.TryGetValue(target, out string name))
             {
                 ElementListUI.Instance.RemoveRow(name);
-                elementNames.Remove(element);
+                elementNames.Remove(target);
             }
 
-            spawnedElements.Remove(element);
-            Destroy(element);
+            spawnedElements.Remove(target);
+
+            // if it is a mixture result, forget it in MixManager
+            if (mixManager != null) mixManager.RemoveResult(target);
+
+            Destroy(target);
         }
 
         holdCoroutine = null;
     }
-
-
 
     public void spawnElement(Vector2 touchPosition)
     {
@@ -156,10 +169,9 @@ public class ElementSpawner : MonoBehaviour
             Quaternion faceCameraRotation = Quaternion.LookRotation(directionToCamera);
 
             GameObject spawned = Instantiate(elementToSpawn, hitPose.position, faceCameraRotation);
-            SceneManager.MoveGameObjectToScene(spawned, gameObject.scene); // NEW
-            
+            SceneManager.MoveGameObjectToScene(spawned, gameObject.scene);
 
-            // NEW: Check if the prefab has a custom scale modifier, default to 1.0f if missing
+            // Check if the prefab has a custom scale modifier, default to 1.0f if missing
             float multiplier = 1.0f;
             ElementScale scaleConfig = spawned.GetComponent<ElementScale>();
             if (scaleConfig != null)
@@ -182,8 +194,15 @@ public class ElementSpawner : MonoBehaviour
         }
     }
 
-
+    // The CLEAR button uses this: removes elements AND every mixture result
     public void ClearAllElements()
+    {
+        ClearElementsOnly();
+        if (mixManager != null) mixManager.ClearAllResults();
+    }
+
+    // MixManager uses this after a successful mix: removes elements but KEEPS the new result
+    public void ClearElementsOnly()
     {
         foreach (GameObject element in spawnedElements)
         {

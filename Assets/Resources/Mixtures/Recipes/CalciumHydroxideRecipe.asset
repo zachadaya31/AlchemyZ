@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66015c166d6f50469e5dd1033a0daf3, type: 3}
+  m_Name: CalciumHydroxideRecipe
+  m_EditorClassIdentifier: Assembly-CSharp::MixRecipe
+  resultName: Calcium Hydroxide
+  ingredients:
+  - elementName: Calcium
+    amount: 1
+  - elementName: Oxygen
+    amount: 2
+  - elementName: Hydrogen
+    amount: 2
+  resultPrefab: {fileID: 2315181465872481685, guid: 438c826eb4cbae048a3935392a3a4dac, type: 3}

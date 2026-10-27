@@ -11,6 +11,11 @@ using Unity.XR.CoreUtils;
 
 public class MixManager : MonoBehaviour
 {
+
+    [Header("Mission")]
+    [Tooltip("Only this result moves the story on when tapped. Leave empty to let any result move it on.")]
+    public string requiredResultName = "";
+
     [Header("References")]
     public ElementSpawner elementSpawner;
 
@@ -87,7 +92,7 @@ public class MixManager : MonoBehaviour
     public bool IsOverResult(Vector2 screenPos)
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
-        foreach (RaycastHit hit in Physics.RaycastAll(ray))
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
             foreach (SpawnedResult result in spawnedResults)
             {
@@ -112,7 +117,14 @@ public class MixManager : MonoBehaviour
                 if (hit.collider.transform == t || hit.collider.transform.IsChildOf(t))
                 {
                     Debug.Log("Result tapped: " + result.obj.name);
-                    if (TutorialManager.instance == null) Mission1.Instance.nextScene();
+
+                    if (!IsWantedResult(result.recipe))
+                    {
+                        Debug.Log("Not the mixture this mission needs, ignoring.");
+                        return;
+                    }
+
+                    if (TutorialManager.instance == null && Mission1.Instance != null) Mission1.Instance.nextScene();
                     OnResultTapped?.Invoke(result.recipe, result.obj);
                     return;
                 }
@@ -185,7 +197,7 @@ public class MixManager : MonoBehaviour
         SceneManager.MoveGameObjectToScene(obj, gameObject.scene); // NEW
         spawnedResults.Add(new SpawnedResult { obj = obj, recipe = recipe });
 
-        elementSpawner.ClearAllElements();
+        elementSpawner.ClearElementsOnly();
     }
 
 #if UNITY_EDITOR
@@ -220,6 +232,45 @@ public class MixManager : MonoBehaviour
         var ra = a.GetRequired();
         return ra.Count > 0 && a.Matches(b.GetRequired());
     }
+
+    private bool IsWantedResult(MixRecipe recipe)
+    {
+        if (string.IsNullOrEmpty(requiredResultName)) return true;
+        if (string.Equals(recipe.resultName, requiredResultName, StringComparison.OrdinalIgnoreCase)) return true;
+        return recipe.resultPrefab != null &&
+            string.Equals(recipe.resultPrefab.name, requiredResultName, StringComparison.OrdinalIgnoreCase);
+    }
+public GameObject GetResultUnderPosition(Vector2 screenPos)
+{
+    Ray ray = GetCam().ScreenPointToRay(screenPos);
+    if (Physics.Raycast(ray, out RaycastHit hit))
+    {
+        foreach (SpawnedResult result in spawnedResults)
+        {
+            if (result.obj == null) continue;
+            Transform t = result.obj.transform;
+            if (hit.collider.transform == t || hit.collider.transform.IsChildOf(t))
+                return result.obj;
+        }
+    }
+    return null;
+}
+
+    public void RemoveResult(GameObject obj)
+    {
+        spawnedResults.RemoveAll(r => r.obj == obj);
+    }
+
+    public void ClearAllResults()
+    {
+        foreach (SpawnedResult r in spawnedResults)
+        {
+            if (r.obj != null) Destroy(r.obj);
+        }
+        spawnedResults.Clear();
+    }
+
+    
 #endif
 
     void Start()

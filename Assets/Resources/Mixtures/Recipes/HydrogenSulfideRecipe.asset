@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66015c166d6f50469e5dd1033a0daf3, type: 3}
+  m_Name: HydrogenSulfideRecipe
+  m_EditorClassIdentifier: Assembly-CSharp::MixRecipe
+  resultName: Hydrogen Sulfide
+  ingredients:
+  - elementName: Hydrogen
+    amount: 2
+  - elementName: Sulfur
+    amount: 1
+  resultPrefab: {fileID: 2204469138219281297, guid: e0f8dc344b51d744794defd70ca9d809, type: 3}

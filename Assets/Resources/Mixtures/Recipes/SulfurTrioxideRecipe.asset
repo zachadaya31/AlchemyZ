@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66015c166d6f50469e5dd1033a0daf3, type: 3}
+  m_Name: SulfurTrioxideRecipe
+  m_EditorClassIdentifier: Assembly-CSharp::MixRecipe
+  resultName: Sulfur Trioxide
+  ingredients:
+  - elementName: Sulfur
+    amount: 1
+  - elementName: Oxygen
+    amount: 3
+  resultPrefab: {fileID: 3621463839484486824, guid: 5a1ed40b7879ac34090888860d37d08f, type: 3}
