@@ -952,6 +952,8 @@ client = genai.Client()
 chats = {}
 last_was_chem = {}
 
+from google.genai import types
+client = genai.Client(http_options=types.HttpOptions(timeout=30000))
 
 def get_chat(user_id):
     if user_id not in chats:
@@ -981,29 +983,12 @@ def get_reply(question, user_id):
     if is_greeting(question):
         return "Uhh... hello! I'm an AI built by Prof. Zach, ask me something about chemistry."
 
-    # STEP 1: chemistry filter
-    chemistry_question = check_topic(question)
-
-    # STEP 2: follow-up questions
-    if (not chemistry_question
-            and last_was_chem.get(user_id, False)
-            and is_follow_up(question)):
-        chemistry_question = True
-
-    # STEP 3: reject non-chemistry
-    if not chemistry_question:
-        last_was_chem[user_id] = False
-        return ("Let's explore chemistry together! I'm here to help you with chemistry. "
-                "Try asking me about an element, a compound, a chemical reaction, "
-                "or something from your chemistry lessons!")
-
-    last_was_chem[user_id] = True
 
     gemini_message = f"""
-You are Prof Zach. Reply in 1-2 short sentences, never more than 2, in character, and follow your rules.
+    You are Prof Zach. Reply in 1-2 short sentences, never more than 2, in character, and follow your rules.
 
-The student is asking a chemistry question. Answer using your general chemistry knowledge.
-Do not provide dangerous chemistry procedures or instructions.
+    The student sent this message. If it is not about chemistry, steer back warmly.
+    Do not provide dangerous chemistry procedures or instructions.
 
 STUDENT QUESTION
 {question}

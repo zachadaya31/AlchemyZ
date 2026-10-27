@@ -15,9 +15,17 @@ public class ElementSpawner : MonoBehaviour
     [Header("Element Library")]
     public GameObject valorantEffect;
     public GameObject elementLibrary;
+    public GameObject instructions;
+    public GameObject warning;
+
+    private bool instructionsWasOn;
+    private bool warningWasOn;
 
     [Header("Spawn Settings")]
     public float elementScale = 1f;
+
+    [Header("Elements List Rows Disable ng Library para di magulo sir")]
+    public GameObject elementListRow;
 
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
 
@@ -218,8 +226,33 @@ public class ElementSpawner : MonoBehaviour
 
     public void openElementLibrary()
     {
+        if (elementLibrary.activeSelf)
+        {
+            CloseElementLibrary();
+            return;
+        }
+
+        instructionsWasOn = instructions.activeSelf;
+        warningWasOn = warning.activeSelf;
+
         valorantEffect.SetActive(true);
         elementLibrary.SetActive(true);
+        instructions.SetActive(false);
+        warning.SetActive(false);
+        if (elementListRow != null) elementListRow.SetActive(false);
+    }
+
+    public void CloseElementLibrary()
+    {
+        if (!elementLibrary.activeSelf) return;
+
+        valorantEffect.SetActive(false);
+        elementLibrary.SetActive(false);
+
+        instructions.SetActive(instructionsWasOn);
+        warning.SetActive(warningWasOn);
+
+        if (elementListRow != null) elementListRow.SetActive(true);
     }
 
     public List<GameObject> GetSpawnedElements()

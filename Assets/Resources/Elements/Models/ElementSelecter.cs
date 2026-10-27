@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.Android.Gradle;
 
 public class ElementSelecter : MonoBehaviour
 {
@@ -10,11 +11,13 @@ public class ElementSelecter : MonoBehaviour
 
     public GameObject valorantEffect;
     public GameObject contentParent;
+    //public GameObject elementListRow;
+    public GameObject instructions;
+    public GameObject warning;
     public static ElementSelecter instance;
 
     void Awake()
     {
-        // only the copy with the text slot filled becomes the instance
         if (elementButtonSelected != null)
         {
             instance = this;
@@ -31,8 +34,9 @@ public class ElementSelecter : MonoBehaviour
             Debug.Log("Button text is: " + elementSelected);
             updateElementButtonName(elementSelected);
         }
-        valorantEffect.SetActive(false);
-        contentParent.SetActive(false);
+
+        ElementSpawner spawner = FindAnyObjectByType<ElementSpawner>();
+        if (spawner != null) spawner.CloseElementLibrary();
     }
 
     void Start()

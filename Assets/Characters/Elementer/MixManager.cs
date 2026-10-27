@@ -191,10 +191,19 @@ public class MixManager : MonoBehaviour
         }
 
         List<GameObject> spawned = elementSpawner.GetSpawnedElements();
-        Vector3 spawnPos = spawned.Count > 0 ? spawned[0].transform.position : Vector3.zero;
+        Vector3 spawnPos = Vector3.zero;
+        if (spawned.Count > 0)
+        {
+            ElementFloat floatScript = spawned[0].GetComponent<ElementFloat>();
+            spawnPos = floatScript != null ? floatScript.GroundPosition : spawned[0].transform.position;
+        }
 
         GameObject obj = Instantiate(recipe.resultPrefab, spawnPos, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(obj, gameObject.scene); // NEW
+        float multiplier = 1f;
+        ElementScale scaleConfig = obj.GetComponent<ElementScale>();
+        if (scaleConfig != null) multiplier = scaleConfig.sizeMultiplier;
+        obj.transform.localScale = Vector3.one * elementSpawner.elementScale * multiplier;
         spawnedResults.Add(new SpawnedResult { obj = obj, recipe = recipe });
 
         elementSpawner.ClearElementsOnly();

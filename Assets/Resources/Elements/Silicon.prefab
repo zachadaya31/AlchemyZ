@@ -499,7 +499,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec5bf8148ada7bc41826cb66defcbcb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElementScale
-  sizeMultiplier: 0.3
+  sizeMultiplier: 0.6
 --- !u!65 &9070905897084817920
 BoxCollider:
   m_ObjectHideFlags: 0

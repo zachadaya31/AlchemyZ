@@ -31,6 +31,7 @@ public class AIConnector : MonoBehaviour
             www.timeout = 90;
 
             yield return www.SendWebRequest();
+            chat.HideTyping();
 
             if (www.result == UnityWebRequest.Result.Success)
             {

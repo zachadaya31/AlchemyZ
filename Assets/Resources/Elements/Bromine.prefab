@@ -443,11 +443,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6722085885383957590, guid: 8768bb0cf649c954e9c53213d1c825f4, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1018664272722485354, guid: 8768bb0cf649c954e9c53213d1c825f4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8768bb0cf649c954e9c53213d1c825f4, type: 3}
       propertyPath: m_Name
       value: Bromine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055968583225131331, guid: 8768bb0cf649c954e9c53213d1c825f4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -506,7 +514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec5bf8148ada7bc41826cb66defcbcb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElementScale
-  sizeMultiplier: 0.1
+  sizeMultiplier: 0.3
 --- !u!65 &2140716231822681355
 BoxCollider:
   m_ObjectHideFlags: 0

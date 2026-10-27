@@ -3,7 +3,17 @@ guid: 8768bb0cf649c954e9c53213d1c825f4
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.001
+    second: {fileID: 2100000, guid: 9e1eed5a9b6d7c04eb12947f0ffe8c0f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Smoke Domain Material.001
+    second: {fileID: 2100000, guid: f95fcc8d0d1eee24dab49563475bcc69, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
