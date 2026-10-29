@@ -32,6 +32,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Elementer.unity
     guid: 36b1f46bc41bc9a4cb133f1c3a873eda
+  - enabled: 1
+    path: Assets/Scenes/Elementer_Tutorial.unity
+    guid: a2d26e9ddfe6f72458b13805942c65ed
+  - enabled: 1
+    path: Assets/Scenes/Elementer_Creative.unity
+    guid: 28cfb84965e6ce549884ef892e9c35a9
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: e57c49afcff4b0043b2b83c102dee820, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: e5d0dcaa2ad374445a71042e8200b068, type: 2}

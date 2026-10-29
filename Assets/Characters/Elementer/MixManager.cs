@@ -32,6 +32,10 @@ public class MixManager : MonoBehaviour
     public string instructionsBefore;
     public string instructionsAfter;
 
+    [Header("Mix Animation")]
+    public MixAnimator mixAnimator;
+    public bool IsMixing { get; private set; }
+
 
     // MissionDirector can subscribe to these
     public event Action<MixRecipe> OnMixSucceeded;
@@ -124,7 +128,7 @@ public class MixManager : MonoBehaviour
                         return;
                     }
 
-                    if (TutorialManager.instance == null && Mission1.Instance != null) Mission1.Instance.nextScene();
+                    if (Mission1.Instance != null && TutorialManager.instance == null) Mission1.Instance.nextScene();
                     OnResultTapped?.Invoke(result.recipe, result.obj);
                     return;
                 }
@@ -134,7 +138,8 @@ public class MixManager : MonoBehaviour
 
     public void OnMixPressed()
     {
-        // Normalise names so "hydrogen" and "Hydrogen" both work
+        if (IsMixing) return; // ignore button spam during the animation
+
         Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         foreach (var kv in ElementListUI.Instance.GetCounts())
         {
@@ -146,27 +151,36 @@ public class MixManager : MonoBehaviour
 
         if (match != null)
         {
-            instructionsText.SetText("Tap to grab the result.");
-
-            if (warning != null)
-            {
-                warning.SetActive(false);
-            } else
-            {
-                
-            }
+            if (warning != null) warning.SetActive(false);
             Debug.Log($"Mix success: {match.resultName} formed!");
-            SpawnResult(match);
-            OnMixSucceeded?.Invoke(match);
+
+            if (mixAnimator != null)
+            {
+                IsMixing = true;
+                instructionsText.SetText("Mixing...");
+
+                mixAnimator.Play(
+                    new List<GameObject>(elementSpawner.GetSpawnedElements()), // copy, spawner list gets cleared
+                    onPeak: () => SpawnResult(match),
+                    onDone: () =>
+                    {
+                        IsMixing = false;
+                        instructionsText.SetText("Tap to grab the result.");
+                        OnMixSucceeded?.Invoke(match);
+                    });
+            }
+            else // no animator assigned: old instant behaviour
+            {
+                instructionsText.SetText("Tap to grab the result.");
+                SpawnResult(match);
+                OnMixSucceeded?.Invoke(match);
+            }
         }
         else
         {
             warning.SetActive(true);
             var flasher = warning.GetComponent<FlashingText>();
-            if (flasher != null)
-            {
-                flasher.TriggerFlash();
-            }
+            if (flasher != null) flasher.TriggerFlash();
             Debug.Log("Mix failed: no matching recipe.");
             OnMixFailed?.Invoke();
         }
@@ -182,24 +196,25 @@ public class MixManager : MonoBehaviour
         return null;
     }
 
-    private void SpawnResult(MixRecipe recipe)
+    private GameObject SpawnResult(MixRecipe recipe)
     {
         if (recipe.resultPrefab == null)
         {
             Debug.LogError($"Recipe '{recipe.name}' has no result prefab!", recipe);
-            return;
+            return null;
         }
 
         List<GameObject> spawned = elementSpawner.GetSpawnedElements();
         Vector3 spawnPos = Vector3.zero;
         if (spawned.Count > 0)
         {
-            ElementFloat floatScript = spawned[0].GetComponent<ElementFloat>();
-            spawnPos = floatScript != null ? floatScript.GroundPosition : spawned[0].transform.position;
+            GameObject last = spawned[spawned.Count - 1];
+            ElementFloat floatScript = last.GetComponent<ElementFloat>();
+            spawnPos = floatScript != null ? floatScript.GroundPosition : last.transform.position;
         }
 
         GameObject obj = Instantiate(recipe.resultPrefab, spawnPos, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(obj, gameObject.scene); // NEW
+        SceneManager.MoveGameObjectToScene(obj, gameObject.scene);
         float multiplier = 1f;
         ElementScale scaleConfig = obj.GetComponent<ElementScale>();
         if (scaleConfig != null) multiplier = scaleConfig.sizeMultiplier;
@@ -207,6 +222,7 @@ public class MixManager : MonoBehaviour
         spawnedResults.Add(new SpawnedResult { obj = obj, recipe = recipe });
 
         elementSpawner.ClearElementsOnly();
+        return obj;
     }
 
 #if UNITY_EDITOR
@@ -241,6 +257,7 @@ public class MixManager : MonoBehaviour
         var ra = a.GetRequired();
         return ra.Count > 0 && a.Matches(b.GetRequired());
     }
+#endif
 
     private bool IsWantedResult(MixRecipe recipe)
     {
@@ -249,21 +266,22 @@ public class MixManager : MonoBehaviour
         return recipe.resultPrefab != null &&
             string.Equals(recipe.resultPrefab.name, requiredResultName, StringComparison.OrdinalIgnoreCase);
     }
-public GameObject GetResultUnderPosition(Vector2 screenPos)
-{
-    Ray ray = GetCam().ScreenPointToRay(screenPos);
-    if (Physics.Raycast(ray, out RaycastHit hit))
+
+    public GameObject GetResultUnderPosition(Vector2 screenPos)
     {
-        foreach (SpawnedResult result in spawnedResults)
+        Ray ray = GetCam().ScreenPointToRay(screenPos);
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (result.obj == null) continue;
-            Transform t = result.obj.transform;
-            if (hit.collider.transform == t || hit.collider.transform.IsChildOf(t))
-                return result.obj;
+            foreach (SpawnedResult result in spawnedResults)
+            {
+                if (result.obj == null) continue;
+                Transform t = result.obj.transform;
+                if (hit.collider.transform == t || hit.collider.transform.IsChildOf(t))
+                    return result.obj;
+            }
         }
+        return null;
     }
-    return null;
-}
 
     public void RemoveResult(GameObject obj)
     {
@@ -279,12 +297,9 @@ public GameObject GetResultUnderPosition(Vector2 screenPos)
         spawnedResults.Clear();
     }
 
-    
-#endif
-
     void Start()
-        {
-            instructions.SetActive(true);
-            instructionsText.SetText(instructionsBefore);
-        }
+    {
+        instructions.SetActive(true);
+        instructionsText.SetText(instructionsBefore);
+    }
 }

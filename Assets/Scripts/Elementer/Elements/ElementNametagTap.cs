@@ -4,9 +4,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
-// Put this on the ROOT of an element prefab (the object with the collider).
-// Quick tap on the element = nametag expands with info. Tap again = back to just the name.
-// Holding (longer than tapMaxTime) is ignored, so your grab/hold logic is not affected.
 public class ElementNametagTap : MonoBehaviour
 {
     [Header("Optional: auto-found if left empty")]
@@ -15,8 +12,8 @@ public class ElementNametagTap : MonoBehaviour
     public string elementName;
 
     [Header("Tap settings")]
-    public float tapMaxTime = 0.25f;     // a press shorter than this counts as a tap
-    public float tapMaxMovePixels = 25f; // finger can't move more than this
+    public float tapMaxTime = 0.25f; 
+    public float tapMaxMovePixels = 25f; 
 
     [Header("Expanded look")]
     public Vector2 expandedSize = new Vector2(320, 150);
@@ -108,6 +105,7 @@ public class ElementNametagTap : MonoBehaviour
 
         expanded = true;
         TutorialManager.Tapped();   // para sa tutorial
+        ElementerTutorialFull.Tapped();    // NEW: full tutorial
     }
 
     void Collapse()

@@ -3,6 +3,7 @@ using Supabase;
 using System;
 using Postgrest.Attributes;
 using Postgrest.Models;
+using UnityEngine.UIElements;
 
 public class SupabaseManager : MonoBehaviour
 {
@@ -14,7 +15,14 @@ public class SupabaseManager : MonoBehaviour
 
     async void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
+        DontDestroyOnLoad(gameObject);
+
         supabase = new Client(url, key);
         await supabase.InitializeAsync();
         Debug.Log("Supabase connected!");
@@ -47,6 +55,9 @@ public class Students : BaseModel
 
     [Column("studentChapterProgress")]
     public int studentChapterProgress { get; set; }
+
+    [Column("lastPlayed")]
+    public DateTime? lastPlayed { get; set; }
 }
 
 [Table("Sections")]
@@ -107,4 +118,21 @@ public class Student_Chapter_Scores : BaseModel
 
     [Column("PTQ_Score")]
     public int? PTQ_Score { get; set; }
+
 }
+
+    [Table("Student_Tutorial_Elementer")]
+    public class Student_Tutorial_Elementer : BaseModel
+    {
+        [PrimaryKey("id")]
+        public int id { get; set; }
+
+        [Column("studentID")]
+        public string studentID { get; set; }
+
+        [Column("hasFinishedTutorial")]
+        public bool hasFinishedTutorial { get; set; }
+    }
+
+    
+   

@@ -82,8 +82,8 @@ public class TutorialManager : MonoBehaviour
             case 3: instructionText.text = "Tap the Iron to see extra information about it."; break;
             case 4: instructionText.text = "Now press and hold the Iron to delete it."; break;
             case 5: instructionText.text = "Place a few more elements, then press Clear to remove everything at once."; break;
-            case 6: instructionText.text = "Need help? Press Prof Zach to chat with the AI."; break;
-            case 7: instructionText.text = "Ask Prof Zach anything, then close the chat when you're done."; break;
+            case 6: instructionText.text = "Need help? Press the button in the top right to chat with Clarence AI."; break;
+            case 7: instructionText.text = "Ask Clarence anything, then close the chat when you're done."; break;
             case 8: instructionText.text = "Now let's create Water! Place 2 Hydrogen and 1 Oxygen, then press Mix."; break;
             case 9:
                 instructionText.text = "Uh oh... something is wrong with the Elementer!";
@@ -133,8 +133,11 @@ public class TutorialManager : MonoBehaviour
         }
         else
         {
+            MarkTutorialDone();
             Debug.Log("Tutorial done. No Mission1 found, so staying in this scene.");
+
         }
+
     }
 
     void Update()
@@ -164,5 +167,15 @@ public class TutorialManager : MonoBehaviour
                 }
                 break;
         }
+    }
+    public async void MarkTutorialDone()
+    {
+        await SupabaseManager.Instance.supabase
+            .From<Student_Tutorial_Elementer>()
+            .Upsert(new Student_Tutorial_Elementer
+            {
+                studentID = SessionManager.Instance.studentID,
+                hasFinishedTutorial = true
+            });
     }
 }

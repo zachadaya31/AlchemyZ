@@ -27,6 +27,7 @@ public class ElementSpawner : MonoBehaviour
     [Header("Elements List Rows Disable ng Library para di magulo sir")]
     public GameObject elementListRow;
 
+
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
 
     private Camera arCam;
@@ -85,10 +86,9 @@ public class ElementSpawner : MonoBehaviour
 #endif
     }
 
-    // one place for what happens when the screen is pressed
     private void HandlePress(Vector2 screenPos)
     {
-        // pressing a mixture result: start the hold-to-delete on it (no spawning)
+        if (mixManager != null && mixManager.IsMixing) return;
         GameObject result = mixManager != null ? mixManager.GetResultUnderPosition(screenPos) : null;
         if (result != null)
         {
@@ -139,14 +139,15 @@ public class ElementSpawner : MonoBehaviour
         }
     }
 
-    // works for both elements and mixture results
     private System.Collections.IEnumerator HoldToDelete(GameObject target)
     {
         yield return new WaitForSeconds(holdDuration);
 
+        if (mixManager != null && mixManager.IsMixing) { holdCoroutine = null; yield break; } 
+
         if (target != null)
         {
-            // if it is an element, remove its row from the list panel
+
             if (elementNames.TryGetValue(target, out string name))
             {
                 ElementListUI.Instance.RemoveRow(name);
@@ -155,7 +156,6 @@ public class ElementSpawner : MonoBehaviour
 
             spawnedElements.Remove(target);
 
-            // if it is a mixture result, forget it in MixManager
             if (mixManager != null) mixManager.RemoveResult(target);
 
             Destroy(target);
@@ -205,6 +205,7 @@ public class ElementSpawner : MonoBehaviour
     // The CLEAR button uses this: removes elements AND every mixture result
     public void ClearAllElements()
     {
+        if (mixManager != null && mixManager.IsMixing) return;
         ClearElementsOnly();
         if (mixManager != null) mixManager.ClearAllResults();
     }
