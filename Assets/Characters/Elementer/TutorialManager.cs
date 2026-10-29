@@ -133,7 +133,6 @@ public class TutorialManager : MonoBehaviour
         }
         else
         {
-            MarkTutorialDone();
             Debug.Log("Tutorial done. No Mission1 found, so staying in this scene.");
 
         }
@@ -168,14 +167,5 @@ public class TutorialManager : MonoBehaviour
                 break;
         }
     }
-    public async void MarkTutorialDone()
-    {
-        await SupabaseManager.Instance.supabase
-            .From<Student_Tutorial_Elementer>()
-            .Upsert(new Student_Tutorial_Elementer
-            {
-                studentID = SessionManager.Instance.studentID,
-                hasFinishedTutorial = true
-            });
-    }
+
 }

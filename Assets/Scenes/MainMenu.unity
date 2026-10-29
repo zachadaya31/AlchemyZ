@@ -265,7 +265,7 @@ GameObject:
   - component: {fileID: 150630876}
   - component: {fileID: 150630875}
   m_Layer: 0
-  m_Name: Buttton - Settings
+  m_Name: Buttton - Quiz
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

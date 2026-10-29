@@ -1,23 +1,17 @@
-//using Unity.Android.Gradle;
 using System;
 using System.Collections;
 using TMPro;
-
-//using Unity.Android.Gradle;
-using Unity.VisualScripting;
-//using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Threading.Tasks;
 
 public class Mission1 : MissionBase
 {
     public override int ChapterNumber => 1;
 
-    // everything shared (fields, Awake, Start, ShowPTQ, AddScore, video, AR loading) now lives in MissionBase.cs
+    // everything shared (fields, Awake, Start, ShowMCQ, ShowPTQ, database, video, AR loading) lives in MissionBase.cs
 
-    public override async void nextScene() {
+    public override void nextScene() {
         IEnumerator waitScene()
         {
             nextButton.interactable = false;
@@ -56,93 +50,13 @@ public class Mission1 : MissionBase
         // scene 2 is an example of MCQ scenes where a buncha buttons ay nasa hrap ng screen
         else if (currentScene == 2)
         {
-
-            fadeAnimator.Play("Fadein50");
-            backButton.interactable = false;
-            nextButton.interactable = false;
-            dialogueBox.SetActive(false);
-
-            TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
-            String questionText = question.text = "What do you get when you combine 2 Hydrogen atoms and 1 Oxygen atom?";
-
-            var recordAnswer = await SupabaseManager.Instance.supabase
-            .From<Chapter_Answers_Record>()
-            .Where(x => x.studentID == SessionManager.Instance.studentID)
-            .Where(x => x.Question == questionText)
-            .Get();
-
-            string[] choices = { "Water", "Iron", "Rubber" };
-            string correctChoice = "Water";
-            for (int i = 0; i < 3; i++)
-            {
-                GameObject buttonChoices = Instantiate(buttonPrefab, buttonsChoicesContainer);
-                buttonChoices.GetComponentInChildren<TMPro.TMP_Text>().text = choices[i];
-                string currentChoice = choices[i];
-                buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
-            }
-
-            async void choiceButtonClicked(string choice)
-            {
-                if (recordAnswer.Models.Count > 0)
-                {
-                    Debug.Log("student already answered");
-                }
-                else
-                {
-                    Debug.Log("no student answer. recording answer");
-                    int earnedScore = (choice == correctChoice) ? 1 : 0;
-                    var newRecord = new Chapter_Answers_Record
-                    {
-                        chapterID = 1,
-                        MCQ_PCQ = "Chapter 1 | MCQ 1",
-                        
-                        studentID = SessionManager.Instance.studentID,
-                        Question = questionText,
-                        Answer = choice,
-                        Score = earnedScore
-                    };
-                    await SupabaseManager.Instance.supabase
-                        .From<Chapter_Answers_Record>()
-                        .Insert(newRecord);
-
-                    await AddScore(newRecord.MCQ_PCQ, earnedScore); 
-                }
-
-                backButton.interactable = true;
-                nextButton.interactable = true;
-                string[] lines;
-                if (choice == "Water")
-                {
-                    lines = new string[] {
-                    "Correct!",
-                    "When 2 Hydrogen atoms and 1 Oxygen atom is combined...",
-                    "You get... well, Water!",
-                    "That's all for today's class. Goodbye Everyone!"
-                    };
-                }
-                else
-                {
-                    lines = new string[] {
-                    "Nice try! But unfortunately your answer is wrong!",
-                    "When 2 Hydrogen atoms and 1 Oxygen atom is combined...",
-                    "You get... well, Water!",
-                    "That's all for today's class. Goodbye Everyone!"
-                    };
-                }
-
-                foreach (Transform child in buttonsChoicesContainer)
-                {
-                    Destroy(child.gameObject);
-                }
-                dialogueBox.SetActive(true);
-                fadeAnimator.Play("Fadeout50");
-                GameObject currentTeacher = dialogueLoader.loadDialogue("Teacher Mikko", teacherPrefab, lines, classroomPicture);
-                teacherAnimations = currentTeacher.GetComponent<Animator>();
-                if (teacherAnimations != null)
-                {
-                    teacherAnimations.SetTrigger("Speaks");
-                }
-            }
+            ShowMCQ("Chapter "+MissionBase.Instance.ChapterNumber +"| MCQ 1",
+                "What do you get when you combine 2 Hydrogen atoms and 1 Oxygen atom?",
+                new string[] { "Water", "Iron", "Rubber" },
+                "Water",
+                new string[] { "Correct!", "When 2 Hydrogen atoms and 1 Oxygen atom is combined...", "You get... well, Water!", "That's all for today's class. Goodbye Everyone!" },
+                new string[] { "Nice try! But unfortunately your answer is wrong!", "When 2 Hydrogen atoms and 1 Oxygen atom is combined...", "You get... well, Water!", "That's all for today's class. Goodbye Everyone!" },
+                "Teacher Mikko", teacherPrefab, classroomPicture);
         }
         // --------------------------------------------------------------------------------
 
@@ -215,7 +129,6 @@ public class Mission1 : MissionBase
 
         else if (currentScene == 5) {
             dialogueObject.SetActive(false);
-            //SceneManager.LoadScene("AR_Test", LoadSceneMode.Additive);
             StartCoroutine(LoadARScene("AR_Test"));
             missionCamera.SetActive(true);
         }
@@ -245,92 +158,13 @@ public class Mission1 : MissionBase
         // mcq scnee
         else if (currentScene == 7)
         {
-            fadeAnimator.Play("Fadein50");
-            backButton.interactable = false;
-            nextButton.interactable = false;
-            dialogueBox.SetActive(false);
-
-            
-            TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
-            string questionText = question.text = "Which symbol in the Periodic Table represents Hydrogen?";
-
-            var recordAnswer = await SupabaseManager.Instance.supabase
-            .From<Chapter_Answers_Record>()
-            .Where(x => x.studentID == SessionManager.Instance.studentID)
-            .Where(x => x.Question == questionText)
-            .Get();
-
-            string[] choices = { "Hd", "H", "Hy" };
-            string correctChoice = "H";
-            for (int i = 0; i < 3; i++)
-            {
-                GameObject buttonChoices = Instantiate(buttonPrefab, buttonsChoicesContainer);
-                buttonChoices.GetComponentInChildren<TMPro.TMP_Text>().text = choices[i];
-                string currentChoice = choices[i];
-                buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
-            }
-
-            async void choiceButtonClicked(string choice)
-            {
-                // sa database to ichecheck yung record answer tables or yung history ng answers ng students
-                if (recordAnswer.Models.Count > 0)
-                {
-                    Debug.Log("student already answered");
-                }
-                else
-                {
-                    Debug.Log("no student answer. recording answer");
-                    int earnedScore = (choice == correctChoice) ? 1 : 0;
-                    var newRecord = new Chapter_Answers_Record
-                    {
-                        chapterID = 1,
-                        MCQ_PCQ = "Chapter 1 | MCQ 2",
-                        
-                        studentID = SessionManager.Instance.studentID,
-                        Question = questionText,
-                        Answer = choice,
-                        Score = earnedScore
-                    };
-                    await SupabaseManager.Instance.supabase
-                        .From<Chapter_Answers_Record>()
-                        .Insert(newRecord);
-
-                        await AddScore(newRecord.MCQ_PCQ, earnedScore); 
-                }
-
-                backButton.interactable = true;
-                nextButton.interactable = true;
-                string[] lines;
-                if (choice == "H")
-                {
-                    lines = new string[] {
-                        "Correct!",
-                        "The symbol that represents Hydrogen is H!",
-                        "Now, "+studentFirstName + ", my apprentice. Try out the Elementer!",
-                    };
-                }
-                else
-                {
-                    lines = new string[] {
-                        "Nope, your answer is wrong!",
-                        "The symbol that represents Hydrogen is H!",
-                        "Now, "+studentFirstName + ", my apprentice. Try out the Elementer!",
-                    };
-                }
-
-                foreach (Transform child in buttonsChoicesContainer)
-                {
-                    Destroy(child.gameObject);
-                }
-                dialogueBox.SetActive(true);
-                fadeAnimator.Play("Fadeout50");
-                GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Zach", scientistPrefab, lines, laboratoryPicture);
-                teacherAnimations = currentTeacher.GetComponent<Animator>();
-                if (teacherAnimations != null)
-                {
-                    teacherAnimations.SetTrigger("Speaks");
-                }
-            }
+            ShowMCQ("Chapter "+MissionBase.Instance.ChapterNumber +"| MCQ 2",
+                "Which symbol in the Periodic Table represents Hydrogen?",
+                new string[] { "Hd", "H", "Hy" },
+                "H",
+                new string[] { "Correct!", "The symbol that represents Hydrogen is H!", "Now, " + studentFirstName + ", my apprentice. Try out the Elementer!" },
+                new string[] { "Nope, your answer is wrong!", "The symbol that represents Hydrogen is H!", "Now, " + studentFirstName + ", my apprentice. Try out the Elementer!" },
+                "Professor Zach", scientistPrefab, laboratoryPicture);
         }
 
         //--------------------------
@@ -361,7 +195,7 @@ public class Mission1 : MissionBase
         }
 
         //--------------------------
-        // SCENE 9 - NASA FOREST NA YUNG STUDENT
+        // SCENE 10 - NASA FOREST NA YUNG STUDENT
         //--------------------------
         else if (currentScene == 10)
         {
@@ -420,92 +254,13 @@ public class Mission1 : MissionBase
 
         else if (currentScene == 13)
         {
-            fadeAnimator.Play("Fadein50");
-            backButton.interactable = false;
-            nextButton.interactable = false;
-            dialogueBox.SetActive(false);
-
-            
-            TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
-            string questionText = question.text = "How many Hydrogen atoms are required to create water?";
-
-            var recordAnswer = await SupabaseManager.Instance.supabase
-            .From<Chapter_Answers_Record>()
-            .Where(x => x.studentID == SessionManager.Instance.studentID)
-            .Where(x => x.Question == questionText)
-            .Get();
-
-            string[] choices = { "1", "2", "3" };
-            string correctChoice = "2";
-            for (int i = 0; i < 3; i++)
-            {
-                GameObject buttonChoices = Instantiate(buttonPrefab, buttonsChoicesContainer);
-                buttonChoices.GetComponentInChildren<TMPro.TMP_Text>().text = choices[i];
-                string currentChoice = choices[i];
-                buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
-            }
-
-            async void choiceButtonClicked(string choice)
-            {
-                // sa database to ichecheck yung record answer tables or yung history ng answers ng students
-                if (recordAnswer.Models.Count > 0)
-                {
-                    Debug.Log("student already answered");
-                }
-                else
-                {
-                    Debug.Log("no student answer. recording answer");
-                    int earnedScore = (choice == correctChoice) ? 1 : 0;
-                    var newRecord = new Chapter_Answers_Record
-                    {
-                        chapterID = 1,
-                        MCQ_PCQ = "Chapter 1 | MCQ 3",
-                        
-                        studentID = SessionManager.Instance.studentID,
-                        Question = questionText,
-                        Answer = choice,
-                        Score = earnedScore
-                    };
-                    await SupabaseManager.Instance.supabase
-                        .From<Chapter_Answers_Record>()
-                        .Insert(newRecord);
-
-                        await AddScore(newRecord.MCQ_PCQ, earnedScore); 
-                }
-
-                backButton.interactable = true;
-                nextButton.interactable = true;
-                string[] lines;
-                if (choice == "2")
-                {
-                    lines = new string[] {
-                        "I think this is it.",
-                        "2 Hydrogen atoms are needed in the formula H2O.",
-                        "Alright, let's give this a shot. Let's try creating water.",
-                    };
-                }
-                else
-                {
-                    lines = new string[] {
-                        "Hmmm, I think 2 Hydrogen atoms are needed since the formula states H2 inside H2O",
-                        "Yeah, I think that's quite right. 2 Hydrogen atoms.",
-                        "Alright, let's give this a shot. Let's try creating water.",
-                    };
-                }
-
-                foreach (Transform child in buttonsChoicesContainer)
-                {
-                    Destroy(child.gameObject);
-                }
-                dialogueBox.SetActive(true);
-                fadeAnimator.Play("Fadeout50");
-                GameObject currentTeacher = dialogueLoader.loadDialogue(studentFirstName, emptyPrefab, lines, forestBackground);
-                teacherAnimations = currentTeacher.GetComponent<Animator>();
-                if (teacherAnimations != null)
-                {
-                    teacherAnimations.SetTrigger("Speaks");
-                }
-            }
+            ShowMCQ("Chapter "+MissionBase.Instance.ChapterNumber +"| MCQ 3",
+                "How many Hydrogen atoms are required to create water?",
+                new string[] { "1", "2", "3" },
+                "2",
+                new string[] { "I think this is it.", "2 Hydrogen atoms are needed in the formula H2O.", "Alright, let's give this a shot. Let's try creating water." },
+                new string[] { "Hmmm, I think 2 Hydrogen atoms are needed since the formula states H2 inside H2O", "Yeah, I think that's quite right. 2 Hydrogen atoms.", "Alright, let's give this a shot. Let's try creating water." },
+                studentFirstName, emptyPrefab, forestBackground);
         }
 
 
@@ -721,7 +476,7 @@ public class Mission1 : MissionBase
         // MGA PTQ
         else if (currentScene == 23)
         {
-            ShowPTQ("PTQ 1",
+            ShowPTQ("Chapter "+MissionBase.Instance.ChapterNumber +"| PTQ 1",
                 "Which combination of atoms makes one molecule of water?",
                 new string[] { "1 Hydrogen and 2 Oxygen", "2 Hydrogen and 1 Oxygen", "2 Hydrogen and 2 Oxygen" },
                 "2 Hydrogen and 1 Oxygen",
@@ -729,7 +484,7 @@ public class Mission1 : MissionBase
         }
         else if (currentScene == 24)
         {
-            ShowPTQ("PTQ 2",
+            ShowPTQ("Chapter "+MissionBase.Instance.ChapterNumber +"| PTQ 2",
                 "Which element does the symbol \"H\" stand for on the Periodic Table?",
                 new string[] { "Helium", "Hafnium", "Hydrogen" },
                 "Hydrogen",
@@ -737,7 +492,7 @@ public class Mission1 : MissionBase
         }
         else if (currentScene == 25)
         {
-            ShowPTQ("PTQ 3",
+            ShowPTQ("Chapter "+MissionBase.Instance.ChapterNumber +"| PTQ 3",
                 "In the formula H2O, what does the small \"2\" tell you?",
                 new string[] { "There are 2 Oxygen atoms", "There are 2 Hydrogen atoms", "There are 2 water molecules" },
                 "There are 2 Hydrogen atoms",
@@ -761,12 +516,12 @@ public class Mission1 : MissionBase
             {
                 TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
                 Animator textAnimations = question.gameObject.GetComponent<Animator>();
-                    question.text = "Chapter 1\nThe Alchemist's Apprentice\nComplete";
-                    textAnimations.Play("TextFadeinNew");
+                question.text = "Chapter 1\nThe Alchemist's Apprentice\nComplete";
+                textAnimations.Play("TextFadeinNew");
 
-                    yield return new WaitForSeconds(3);
+                yield return new WaitForSeconds(3);
 
-                    TextMeshProUGUI continueText = Instantiate(questionPrefab, buttonsChoicesContainer);
+                TextMeshProUGUI continueText = Instantiate(questionPrefab, buttonsChoicesContainer);
                 Animator textAnimations2 = continueText.gameObject.GetComponent<Animator>();
                 continueText.text = "\n\nPress the screen to go back to the main menu...";
                 continueText.fontSize = 50;
@@ -785,9 +540,6 @@ public class Mission1 : MissionBase
         {
             Debug.Log("End of mission 1");
             FinishChapter(); // unlocks chapter 2, then main menu
-
         }
-
-        
     }
 }

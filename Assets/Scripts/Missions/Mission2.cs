@@ -3,31 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// CHAPTER 2: Heneral Tuna's camp, make Salt (Sodium + Chlorine), then the Iron / PTQ recalibration.
-// Everything shared (fields, Awake/Start, MCQ, PTQ, database) is in MissionBase.cs.
-// The story below is a list of steps. nextScene() just runs the next step each time it is called.
 public class Mission2 : MissionBase
 {
     public override int ChapterNumber => 2;
 
-    // The Elementer scene only moves the story when THIS result is tapped.
-    // Must match the Sodium Chloride recipe's resultName (or its result prefab name). Spaces and capitals are ignored.
     public override string RequiredMixResult => "Sodium Chloride";
 
-    // text shown on top of the Elementer scene during this chapter's mix
     public override string MixInstructions => "Select Sodium (Na) and Chlorine (Cl), then press Mix to make Salt.";
 
     private const string chapterTitle = "A Pinch of Salt";   // change this if you pick another title
 
     [Header("Chapter 2 only")]
-    public GameObject tunaPrefab;      // Heneral Tuna character
-    public Sprite campBackground;      // leave empty to use the forest background for now
+    public GameObject tunaPrefab;   
+    public Sprite campBackground;
 
     private List<Action> steps;
 
     private Sprite Camp { get { return campBackground != null ? campBackground : forestBackground; } }
 
-    // little shortcuts so the story below reads like the script
     private void StudentSays(params string[] lines) { Say(studentFirstName, emptyPrefab, Camp, lines); }
     private void TunaSays(params string[] lines) { Say("Heneral Tuna", tunaPrefab, Camp, lines); }
     private void AiSays(params string[] lines) { Say("Clarence AI", elementerAIPrefab, Camp, lines); }
@@ -49,7 +42,7 @@ public class Mission2 : MissionBase
         else
         {
             Debug.Log("End of mission 2");
-            FinishChapter(); // unlocks chapter 3 in the database, then goes back to the main menu
+            FinishChapter();
         }
     }
 
@@ -57,7 +50,6 @@ public class Mission2 : MissionBase
     {
         steps = new List<Action>
         {
-            // ---------------- 1: WAKING UP + MEETING HENERAL TUNA ----------------
             () => { StartCoroutine(WaitScene()); StudentSays("Ahh... much better.", "Now... where did Professor Zach go?"); },
             () => TunaSays("Hey! You there!"),
             () => StudentSays("Huh?!"),
@@ -82,8 +74,7 @@ public class Mission2 : MissionBase
             () => TunaSays("Then what are you waiting for?"),
             () => StudentSays("If I'm going to make salt, I should probably figure out which elements I need."),
 
-            // ---------------- MCQ 1 (Sodium) ----------------
-            () => ShowMCQ("MCQ 1",
+            () => ShowMCQ("Chapter "+MissionBase.Instance.ChapterNumber +"| MCQ 1",
                 "Which element has the chemical symbol Na?",
                 new string[] { "Nitrogen", "Sodium", "Neon" },
                 "Sodium",
@@ -92,8 +83,7 @@ public class Mission2 : MissionBase
                 "Clarence AI", elementerAIPrefab, Camp),
             () => StudentSays("Sodium.", "And I need one more element..."),
 
-            // ---------------- MCQ 2 (Chlorine) ----------------
-            () => ShowMCQ("MCQ 2",
+            () => ShowMCQ("Chapter "+MissionBase.Instance.ChapterNumber +"| MCQ 2",
                 "Which element has the chemical symbol Cl?",
                 new string[] { "Calcium", "Carbon", "Chlorine" },
                 "Chlorine",
@@ -102,8 +92,7 @@ public class Mission2 : MissionBase
                 "Clarence AI", elementerAIPrefab, Camp),
             () => StudentSays("Chlorine.", "So, Sodium and Chlorine..."),
 
-            // ---------------- MCQ 3 (NEW: not in the docx, pairs with PTQ 3) ----------------
-            () => ShowMCQ("MCQ 3",
+            () => ShowMCQ("Chapter "+MissionBase.Instance.ChapterNumber +"| MCQ 3",
                 "What compound do you get when Sodium and Chlorine combine?",
                 new string[] { "Sodium Chloride", "Sodium Oxide", "Chlorine Dioxide" },
                 "Sodium Chloride",
@@ -111,8 +100,6 @@ public class Mission2 : MissionBase
                 new string[] { "Nice try! But unfortunately your answer is wrong!", "Sodium and Chlorine combine to form Sodium Chloride, also known as salt!" },
                 "Clarence AI", elementerAIPrefab, Camp),
 
-            // ---------------- ELEMENTER MIX SCENE (make Salt) ----------------
-            // same as Mission1 scene 14. MixManager calls nextScene() when the Salt is tapped.
             () =>
             {
                 dialogueObject.SetActive(false);
@@ -121,10 +108,8 @@ public class Mission2 : MissionBase
                 missionEventSystem.SetActive(false);
             },
 
-            // ---------------- AFTER THE MIX ----------------
             () =>
             {
-                // same as Mission1 scene 15
                 missionCamera.SetActive(true);
                 missionEventSystem.SetActive(true);
                 _ = SceneManager.UnloadSceneAsync("Elementer");
@@ -134,14 +119,13 @@ public class Mission2 : MissionBase
             () => StudentSays("It's called Sodium Chloride."),
             () => TunaSays("Whatever you call it, you've just saved our meal!"),
 
-            // cutscene placeholder (black text card). If you have a video, copy the video scene from Mission1 (scene 9) here instead.
             () => ShowTextCard("Heneral Tuna adds the salt to the soup and tastes it..."),
 
             () => TunaSays("Hmm... Perfect!",
                        "Thank you, apprentice. You've done us a great favor.",
                        "If you ever need anything, just say the word. I'll do what I can to help."),
 
-            // ---------------- REPAIR MATERIAL: IRON ----------------
+            // iron
             () => AiSays("*The Elementer suddenly beeps.*", "REPAIR MATERIAL REQUIRED."),
             () => StudentSays("Repair material?"),
             () => AiSays("MATERIAL REQUIRED: IRON"),
@@ -152,18 +136,17 @@ public class Mission2 : MissionBase
             () => StudentSays("Thanks, Heneral Tuna.", "*You place the iron into the Elementer.*"),
             () => AiSays("IRON DETECTED.", "DATABASE RECALIBRATION INITIATED.", "ASSISTANCE REQUIRED."),
 
-            // ---------------- PTQs (Clarence AI recalibration, same as Mission1) ----------------
-            () => ShowPTQ("PTQ 1",
+            () => ShowPTQ("Chapter "+MissionBase.Instance.ChapterNumber +"| PTQ 1",
                 "Heneral Tuna asks you to add Sodium to the Elementer. Which symbol do you pick?",
                 new string[] { "Na", "So", "Sd" },
                 "Na",
                 "The symbol of Sodium is Na!", Camp),
-            () => ShowPTQ("PTQ 2",
+            () => ShowPTQ("Chapter "+MissionBase.Instance.ChapterNumber +"| PTQ 2",
                 "Salt is made from Sodium and which other element?",
                 new string[] { "Chlorine", "Calcium", "Carbon" },
                 "Chlorine",
                 "Salt is made from Sodium and Chlorine!", Camp),
-            () => ShowPTQ("PTQ 3",
+            () => ShowPTQ("Chapter "+MissionBase.Instance.ChapterNumber +"| PTQ 3",
                 "What is the chemical formula of salt (Sodium Chloride)?",
                 new string[] { "NaCl", "ClNa", "NaCl2" },
                 "NaCl",

@@ -195,52 +195,15 @@ public class ElementerTutorialFull : MonoBehaviour
                 break;
         }
     }
-
-    // saves to Supabase that this student finished the tutorial
     async void SaveTutorialProgress()
     {
-        if (SessionManager.Instance == null)
-        {
-            Debug.Log("SessionManager is missing, nothing saved.");
-            return;
-        }
         if (SupabaseManager.Instance == null)
         {
             Debug.Log("SupabaseManager is missing, nothing saved.");
             return;
         }
 
-        try
-        {
-            string id = SessionManager.Instance.studentID.ToString();
-
-            // don't make a second row if this student already finished it before
-            var existing = await SupabaseManager.Instance.supabase
-                .From<Student_Tutorial_Elementer>()
-                .Where(x => x.studentID == id)
-                .Get();
-
-            if (existing.Models.Count > 0)
-            {
-                Debug.Log("Tutorial record already exists for this student.");
-                return;
-            }
-
-            var record = new Student_Tutorial_Elementer
-            {
-                studentID = id,
-                hasFinishedTutorial = true
-            };
-
-            await SupabaseManager.Instance.supabase
-                .From<Student_Tutorial_Elementer>()
-                .Insert(record);
-
-            Debug.Log("Saved tutorial completion to Supabase.");
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError("Could not save tutorial progress: " + e.Message);
-        }
+        await SupabaseManager.Instance.MarkTutorialFinished();
+        Debug.Log("Saved tutorial completion to Supabase.");
     }
 }

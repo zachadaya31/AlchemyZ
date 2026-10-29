@@ -1,19 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using Postgrest.Attributes;
-using Postgrest.Models;
 using UnityEngine;
 using UnityEngine.UI;
 
-[Table("Chapters")]
-public class ChapterRow : BaseModel
-{
-    [PrimaryKey("chapterID")]
-    public int chapterID { get; set; }
-
-    [Column("title")]
-    public string title { get; set; }
-}
+// NOTE: the old ChapterRow class was removed. The chapters model is now ChapterDbRow in SupabaseManager.cs
 
 [System.Serializable]
 public class chapterDetails{
@@ -39,25 +29,16 @@ public class ChapterManager : MonoBehaviour
 
     public async void loadChapters() {
 
-        // 1. the chapters that exist (from the database)
-        var chaptersResponse = await SupabaseManager.Instance.supabase
-            .From<ChapterRow>()
-            .Get();
+        // 1. the chapters that exist (from the database), sorted 1 to 10 by chapterNumber
+        List<ChapterDbRow> chapters = await SupabaseManager.Instance.GetChapters();
 
-        List<ChapterRow> chapters = chaptersResponse.Models.OrderBy(c => c.chapterID).ToList();
-
-        // 2. how far this student got
-        var student = await SupabaseManager.Instance.supabase
-            .From<Students>()
-            .Where(s => s.studentID == SessionManager.Instance.studentID)
-            .Single();
-
-        int studentChapterProgress = student.studentChapterProgress;
+        // 2. how far this student got (the database knows who is logged in)
+        int studentChapterProgress = await SupabaseManager.Instance.GetUnlockedChapter();
 
         // 3. one entry per chapter in the database
-        foreach (ChapterRow chapter in chapters)
+        foreach (ChapterDbRow chapter in chapters)
         {
-            int number = chapter.chapterID;
+            int number = chapter.chapterNumber;
             bool unlocked = number <= studentChapterProgress;
 
             GameObject chapterEntry = Instantiate(chapterEntryPrefab, content, false);

@@ -1,42 +1,48 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
+// Shows the tutorial only if the student has no "finished" record in the new database.
 public class TutorialGate : MonoBehaviour
 {
     public GameObject tutorialManager;
-    public GameObject tutorialInstructions; // off din toh para mag on lang pag may tutorial
+    public GameObject tutorialInstructions;
 
     async void Start()
     {
+        // hide both until we know the answer (so the tutorial doesn't flash for returning students)
+        tutorialManager.SetActive(false);
+        tutorialInstructions.SetActive(false);
+
         bool finished = false;
 
-        if (SessionManager.Instance != null && SupabaseManager.Instance != null)
+        if (SupabaseManager.Instance != null)
         {
-            try
+            // SupabaseManager connects in its own Awake, wait (max ~5s) until it is ready
+            float t = 0f;
+            while (SupabaseManager.Instance.supabase == null && t < 5f)
             {
-                string id = SessionManager.Instance.studentID.ToString();
-
-                var res = await SupabaseManager.Instance.supabase
-                    .From<Student_Tutorial_Elementer>()
-                    .Where(r => r.studentID == id)
-                    .Get();
-
-                Debug.Log("TutorialGate: found " + res.Models.Count + " record(s) for student " + id);
-                finished = res.Models.Exists(m => m.hasFinishedTutorial);
+                await Task.Yield();
+                t += Time.unscaledDeltaTime;
             }
-            catch (System.Exception e)
+
+            if (SupabaseManager.Instance.supabase != null)
             {
-                Debug.LogError("TutorialGate: could not check record: " + e.Message);
+                finished = await SupabaseManager.Instance.HasFinishedTutorial();
             }
         }
-        else
-        {
-            Debug.Log("TutorialGate: no login found, showing the tutorial.");
-            tutorialInstructions.SetActive(true);
-        }
+
+        Debug.Log("TutorialGate: finished = " + finished);
 
         if (this == null) return;
         tutorialManager.SetActive(!finished);
-        tutorialInstructions.SetActive(!finished); 
-        
+        tutorialInstructions.SetActive(!finished);
+    }
+
+    // CALL THIS when the tutorial's last step is done, ex: FindObjectOfType<TutorialGate>().CompleteTutorial();
+    // (or call SupabaseManager.Instance.MarkTutorialFinished() directly)
+    public async void CompleteTutorial()
+    {
+        await SupabaseManager.Instance.MarkTutorialFinished();
+        Debug.Log("TutorialGate: tutorial saved as finished.");
     }
 }

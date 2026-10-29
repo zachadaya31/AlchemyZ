@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Linq;
 
 // Everything that every chapter (Mission1, Mission2, ...) shares lives here.
 // Each chapter only has to write its own story in nextScene().
@@ -109,6 +111,7 @@ public abstract class MissionBase : MonoBehaviour
     protected virtual void Start()
     {
         studentFirstName = SessionManager.Instance.studentFirstName;
+        SaveProgress(false); // tells the database this chapter has started
         nextScene();
     }
 
@@ -206,9 +209,10 @@ public abstract class MissionBase : MonoBehaviour
     // =====================================================================
     // MCQ (yellow story buttons). Same flow as the MCQ scenes in Mission1, just reusable.
     // =====================================================================
-    protected async void ShowMCQ(string label, string questionText, string[] choices, string correctChoice,
+    protected void ShowMCQ(string label, string questionText, string[] choices, string correctChoice,
         string[] correctLines, string[] wrongLines, string speaker, GameObject speakerPrefab, Sprite background)
     {
+        
         fadeAnimator.Play("Fadein50");
         backButton.interactable = false;
         nextButton.interactable = false;
@@ -216,8 +220,6 @@ public abstract class MissionBase : MonoBehaviour
 
         TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
         question.text = questionText;
-
-        bool alreadyAnswered = await AlreadyAnswered(questionText);
 
         for (int i = 0; i < choices.Length; i++)
         {
@@ -227,17 +229,10 @@ public abstract class MissionBase : MonoBehaviour
             buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
         }
 
-        async void choiceButtonClicked(string choice)
+        void choiceButtonClicked(string choice)
         {
-            if (alreadyAnswered)
-            {
-                Debug.Log("student already answered");
-            }
-            else
-            {
-                Debug.Log("no student answer. recording answer");
-                await SaveAnswer(label, questionText, choice, correctChoice);
-            }
+            
+            RecordAnswer(label, questionText, choice, correctChoice, false);
 
             backButton.interactable = true;
             nextButton.interactable = true;
@@ -260,7 +255,7 @@ public abstract class MissionBase : MonoBehaviour
     // PTQ (blue Elementer buttons, Clarence AI recalibration). Same as Mission1's ShowPTQ.
     // background is optional: leave it out and it uses the forest night one like before
     // =====================================================================
-    protected async void ShowPTQ(string label, string questionText, string[] choices, string correctChoice, string explanation, Sprite background = null)
+    protected void ShowPTQ(string label, string questionText, string[] choices, string correctChoice, string explanation, Sprite background = null)
     {
         if (background == null) background = forestNightBackground;
 
@@ -272,8 +267,6 @@ public abstract class MissionBase : MonoBehaviour
         TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
         question.text = questionText;
 
-        bool alreadyAnswered = await AlreadyAnswered(questionText);
-
         for (int i = 0; i < choices.Length; i++)
         {
             GameObject buttonChoices = Instantiate(elementerPTQButtonPrefab, buttonsChoicesContainer);
@@ -282,17 +275,9 @@ public abstract class MissionBase : MonoBehaviour
             buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
         }
 
-        async void choiceButtonClicked(string choice)
+        void choiceButtonClicked(string choice)
         {
-            if (alreadyAnswered)
-            {
-                Debug.Log("student already answered");
-            }
-            else
-            {
-                Debug.Log("no student answer. recording answer");
-                await SaveAnswer(label, questionText, choice, correctChoice);
-            }
+            RecordAnswer(label, questionText, choice, correctChoice, true);
 
             backButton.interactable = true;
             nextButton.interactable = true;
@@ -321,114 +306,62 @@ public abstract class MissionBase : MonoBehaviour
     }
 
     // =====================================================================
-    // DATABASE (shared by MCQ and PTQ). try/catch so bad wifi can't freeze the game on stage.
+    // DATABASE (new Supabase project). Answers are held here and sent when the 3rd one comes in.
+    // try/catch so bad wifi can't freeze the game on stage.
     // =====================================================================
-    async Task<bool> AlreadyAnswered(string questionText)
+
+    private Dictionary<string, int> mcqScores = new Dictionary<string, int>();
+    private Dictionary<string, int> ptqScores = new Dictionary<string, int>();
+
+    protected void RecordAnswer(string label, string questionText, string choice, string correctChoice, bool isPTQ)
     {
-        try
+        var scores = isPTQ ? ptqScores : mcqScores;
+        if (scores.ContainsKey(label)) return; // first attempt only (also stops back-button re-answers)
+
+        int score = (choice == correctChoice) ? 1 : 0;
+        scores[label] = score;
+        string kind = isPTQ ? "post" : "pre";
+
+        // save THIS answer right now
+        SaveAnswer(kind, new Dictionary<string, object>
         {
-            var recordAnswer = await SupabaseManager.Instance.supabase
-                .From<Chapter_Answers_Record>()
-                .Where(x => x.studentID == SessionManager.Instance.studentID)
-                .Where(x => x.Question == questionText)
-                .Get();
-            return recordAnswer.Models.Count > 0;
-        }
-        catch (Exception e)
+            { "questionLabel", label },
+            { "question", questionText },
+            { "answer", choice },
+            { "score", score }
+        });
+
+        // the percent score still waits until all 3 are in
+        if (scores.Count == 3)
         {
-            Debug.LogError("Could not check old answers: " + e);
-            return false;
+            SaveScore(kind, scores.Values.Sum(), 3);
         }
     }
 
-    async Task SaveAnswer(string label, string questionText, string choice, string correctChoice)
+    private async void SaveAnswer(string kind, Dictionary<string, object> answer)
     {
-        try
-        {
-            int earnedScore = (choice == correctChoice) ? 1 : 0;
-            var newRecord = new Chapter_Answers_Record
-            {
-                chapterID = ChapterNumber,
-                MCQ_PCQ = "Chapter " + ChapterNumber + " | " + label,   // saved like: Chapter 2 | MCQ 1
-                studentID = SessionManager.Instance.studentID,
-                Question = questionText,
-                Answer = choice,
-                Score = earnedScore
-            };
-            await SupabaseManager.Instance.supabase
-                .From<Chapter_Answers_Record>()
-                .Insert(newRecord);
-
-            await AddScore(label, earnedScore);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError("Could not save answer: " + e);
-        }
+        int saved = await SupabaseManager.Instance.SubmitChapterAnswers(
+            ChapterNumber, kind, new List<Dictionary<string, object>> { answer });
+        Debug.Log("[" + kind + "] " + answer["questionLabel"] + " saved rows = " + saved);
     }
 
-    protected async Task AddScore(string label, int earnedScore)
+    private async void SaveScore(string kind, int correct, int total)
     {
-        int chapter = ChapterNumber;
+        bool ok = await SupabaseManager.Instance.SubmitChapterScore(ChapterNumber, kind, correct, total);
+        Debug.Log("[" + kind + "] score " + correct + "/" + total + " saved = " + ok);
+    }
 
-        var result = await SupabaseManager.Instance.supabase
-            .From<Student_Chapter_Scores>()
-            .Where(x => x.studentID == SessionManager.Instance.studentID)
-            .Where(x => x.chapterID == chapter)
-            .Get();
-
-        bool isMCQ = label.Contains("MCQ"); // works for "MCQ 1" and "Chapter 2 | MCQ 1"
-
-        if (result.Models.Count == 0)
-        {
-            var newRow = new Student_Chapter_Scores
-            {
-                studentID = SessionManager.Instance.studentID,
-                chapterID = chapter,
-                MCQ_Score = isMCQ ? earnedScore : (int?)null,
-                PTQ_Score = isMCQ ? (int?)null : earnedScore
-            };
-            await SupabaseManager.Instance.supabase
-                .From<Student_Chapter_Scores>()
-                .Insert(newRow);
-        }
-        else
-        {
-            var row = result.Models[0];
-            if (isMCQ) row.MCQ_Score = (row.MCQ_Score ?? 0) + earnedScore;
-            else row.PTQ_Score = (row.PTQ_Score ?? 0) + earnedScore;
-
-            await SupabaseManager.Instance.supabase
-                .From<Student_Chapter_Scores>()
-                .Update(row);
-        }
+    private async void SaveProgress(bool completed)
+    {
+        await SupabaseManager.Instance.SaveChapterProgress(ChapterNumber, completed);
     }
 
     // =====================================================================
     // END OF CHAPTER: unlock the next chapter in the database, THEN go back to the main menu
-    // (ChapterManager reads studentChapterProgress to decide which chapters are locked)
     // =====================================================================
     protected async void FinishChapter()
     {
-        try
-        {
-            var student = await SupabaseManager.Instance.supabase
-                .From<Students>()
-                .Where(s => s.studentID == SessionManager.Instance.studentID)
-                .Single();
-
-            if (student.studentChapterProgress < ChapterNumber + 1)
-            {
-                student.studentChapterProgress = ChapterNumber + 1;
-                await SupabaseManager.Instance.supabase
-                    .From<Students>()
-                    .Update(student);
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.LogError("Could not unlock next chapter: " + e);
-        }
+        await SupabaseManager.Instance.SaveChapterProgress(ChapterNumber, true);
 
         SceneLoader.loadScene("MainMenu"); // shows the loading screen
     }

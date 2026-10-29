@@ -56,49 +56,71 @@ public class LoginManager : MonoBehaviour
         bool success = false;
         try
         {
-            var studentResponse = await WithTimeout(
-                SupabaseManager.Instance.supabase
-                    .From<Students>()
-                    .Where(row => row.studentID == studentID)
-                    .Get());
-
-            Students student = studentResponse.Models.FirstOrDefault();
-
-            if (student == null)
-            {
-                ShowError("No Account with this Student ID is found.");
-                return;
-            }
-
-            if (student.studentPassword != studentPassword)
-            {
-                ShowError("Wrong password entered.");
-                return;
-            }
-
-            var sectionID = student.sectionID;
-            var sectionResponse = await WithTimeout(
-                SupabaseManager.Instance.supabase
-                    .From<Sections>()
-                    .Where(row => row.sectionID == sectionID)
-                    .Get());
-
-            Sections section = sectionResponse.Models.FirstOrDefault();
-
-            SessionManager.Instance.studentID = student.studentID;
-            SessionManager.Instance.studentFirstName = student.studentFirstName;
-            SessionManager.Instance.studentLastName = student.studentLastName;
-            SessionManager.Instance.sectionName = section != null ? section.sectionName : "";
+            // student number becomes an email, ex: 26003 -> 26003@app.local
+            string email = studentID.ToLower() + "@app.local";
 
             try
             {
-                student.lastPlayed = DateTime.UtcNow;
-                await WithTimeout(student.Update<Students>());
+                await WithTimeout(SupabaseManager.Instance.supabase.Auth.SignIn(email, studentPassword));
+            }
+            catch (TimeoutException)
+            {
+                throw;
             }
             catch (Exception e)
             {
-                Debug.LogWarning("Could not update lastPlayed: " + e.Message);
+                Debug.LogWarning("Sign in failed: " + e.Message);
+                ShowError("Wrong Student ID or password.");
+                return;
             }
+
+            // get the student's name and section (falls back if the table can't be read)
+            string firstName = "Student";
+            string fullName = "";
+            string sectionName = "";
+            string accountStatus = "active";
+            try
+            {
+                var res = await WithTimeout(
+                    SupabaseManager.Instance.supabase
+                        .From<StudentRow>()
+                        .Where(x => x.studentNumber == studentID)
+                        .Get());
+
+                StudentRow row = res.Models.FirstOrDefault();
+                if (row != null)
+                {
+                    Debug.Log("student row: " + row.fullName + " | " + row.section);
+                    if (!string.IsNullOrEmpty(row.fullName))
+                    {
+                        fullName = row.fullName.Trim();
+                        firstName = fullName.Split(' ')[0];
+                    }
+                    sectionName = row.section ?? "";
+                    accountStatus = row.status ?? "active";
+                }
+                else
+                {
+                    Debug.LogWarning("students table returned nothing for this student");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("Could not read student row: " + e.Message);
+            }
+
+            // archived students can log in to Supabase Auth but every save is rejected, so stop them here
+            if (accountStatus != "active")
+            {
+                try { await SupabaseManager.Instance.supabase.Auth.SignOut(); } catch (Exception) { }
+                ShowError("This account is not active. Please contact your teacher.");
+                return;
+            }
+
+            SessionManager.Instance.studentID = studentID;
+            SessionManager.Instance.studentFirstName = firstName;
+            SessionManager.Instance.studentLastName = fullName.Contains(" ") ? fullName.Substring(fullName.IndexOf(' ') + 1) : "";
+            SessionManager.Instance.sectionName = sectionName;
 
             success = true;
             ShowLoading("Loading");
