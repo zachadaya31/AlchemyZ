@@ -3,13 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
 
@@ -17,7 +15,7 @@ public class SceneLoader : MonoBehaviour
 
     public static void loadScene(string sceneName)
     {
-        SceneManager.LoadScene(sceneName);
+        LoadingScreen.Load(sceneName);
     }
 
     public void quitGame() {

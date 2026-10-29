@@ -143,7 +143,7 @@ public class ElementerTutorialFull : MonoBehaviour
     {
         if (Mission1.Instance != null)
         {
-            Mission1.Instance.nextScene();
+            MissionBase.Instance.nextScene();
             SceneManager.UnloadSceneAsync(gameObject.scene);
         }
         else

@@ -70,7 +70,7 @@ public class Dialogue : MonoBehaviour
         }
         else
         {
-            Mission1.Instance.nextScene();
+            MissionBase.Instance.nextScene();
         }
     }
 

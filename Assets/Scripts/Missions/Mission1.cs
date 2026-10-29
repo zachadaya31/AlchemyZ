@@ -11,97 +11,13 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Threading.Tasks;
 
-public class Mission1 : MonoBehaviour
+public class Mission1 : MissionBase
 {
-    public int currentScene = 0; // kung pang ilang scene na ang isang mission
-    public static Mission1 Instance; // instance ng mission1 para ma access ng ibang class yung nextScene() method
-    public bool missionCombinationComplete = false;
+    public override int ChapterNumber => 1;
 
+    // everything shared (fields, Awake, Start, ShowPTQ, AddScore, video, AR loading) now lives in MissionBase.cs
 
-    public Dialogue dialogueLoader;
-    // fade in and fade out para sa mga transitions ng game
-    public Animator fadeAnimator;
-
-    // teacher mikko character
-    public GameObject teacherPrefab;
-    
-    //professor zahc character
-    public GameObject scientistPrefab;
-
-    //empty prefab for tuwing nagsasalita si student so walang character sa ui since first perosn POV
-    public GameObject emptyPrefab;
-
-    // big elementer prefab to show elementer at some moments
-    public GameObject elementerPrefab;
-
-    //clarence AI talking to student
-    public GameObject elementerAIPrefab;
-
-    [Header("Called on Runtime")]
-    public Animator teacherAnimations;
-    public GameObject missionCamera;
-    public GameObject missionEventSystem;
-    
-
-    [Header("Buttons Funcationality")]
-    public GameObject buttonPrefab;
-    // buttons for PTQ (blue buttons, elementer themed)
-    public GameObject elementerPTQButtonPrefab;
-    // yung container ng mga buttons sa PTQ at MCQ
-    public Transform buttonsChoicesContainer;
-    // buttons for MCQ (yellowish buttons, story themed)
-    public TextMeshProUGUI questionPrefab;
-    //back button for scens
-    public Button backButton;
-    //next button for scenes
-    public Button nextButton;
-    //button sa buong screen for like continue to main menu type screens where its all black
-    public GameObject fullscreenButtonPrefab;
-
-    [Header("Canvas")]
-    public Transform canvasContainer;
-    public GameObject dialogueObject;
-    public GameObject dialogueBox;
-    public GameObject backgroundAnchor;
-    public GameObject characterAnchor;
-
-    [Header("Video")]
-    public GameObject videoPlayerObject;
-    public GameObject videoPlayerObject2;
-    public GameObject videoPlayerObject3;
-    public UnityEngine.Video.VideoPlayer videoPlayer;
-    public UnityEngine.Video.VideoPlayer videoPlayer2;
-    public UnityEngine.Video.VideoPlayer videoPlayer3;
-    
-
-    [Header("Backgrounds")]
-    public Sprite classroomPicture;
-    public Sprite laboratoryPicture;
-    public Sprite forestBackground;
-    public Sprite forestNightBackground;
-
-    [Header("Instructions")]
-    public GameObject instructionsBox;
-    public TextMeshProUGUI instructionsText;
-
-    [Header("Student Info")]    
-    public string studentFirstName;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Awake()
-    {
-        Instance = this;
-        videoPlayerObject.SetActive(false);
-        videoPlayerObject2.SetActive(false);
-        videoPlayerObject3.SetActive(false);
-    }
-    void Start()
-    {
-        studentFirstName = SessionManager.Instance.studentFirstName;
-        nextScene();
-    }
-
-    public async void nextScene() {
+    public override async void nextScene() {
         IEnumerator waitScene()
         {
             nextButton.interactable = false;
@@ -178,7 +94,7 @@ public class Mission1 : MonoBehaviour
                     var newRecord = new Chapter_Answers_Record
                     {
                         chapterID = 1,
-                        MCQ_PCQ = "MCQ 1",
+                        MCQ_PCQ = "Chapter 1 | MCQ 1",
                         
                         studentID = SessionManager.Instance.studentID,
                         Question = questionText,
@@ -368,7 +284,7 @@ public class Mission1 : MonoBehaviour
                     var newRecord = new Chapter_Answers_Record
                     {
                         chapterID = 1,
-                        MCQ_PCQ = "MCQ 2",
+                        MCQ_PCQ = "Chapter 1 | MCQ 2",
                         
                         studentID = SessionManager.Instance.studentID,
                         Question = questionText,
@@ -543,7 +459,7 @@ public class Mission1 : MonoBehaviour
                     var newRecord = new Chapter_Answers_Record
                     {
                         chapterID = 1,
-                        MCQ_PCQ = "MCQ 3",
+                        MCQ_PCQ = "Chapter 1 | MCQ 3",
                         
                         studentID = SessionManager.Instance.studentID,
                         Question = questionText,
@@ -868,181 +784,10 @@ public class Mission1 : MonoBehaviour
         else
         {
             Debug.Log("End of mission 1");
-            SceneManager.LoadScene("MainMenu");
+            FinishChapter(); // unlocks chapter 2, then main menu
 
         }
 
         
-    }
-
-void OnVideoFinished(UnityEngine.Video.VideoPlayer vp)
-{
-    vp.loopPointReached -= OnVideoFinished;
-    
-    videoPlayerObject.SetActive(false);
-    videoPlayerObject2.SetActive(false);
-    videoPlayerObject3.SetActive(false);
-    
-    dialogueObject.SetActive(true);
-    backButton.interactable = true;
-    nextButton.interactable = true;
-    nextScene();
-}
-
-    private IEnumerator LoadARScene(string AR_SCENE_NAME)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(AR_SCENE_NAME, LoadSceneMode.Additive);
-        
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-
-        yield return new WaitForEndOfFrame();
-
-        HideSimulatedEnvironment();
-    }
-
-    public static void HideSimulatedEnvironment()
-    {
-        for (int i = 0; i < SceneManager.sceneCount; i++)
-        {
-            Scene scene = SceneManager.GetSceneAt(i);
-            
-            if (scene.name == "AR_Test")
-            {
-                foreach (GameObject root in scene.GetRootGameObjects())
-                {
-                    if (root.name.StartsWith("Simulated Environment Scene"))
-                    {
-                        // Instead of moving the root (which XR Simulation overrides),
-                        // move all its children up together!
-                        foreach (Transform child in root.transform)
-                        {
-                            child.position += new Vector3(0, 5f, 0);
-                        }
-                        
-                        Debug.Log("Successfully shifted simulated environment contents up!");
-                    }
-                }
-            }
-        }
-    }
-
-    async void ShowPTQ(string label, string questionText, string[] choices, string correctChoice, string explanation)
-    {
-        fadeAnimator.Play("Fadein50");
-        backButton.interactable = false;
-        nextButton.interactable = false;
-        dialogueBox.SetActive(false);
-
-        TextMeshProUGUI question = Instantiate(questionPrefab, buttonsChoicesContainer);
-        question.text = questionText;
-
-        var recordAnswer = await SupabaseManager.Instance.supabase
-            .From<Chapter_Answers_Record>()
-            .Where(x => x.studentID == SessionManager.Instance.studentID)
-            .Where(x => x.Question == questionText)
-            .Get();
-
-        for (int i = 0; i < choices.Length; i++)
-        {
-            GameObject buttonChoices = Instantiate(elementerPTQButtonPrefab, buttonsChoicesContainer);
-            buttonChoices.GetComponentInChildren<TMPro.TMP_Text>().text = choices[i];
-            string currentChoice = choices[i];
-            buttonChoices.GetComponent<Button>().onClick.AddListener(() => { choiceButtonClicked(currentChoice); });
-        }
-
-        async void choiceButtonClicked(string choice)
-        {
-            if (recordAnswer.Models.Count > 0)
-            {
-                Debug.Log("student already answered");
-            }
-            else
-            {
-                Debug.Log("no student answer. recording answer");
-                int earnedScore = (choice == correctChoice) ? 1 : 0;
-                var newRecord = new Chapter_Answers_Record
-                {
-                    chapterID = 1,
-                    MCQ_PCQ = label,
-                    studentID = SessionManager.Instance.studentID,
-                    Question = questionText,
-                    Answer = choice,
-                    Score = earnedScore
-                };
-                await SupabaseManager.Instance.supabase
-                    .From<Chapter_Answers_Record>()
-                    .Insert(newRecord);
-
-                await AddScore(newRecord.MCQ_PCQ, earnedScore);  
-            }
-
-            backButton.interactable = true;
-            nextButton.interactable = true;
-
-            // "PTQ 3" -> 3
-            int number = int.Parse(label.Replace("PTQ ", ""));
-            int percent = Mathf.RoundToInt(number * 100f / 3f);
-
-            string firstLine = (choice == correctChoice) ? "Correct!" : "Nice try! But unfortunately your answer is wrong!";
-            string statusLine = (number == 3) ? "3/3 questions answered. Recalibration complete!" : number + "/3 questions answered.";
-
-            string[] lines = new string[]
-            {
-                firstLine,
-                explanation,
-                "Elementer recalibration: " + percent + "%",
-                statusLine
-            };
-
-            foreach (Transform child in buttonsChoicesContainer)
-            {
-                Destroy(child.gameObject);
-            }
-            dialogueBox.SetActive(true);
-            fadeAnimator.Play("Fadeout50");
-            GameObject currentTeacher = dialogueLoader.loadDialogue("Clarence AI", elementerAIPrefab, lines, forestNightBackground);
-            teacherAnimations = currentTeacher.GetComponent<Animator>();
-            if (teacherAnimations != null)
-            {
-                teacherAnimations.SetTrigger("Speaks");
-            }
-        }
-    }
-    async Task AddScore(string label, int earnedScore)
-    {
-        var result = await SupabaseManager.Instance.supabase
-            .From<Student_Chapter_Scores>()
-            .Where(x => x.studentID == SessionManager.Instance.studentID)
-            .Where(x => x.chapterID == 1)
-            .Get();
-
-        bool isMCQ = label.StartsWith("MCQ");
-
-        if (result.Models.Count == 0)
-        {
-            var newRow = new Student_Chapter_Scores
-            {
-                studentID = SessionManager.Instance.studentID,
-                chapterID = 1,
-                MCQ_Score = isMCQ ? earnedScore : (int?)null,
-                PTQ_Score = isMCQ ? (int?)null : earnedScore
-            };
-            await SupabaseManager.Instance.supabase
-                .From<Student_Chapter_Scores>()
-                .Insert(newRow);
-        }
-        else
-        {
-            var row = result.Models[0];
-            if (isMCQ) row.MCQ_Score = (row.MCQ_Score ?? 0) + earnedScore;
-            else row.PTQ_Score = (row.PTQ_Score ?? 0) + earnedScore;
-
-            await SupabaseManager.Instance.supabase
-                .From<Student_Chapter_Scores>()
-                .Update(row);
-        }
     }
 }

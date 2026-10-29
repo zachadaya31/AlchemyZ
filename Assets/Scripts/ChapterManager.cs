@@ -1,11 +1,19 @@
-using JetBrains.Annotations;
-using NUnit.Framework;
 using System.Collections.Generic;
-using TMPro;
+using System.Linq;
+using Postgrest.Attributes;
+using Postgrest.Models;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+[Table("Chapters")]
+public class ChapterRow : BaseModel
+{
+    [PrimaryKey("chapterID")]
+    public int chapterID { get; set; }
+
+    [Column("title")]
+    public string title { get; set; }
+}
 
 [System.Serializable]
 public class chapterDetails{
@@ -24,58 +32,72 @@ public class ChapterManager : MonoBehaviour
 
     public List<chapterDetails> allChapters;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         loadChapters();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public async void loadChapters() {
-        Debug.Log(allChapters[0].chapterTitle);
-        
+
+        // 1. the chapters that exist (from the database)
+        var chaptersResponse = await SupabaseManager.Instance.supabase
+            .From<ChapterRow>()
+            .Get();
+
+        List<ChapterRow> chapters = chaptersResponse.Models.OrderBy(c => c.chapterID).ToList();
+
+        // 2. how far this student got
         var student = await SupabaseManager.Instance.supabase
-        .From<Students>()
-        .Where(s => s.studentID == SessionManager.Instance.studentID)
-        .Single();
+            .From<Students>()
+            .Where(s => s.studentID == SessionManager.Instance.studentID)
+            .Single();
 
         int studentChapterProgress = student.studentChapterProgress;
 
-        //unlock yung mga chapters
-        for (int a = studentChapterProgress-1; a != (-1); a--)
+        // 3. one entry per chapter in the database
+        foreach (ChapterRow chapter in chapters)
         {
-            allChapters[a].isLocked = false;
-        }
-        
+            int number = chapter.chapterID;
+            bool unlocked = number <= studentChapterProgress;
 
-        for (int z = 0; z < allChapters.Count; z++) {
             GameObject chapterEntry = Instantiate(chapterEntryPrefab, content, false);
             ChapterInformation info = chapterEntry.GetComponentInChildren<ChapterInformation>();
-
             Button btn = chapterEntry.GetComponent<Button>();
 
-            if (allChapters[z].isLocked == false)
+            // logo comes from the Inspector list (by chapter number). If the title is empty in the database, use the Inspector one
+            string title = chapter.title;
+            Sprite logo = null;
+            int listIndex = number - 1;
+            if (listIndex >= 0 && listIndex < allChapters.Count)
             {
-                string chapterNum = "Chapter: " + (z + 1).ToString();
-                string chapterTitle = allChapters[z].chapterTitle;
-                Sprite newChapterLogo = allChapters[z].chapterLogo;
-                info.testDebug(chapterNum, chapterTitle, newChapterLogo);
+                logo = allChapters[listIndex].chapterLogo;
+                if (string.IsNullOrEmpty(title)) title = allChapters[listIndex].chapterTitle;
+            }
+
+            if (unlocked)
+            {
+                info.testDebug("Chapter: " + number, title, logo);
             }
             else { //KAPAG NAKA LOCK
                 btn.enabled = false;
                 info.testDebug("", "", null);
             }
 
-            btn.onClick.AddListener(loadScene);
+            btn.onClick.AddListener(() => openChapter(number));
         }
-        
-        void loadScene() {
-            SceneManager.LoadScene("Mission1");
+    }
+
+    void openChapter(int number)
+    {
+        string sceneName = "Mission" + number;
+
+        // para sa error ng chapter pag wala
+        if (!Application.CanStreamedLevelBeLoaded(sceneName))
+        {
+            Debug.Log(sceneName + " is not in Build Settings yet (coming soon).");
+            return;
         }
+
+        SceneLoader.loadScene(sceneName);
     }
 }

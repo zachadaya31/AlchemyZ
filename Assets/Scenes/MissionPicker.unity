@@ -362,20 +362,40 @@ MonoBehaviour:
     chapterTitle: The Alchemist's Apprentice
     chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
     isLocked: 1
-  - chapterNumber: 0
-    chapterTitle: Miss ko na ex ko
+  - chapterNumber: 1
+    chapterTitle: A Pinch of Salt
     chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
     isLocked: 1
-  - chapterNumber: 0
-    chapterTitle: Bessy Villapando
+  - chapterNumber: 2
+    chapterTitle: The Healer's Remedy
     chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
     isLocked: 1
-  - chapterNumber: 0
-    chapterTitle: Jinky Svero
+  - chapterNumber: 3
+    chapterTitle: Signal in the Fog
     chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
     isLocked: 1
-  - chapterNumber: 0
-    chapterTitle: M.C.R.
+  - chapterNumber: 4
+    chapterTitle: Smothering the Flames
+    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
+    isLocked: 1
+  - chapterNumber: 5
+    chapterTitle: The Lighthouse Lens
+    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
+    isLocked: 1
+  - chapterNumber: 6
+    chapterTitle: Sands of Sulfur
+    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
+    isLocked: 1
+  - chapterNumber: 7
+    chapterTitle: Growing the Terraces
+    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
+    isLocked: 1
+  - chapterNumber: 8
+    chapterTitle: The Frozen Harbor
+    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
+    isLocked: 1
+  - chapterNumber: 9
+    chapterTitle: Bringing Him Home
     chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
     isLocked: 1
 --- !u!4 &982557985

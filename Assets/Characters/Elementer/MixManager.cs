@@ -128,7 +128,7 @@ public class MixManager : MonoBehaviour
                         return;
                     }
 
-                    if (Mission1.Instance != null && TutorialManager.instance == null) Mission1.Instance.nextScene();
+                    if (MissionBase.Instance != null && TutorialManager.instance == null) MissionBase.Instance.nextScene();
                     OnResultTapped?.Invoke(result.recipe, result.obj);
                     return;
                 }
@@ -261,10 +261,25 @@ public class MixManager : MonoBehaviour
 
     private bool IsWantedResult(MixRecipe recipe)
     {
-        if (string.IsNullOrEmpty(requiredResultName)) return true;
-        if (string.Equals(recipe.resultName, requiredResultName, StringComparison.OrdinalIgnoreCase)) return true;
+        // the current chapter can tell us what it needs (Mission2 says "Salt").
+        // Mission1 says nothing, so it keeps using requiredResultName from the inspector. The tutorial always uses the inspector too.
+        string wanted = requiredResultName;
+        if (TutorialManager.instance == null && MissionBase.Instance != null
+            && !string.IsNullOrEmpty(MissionBase.Instance.RequiredMixResult))
+        {
+            wanted = MissionBase.Instance.RequiredMixResult;
+        }
+
+        if (string.IsNullOrEmpty(wanted)) return true;
+        // spaces and capitals are ignored so "Sodium Chloride" matches "SodiumChloride"
+        if (string.Equals(NoSpaces(recipe.resultName), NoSpaces(wanted), StringComparison.OrdinalIgnoreCase)) return true;
         return recipe.resultPrefab != null &&
-            string.Equals(recipe.resultPrefab.name, requiredResultName, StringComparison.OrdinalIgnoreCase);
+            string.Equals(NoSpaces(recipe.resultPrefab.name), NoSpaces(wanted), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string NoSpaces(string s)
+    {
+        return string.IsNullOrEmpty(s) ? "" : s.Replace(" ", "");
     }
 
     public GameObject GetResultUnderPosition(Vector2 screenPos)
@@ -300,6 +315,14 @@ public class MixManager : MonoBehaviour
     void Start()
     {
         instructions.SetActive(true);
-        instructionsText.SetText(instructionsBefore);
+
+        // chapter can override the instruction text (Mission1 doesn't, so it stays the same). Tutorial keeps its own.
+        string text = instructionsBefore;
+        if (TutorialManager.instance == null && MissionBase.Instance != null
+            && !string.IsNullOrEmpty(MissionBase.Instance.MixInstructions))
+        {
+            text = MissionBase.Instance.MixInstructions;
+        }
+        instructionsText.SetText(text);
     }
 }

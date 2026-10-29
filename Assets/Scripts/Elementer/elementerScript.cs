@@ -20,6 +20,6 @@ public class elementerScript : MonoBehaviour
         hasBeenClicked = true;
 
         SceneLoader.cleanScenes("Mission1");
-        Mission1.Instance.nextScene();
+        MissionBase.Instance.nextScene();
     }
 }
