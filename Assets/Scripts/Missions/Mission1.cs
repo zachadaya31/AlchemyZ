@@ -17,12 +17,24 @@ public class Mission1 : MonoBehaviour
     public static Mission1 Instance; // instance ng mission1 para ma access ng ibang class yung nextScene() method
     public bool missionCombinationComplete = false;
 
+
     public Dialogue dialogueLoader;
+    // fade in and fade out para sa mga transitions ng game
     public Animator fadeAnimator;
+
+    // teacher mikko character
     public GameObject teacherPrefab;
+    
+    //professor zahc character
     public GameObject scientistPrefab;
+
+    //empty prefab for tuwing nagsasalita si student so walang character sa ui since first perosn POV
     public GameObject emptyPrefab;
+
+    // big elementer prefab to show elementer at some moments
     public GameObject elementerPrefab;
+
+    //clarence AI talking to student
     public GameObject elementerAIPrefab;
 
     [Header("Called on Runtime")]
@@ -33,11 +45,17 @@ public class Mission1 : MonoBehaviour
 
     [Header("Buttons Funcationality")]
     public GameObject buttonPrefab;
+    // buttons for PTQ (blue buttons, elementer themed)
     public GameObject elementerPTQButtonPrefab;
+    // yung container ng mga buttons sa PTQ at MCQ
     public Transform buttonsChoicesContainer;
+    // buttons for MCQ (yellowish buttons, story themed)
     public TextMeshProUGUI questionPrefab;
+    //back button for scens
     public Button backButton;
+    //next button for scenes
     public Button nextButton;
+    //button sa buong screen for like continue to main menu type screens where its all black
     public GameObject fullscreenButtonPrefab;
 
     [Header("Canvas")]
@@ -95,6 +113,7 @@ public class Mission1 : MonoBehaviour
         currentScene++;
 
         // SCENE 1 -----------------------------------------------------
+        // scene 1 is an example ng normal story scene full of dialogues
         if (currentScene == 1)
         {
             StartCoroutine(waitScene());
@@ -118,6 +137,7 @@ public class Mission1 : MonoBehaviour
 
 
         // SCENE 2 --------------------------------------------------------
+        // scene 2 is an example of MCQ scenes where a buncha buttons ay nasa hrap ng screen
         else if (currentScene == 2)
         {
 
@@ -214,6 +234,8 @@ public class Mission1 : MonoBehaviour
 
 
         // SCENE 3-------------------------------------------------------------------------
+        // scene 3 is an example of "fullscreen button" where a black screen is showed and may text
+        // and need mo pindotin to continue... For transition aesthetics lang
         else if (currentScene == 3)
         {
             nextButton.enabled = false;
@@ -271,6 +293,9 @@ public class Mission1 : MonoBehaviour
         //--------------------------
         // SCENE 5 - Elementer AR load
         //--------------------------
+        // scene 5 is an example sa pag load ng AR sa game
+        // AR_Test is just me naming simple pero ang AR_Test ay scene kung saan hahanapin ng student
+        // si elementer to pick it up (based on story)
 
         else if (currentScene == 5) {
             dialogueObject.SetActive(false);
@@ -301,6 +326,7 @@ public class Mission1 : MonoBehaviour
             GameObject currentTeacher = dialogueLoader.loadDialogue("Professor Zach", scientistPrefab, lines, laboratoryPicture);
         }
 
+        // mcq scnee
         else if (currentScene == 7)
         {
             fadeAnimator.Play("Fadein50");
@@ -403,8 +429,9 @@ public class Mission1 : MonoBehaviour
         }
 
         //--------------------------
-        // SCENE 8 - Elementer overloads and opens portal video || gawa ni clarence toh
+        // Scene 9
         //--------------------------
+        //scene 9 is an example of scenes kung saan may video na nag pplay to show the story progressing
 
         else if (currentScene == 9)
         {
@@ -566,12 +593,10 @@ public class Mission1 : MonoBehaviour
         }
 
 
-        //AR ELEMENTER SCENE
         else if (currentScene == 14) {
 
             dialogueObject.SetActive(false);
             SceneManager.LoadScene("Elementer", LoadSceneMode.Additive);
-            //FindAnyObjectByType<ARBackgroundToggle>().SetBackgroundVisible(false);
             missionCamera.SetActive(false);
             missionEventSystem.SetActive(false);
 
@@ -603,11 +628,9 @@ public class Mission1 : MonoBehaviour
 
         }
 
-        // OUTRO SCNEEEEEEEEEE
-
+        // another black screen with full screen button
         else if (currentScene == 16)
         {
-            //SceneManager.UnloadSceneAsync("Elementer");
             dialogueObject.SetActive(false);
             nextButton.enabled = false;
             backButton.enabled = false;
@@ -703,6 +726,8 @@ public class Mission1 : MonoBehaviour
             backgroundAnchor.transform.position = new Vector3(-4.28f, -0.65f, -1.75f);
         }
 
+        // an example of clarence AI scene kung saan nakikipag usap si student kay elementer AI (clarence)
+        // used for future references kung kakausapin uli ni student si AI
         else if (currentScene == 20)
         {
             dialogueObject.SetActive(true);
@@ -803,9 +828,9 @@ public class Mission1 : MonoBehaviour
                 "The small 2 after the H means there are 2 Hydrogen atoms in one water molecule!");
         }
 
+        // end scene
         else if (currentScene == 26)
         {
-            //SceneManager.UnloadSceneAsync("Elementer");
             dialogueObject.SetActive(false);
             nextButton.enabled = false;
             backButton.enabled = false;

@@ -34,7 +34,9 @@ public class TutorialGate : MonoBehaviour
             tutorialInstructions.SetActive(true);
         }
 
-        if (this == null) return;   // scene was closed while waiting
+        if (this == null) return;
         tutorialManager.SetActive(!finished);
+        tutorialInstructions.SetActive(!finished); 
+        
     }
 }
