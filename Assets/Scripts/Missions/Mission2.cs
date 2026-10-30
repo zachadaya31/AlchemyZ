@@ -9,7 +9,7 @@ public class Mission2 : MissionBase
 
     public override string RequiredMixResult => "Sodium Chloride";
 
-    public override string MixInstructions => "Select Sodium (Na) and Chlorine (Cl), then press Mix to make Salt.";
+    public override string MixInstructions => "Create Sodium Chloride.\nNot sure how? Ask Clarence AI for a hint.";
 
     private const string chapterTitle = "A Pinch of Salt";   // change this if you pick another title
 
@@ -154,7 +154,7 @@ public class Mission2 : MissionBase
                 "The formula of Sodium Chloride is NaCl, one Sodium and one Chlorine!", Camp),
 
             () => AiSays("DATABASE RECALIBRATION COMPLETE.", "DATABASE UPDATED.", ElementLocks.Unlock(2)),
-            () => AiSays(SessionManager.Instance.studentFirstName+", My database says I think I've located the profssor.", "I'll triggren another overload sequence."),
+            () => AiSays(studentFirstName + ", my database says I may have located the professor.", "I'll trigger another overload sequence to follow his signal."),
             () =>
             {
                 dialogueObject.SetActive(false);

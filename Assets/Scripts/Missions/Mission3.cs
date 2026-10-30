@@ -8,7 +8,7 @@ public class Mission3 : MissionBase
     public override int ChapterNumber => 3;
 
     public override string RequiredMixResult => "Magnesium Oxide";
-    public override string MixInstructions => "Select 1 Magnesium (Mg) and 1 Oxygen (O), then press Mix.";
+    public override string MixInstructions => "Create Magnesium Oxide.\nNot sure how? Ask Clarence AI for a hint.";
 
     private const string chapterTitle = "The Healer's Remedy";
 
@@ -69,8 +69,10 @@ public class Mission3 : MissionBase
             () => AiSays("NAMING RULE 2: THE NONMETAL IS NAMED SECOND AND ITS ENDING CHANGES TO \"-IDE\"."),
             () => StudentSays("Chlorine became Chloride. Oxygen becomes Oxide."),
             () => LiraSays("Strange words, but I follow."),
-            () => AiSays("NAMING RULE 3: THE FORMULA BALANCES CHARGES. MAGNESIUM IS Mg2+. OXYGEN IS O2-."),
-            () => StudentSays("Plus 2 and minus 2 cancel out, so I only need one of each."),
+            () => AiSays("NAMING RULE 3: ATOMS TRADE ELECTRONS.",
+                         "MAGNESIUM GIVES AWAY 2 ELECTRONS. OXYGEN TAKES 2 ELECTRONS.",
+                         "THE FORMULA MUST BE BALANCED, WITH NOTHING LEFT OVER."),
+            () => StudentSays("So Magnesium gives and Oxygen takes. It's like a trade."),
             () => LiraSays("Now you are making sense. Tell me, which metal is in this remedy?"),
 
             // ---------------- MCQs ----------------
