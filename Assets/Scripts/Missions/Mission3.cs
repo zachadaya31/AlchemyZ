@@ -95,13 +95,13 @@ public class Mission3 : MissionBase
             () => LiraSays("Then how many of each do you need?"),
 
             () => ShowMCQ("Chapter "+MissionBase.Instance.ChapterNumber +"| MCQ 3",
-                "Why does magnesium oxide need only 1 Magnesium and 1 Oxygen?",
-                new string[] { "Because the +2 and -2 charges balance", "Because both have the same symbol", "Because oxygen is a metal" },
-                "Because the +2 and -2 charges balance",
-                new string[] { "Correct!", "The +2 and -2 charges cancel out, so 1 Magnesium and 1 Oxygen is enough." },
-                new string[] { "Nice try! But unfortunately your answer is wrong!", "The +2 and -2 charges cancel out, so 1 Magnesium and 1 Oxygen is enough." },
+                "Magnesium gives away 2 electrons and oxygen takes 2 electrons. How many of each does magnesium oxide need?",
+                new string[] { "1 Magnesium and 1 Oxygen", "2 Magnesium and 1 Oxygen", "1 Magnesium and 2 Oxygen" },
+                "1 Magnesium and 1 Oxygen",
+                new string[] { "Correct!", "Magnesium gives 2 and oxygen takes 2, so one of each balances the trade." },
+                new string[] { "Nice try! But unfortunately your answer is wrong!", "Magnesium gives 2 and oxygen takes 2, so one of each balances the trade." },
                 "Clarence AI", elementerAIPrefab, Camp),
-            () => StudentSays("The charges cancel out. One of each is enough."),
+            () => StudentSays("One gives 2 and one takes 2. One of each is enough."),
 
             // ---------------- ELEMENTER MIX (Magnesium Oxide) ----------------
             () =>
@@ -141,10 +141,10 @@ public class Mission3 : MissionBase
                 "Sodium sulfide",
                 "The metal goes first and the nonmetal ends in -ide: Sodium sulfide!", Camp),
             () => ShowPTQ("Chapter "+MissionBase.Instance.ChapterNumber +"| PTQ 3",
-                "Ca2+ and O2- combine and their charges cancel. What is the formula?",
+                "Calcium gives away 2 electrons and oxygen takes 2 electrons. What is the formula of calcium oxide?",
                 new string[] { "Ca2O", "CaO2", "CaO" },
                 "CaO",
-                "The charges cancel, so you need one of each: CaO!", Camp),
+                "Calcium gives 2 and oxygen takes 2, so you need one of each: CaO!", Camp),
 
             // ---------------- RECALIBRATION DONE + ELEMENTS UNLOCKED ----------------
             () => AiSays("DATABASE RECALIBRATION COMPLETE.", "NAMING AND FORMULA FILES RESTORED.", ElementLocks.Unlock(3)),
