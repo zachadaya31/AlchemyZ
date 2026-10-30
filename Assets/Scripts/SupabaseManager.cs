@@ -30,7 +30,6 @@ public class SupabaseManager : MonoBehaviour
         Debug.Log("Supabase connected!");
     }
 
-    // ChapterManager should call this instead of reading studentChapterProgress
     public async Task<int> GetUnlockedChapter()
     {
         try
@@ -44,7 +43,6 @@ public class SupabaseManager : MonoBehaviour
         }
     }
 
-    // all 10 chapters, sorted 1 to 10. use chapterNumber as "the chapter number", NOT id
     public async Task<List<ChapterDbRow>> GetChapters()
     {
         try

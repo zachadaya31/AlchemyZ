@@ -499,8 +499,13 @@ public class Mission1 : MissionBase
                 "The small 2 after the H means there are 2 Hydrogen atoms in one water molecule!");
         }
 
-        // end scene
         else if (currentScene == 26)
+        {
+            Say("Clarence AI", elementerAIPrefab, forestNightBackground, "DATABASE RECALIBRATION COMPLETE.", ElementLocks.Unlock(1));
+        }
+
+        // end scene
+        else if (currentScene == 27)
         {
             dialogueObject.SetActive(false);
             nextButton.enabled = false;

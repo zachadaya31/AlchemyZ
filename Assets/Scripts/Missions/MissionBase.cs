@@ -283,7 +283,7 @@ public abstract class MissionBase : MonoBehaviour
             nextButton.interactable = true;
 
             // "PTQ 3" -> 3
-            int number = int.Parse(label.Replace("PTQ ", ""));
+            int number = int.Parse(label.Substring(label.Length - 1));
             int percent = Mathf.RoundToInt(number * 100f / 3f);
 
             string firstLine = (choice == correctChoice) ? "Correct!" : "Nice try! But unfortunately your answer is wrong!";
@@ -331,11 +331,6 @@ public abstract class MissionBase : MonoBehaviour
             { "score", score }
         });
 
-        // the percent score still waits until all 3 are in
-        if (scores.Count == 3)
-        {
-            SaveScore(kind, scores.Values.Sum(), 3);
-        }
     }
 
     private async void SaveAnswer(string kind, Dictionary<string, object> answer)
@@ -356,19 +351,17 @@ public abstract class MissionBase : MonoBehaviour
         await SupabaseManager.Instance.SaveChapterProgress(ChapterNumber, completed);
     }
 
-    // =====================================================================
-    // END OF CHAPTER: unlock the next chapter in the database, THEN go back to the main menu
-    // =====================================================================
     protected async void FinishChapter()
     {
+        if (mcqScores.Count == 3)
+            await SupabaseManager.Instance.SubmitChapterScore(ChapterNumber, "pre", mcqScores.Values.Sum(), 3);
+        if (ptqScores.Count == 3)
+            await SupabaseManager.Instance.SubmitChapterScore(ChapterNumber, "post", ptqScores.Values.Sum(), 3);
+
         await SupabaseManager.Instance.SaveChapterProgress(ChapterNumber, true);
 
-        SceneLoader.loadScene("MainMenu"); // shows the loading screen
+        SceneLoader.loadScene("MainMenu");
     }
-
-    // =====================================================================
-    // VIDEO + AR (moved from Mission1, unchanged)
-    // =====================================================================
     protected void OnVideoFinished(UnityEngine.Video.VideoPlayer vp)
     {
         vp.loopPointReached -= OnVideoFinished;

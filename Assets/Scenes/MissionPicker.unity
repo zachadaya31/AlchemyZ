@@ -361,43 +361,43 @@ MonoBehaviour:
   - chapterNumber: 0
     chapterTitle: The Alchemist's Apprentice
     chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
-    isLocked: 1
+    isLocked: 0
   - chapterNumber: 1
     chapterTitle: A Pinch of Salt
-    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
-    isLocked: 1
+    chapterLogo: {fileID: 21300000, guid: 0c5301a9a4f1ae043836a7c56b683a3b, type: 3}
+    isLocked: 0
   - chapterNumber: 2
     chapterTitle: The Healer's Remedy
-    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
-    isLocked: 1
+    chapterLogo: {fileID: 21300000, guid: aea5ea9bafaaab9409810ea4e48435c4, type: 3}
+    isLocked: 0
   - chapterNumber: 3
     chapterTitle: Signal in the Fog
-    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
-    isLocked: 1
+    chapterLogo: {fileID: 21300000, guid: 39cd44819de95234f8a301b7b4d06bc8, type: 3}
+    isLocked: 0
   - chapterNumber: 4
     chapterTitle: Smothering the Flames
-    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
-    isLocked: 1
+    chapterLogo: {fileID: 21300000, guid: 5b483ec360a7e754f8c75e56eb4ee5ba, type: 3}
+    isLocked: 0
   - chapterNumber: 5
     chapterTitle: The Lighthouse Lens
-    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
-    isLocked: 1
+    chapterLogo: {fileID: 21300000, guid: 770751f075a4d1d4c8ab3e1997845f3b, type: 3}
+    isLocked: 0
   - chapterNumber: 6
     chapterTitle: Sands of Sulfur
-    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
-    isLocked: 1
+    chapterLogo: {fileID: 21300000, guid: 571a0e51a3d63534190fa6afd5a42d6d, type: 3}
+    isLocked: 0
   - chapterNumber: 7
     chapterTitle: Growing the Terraces
-    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
-    isLocked: 1
+    chapterLogo: {fileID: 21300000, guid: 1421b04ed4abc3b4290d3bc8768bb038, type: 3}
+    isLocked: 0
   - chapterNumber: 8
     chapterTitle: The Frozen Harbor
-    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
-    isLocked: 1
+    chapterLogo: {fileID: 21300000, guid: dd725816b47644e40901dce960cdd9ba, type: 3}
+    isLocked: 0
   - chapterNumber: 9
     chapterTitle: Bringing Him Home
-    chapterLogo: {fileID: 21300000, guid: 8d5aebf5a847a584bac3fc7b9972220b, type: 3}
-    isLocked: 1
+    chapterLogo: {fileID: 21300000, guid: ea211eb99f5824e40a60ffbfa8a518b9, type: 3}
+    isLocked: 0
 --- !u!4 &982557985
 Transform:
   m_ObjectHideFlags: 0

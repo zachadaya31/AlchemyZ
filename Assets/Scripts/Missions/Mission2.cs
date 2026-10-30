@@ -21,6 +21,7 @@ public class Mission2 : MissionBase
 
     private Sprite Camp { get { return campBackground != null ? campBackground : forestBackground; } }
 
+    //mga shortcut
     private void StudentSays(params string[] lines) { Say(studentFirstName, emptyPrefab, Camp, lines); }
     private void TunaSays(params string[] lines) { Say("Heneral Tuna", tunaPrefab, Camp, lines); }
     private void AiSays(params string[] lines) { Say("Clarence AI", elementerAIPrefab, Camp, lines); }
@@ -122,7 +123,7 @@ public class Mission2 : MissionBase
             () => ShowTextCard("Heneral Tuna adds the salt to the soup and tastes it..."),
 
             () => TunaSays("Hmm... Perfect!",
-                       "Thank you, apprentice. You've done us a great favor.",
+                       "Thank you, young one. You've done us a great favor.",
                        "If you ever need anything, just say the word. I'll do what I can to help."),
 
             // iron
@@ -152,7 +153,18 @@ public class Mission2 : MissionBase
                 "NaCl",
                 "The formula of Sodium Chloride is NaCl, one Sodium and one Chlorine!", Camp),
 
-            () => AiSays("DATABASE RECALIBRATION COMPLETE.", "DATABASE UPDATED."),
+            () => AiSays("DATABASE RECALIBRATION COMPLETE.", "DATABASE UPDATED.", ElementLocks.Unlock(2)),
+            () => AiSays(SessionManager.Instance.studentFirstName+", My database says I think I've located the profssor.", "I'll triggren another overload sequence."),
+            () =>
+            {
+                dialogueObject.SetActive(false);
+                backButton.interactable = false;
+                nextButton.interactable = false;
+
+                videoPlayerObject.SetActive(true);
+                videoPlayer.Play();
+                videoPlayer.loopPointReached += OnVideoFinished;
+            },
 
             // ---------------- END OF CHAPTER ----------------
             // pressing the screen calls nextScene(), which is past the last step, so FinishChapter() runs

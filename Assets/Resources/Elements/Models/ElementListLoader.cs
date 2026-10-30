@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class ElementListLoader : MonoBehaviour
 {
@@ -46,19 +47,34 @@ public class ElementListLoader : MonoBehaviour
 
     void GenerateElementButtons()
     {
+        // locks only apply during a chapter (not in the tutorial or free play)
+        bool useLocks = TutorialManager.instance == null && MissionBase.Instance != null;
+
         foreach (string name in elementNames)
         {
+            // "11\nSodium" -> number "11", element "Sodium"
+            string[] parts = name.Split('\n');
+            bool locked = useLocks && parts.Length > 1 && ElementLocks.IsLocked(parts[1]);
 
             GameObject newButton = Instantiate(buttonPrefab, contentParent);
-
 
             TMP_Text buttonText = newButton.GetComponentInChildren<TMP_Text>();
             if (buttonText != null)
             {
-                buttonText.text = name;
+                buttonText.text = locked ? parts[0] + "\nLocked" : name;
             }
 
-            newButton.name = "Button_" + name;
+            if (locked)
+            {
+                newButton.name = "Locked_" + name;
+                Button b = newButton.GetComponent<Button>();
+                if (b == null) b = newButton.GetComponentInChildren<Button>();
+                if (b != null) b.interactable = false;
+            }
+            else
+            {
+                newButton.name = "Button_" + name;
+            }
         }
     }
 }
